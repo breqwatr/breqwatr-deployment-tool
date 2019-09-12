@@ -20,9 +20,7 @@ setup(
     author_email='kyle@breqwatr.com',
     url='https://github.com/breqwatr/breqwatr-deployment-tool',
     keywords=['Breqwatr'],
-    install_requires=[
-        'click'
-    ],
+    install_requires=requirements,
     entry_points='''
         [console_scripts]
         bwdt=bwdt.cli.main:main
