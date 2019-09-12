@@ -1,5 +1,5 @@
 """Set up Breqwatr Deployment Tool package"""
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md', 'r') as readme_file:
     long_description = readme_file.read()
@@ -10,7 +10,7 @@ with open('requirements.txt', 'r') as reqs_file:
 
 setup(
     name='breqwatr-deployment-tool',
-    packages=['bwdt'],
+    packages=find_packages(),
     version='1.00',
     license='',
     description='Deploy and manage Breqwatr services',
