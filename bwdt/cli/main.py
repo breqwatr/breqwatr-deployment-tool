@@ -1,8 +1,12 @@
 """Entrypoint for breqwatr-deployment-tool cli"""
 import click
 
+import bwdt.cli.registry
 
-@click.command()
+
+@click.group()
 def main():
     """Entrypoint for breqwatr deployment tool cli"""
-    click.echo("hello")
+
+
+main.add_command(bwdt.cli.registry.registry)
