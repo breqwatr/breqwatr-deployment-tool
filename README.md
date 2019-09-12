@@ -12,7 +12,7 @@ pip install breqwatr-deployment-tool
 ### From GitHub
 
 ```python
-pip install git+https://https://github.com/breqwatr/breqwatr-deployment-tool.git
+pip install git+https://github.com/breqwatr/breqwatr-deployment-tool.git
 ```
 
 
