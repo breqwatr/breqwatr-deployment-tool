@@ -30,6 +30,7 @@ class Docker(object):
         self.token = self._get_ecr_token()
         self.creds = self._get_docker_creds()
         self.client = self._get_docker_client()
+        self.repo_prefix = self._get_repo_prefix()
 
     def _get_ecr_token(self):
         """ Return the token to auth to ECR """
@@ -47,9 +48,8 @@ class Docker(object):
         username = token_data[0]
         password = token_data[1]
         registry = self.token['authorizationData'][0]['proxyEndpoint']
-        prefix = registry.replace('https://', '').replace('http://', '')
         return {'username': username, 'password': password,
-                'registry': registry, 'prefix': prefix}
+                'registry': registry}
 
     def _get_docker_client(self):
         """Returns an authenticated docker client"""
@@ -57,7 +57,13 @@ class Docker(object):
         client.login(**self.creds)
         return client
 
+    def _get_repo_prefix(self):
+        """ Remove the protocol from registry cred to make the image prefix """
+        prefix = self.creds['registry'].replace('https://', '')
+        prefix = prefix.replace('http://', '')
+        return prefix
+
     def pull(self, repository, tag):
         """ Pull an image from the registry """
-        full_repo_name = "{}/{}".format(self.creds['prefix'], repository)
+        full_repo_name = "{}/{}".format(self.repo_prefix, repository)
         self.client.images.pull(repository=full_repo_name, tag=tag)
