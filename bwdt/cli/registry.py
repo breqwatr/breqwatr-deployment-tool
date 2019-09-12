@@ -24,7 +24,6 @@ def registry(ctx):
         sys.exit(1)
 
 
-
 @click.command()
 @click.pass_context
 def start(ctx):
