@@ -47,8 +47,9 @@ class Docker(object):
         username = token_data[0]
         password = token_data[1]
         registry = self.token['authorizationData'][0]['proxyEndpoint']
+        prefix = registry.replace('https://', '').replace('http://', '')
         return {'username': username, 'password': password,
-                'registry': registry}
+                'registry': registry, 'prefix': prefix}
 
     def _get_docker_client(self):
         """Returns an authenticated docker client"""
@@ -58,7 +59,5 @@ class Docker(object):
 
     def pull(self, repository, tag):
         """ Pull an image from the registry """
-        prefix = self.creds['registry'].replace('https://', '')
-        prefix = prefix.replace('http://', '')
-        full_repo_name = "{}/{}".format(prefix, repository)
+        full_repo_name = "{}/{}".format(self.creds['prefix'], repository)
         self.client.images.pull(repository=full_repo_name, tag=tag)
