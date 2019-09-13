@@ -1,34 +1,25 @@
 """Commands for operating the local registry"""
-import sys
-
 import click
 
-import bwdt.lib as lib
+import bwdt.services as services
 
 
 @click.group()
-@click.pass_context
-def registry(ctx):
+def registry():
     """Command group for bwdt registry"""
-    try:
-        ctx.auth = lib.get_auth()
-    except IOError:
-        auth_file = lib.env_vars()['auth_file']
-        err_msg = "ERROR: Failed to open file {}".format(auth_file)
-        click.echo(err_msg, err=True)
-        sys.exit(1)
-    except ValueError:
-        auth_file = lib.env_vars()['auth_file']
-        err_msg = "ERROR: Failed to parse {}".format(auth_file)
-        click.echo(err_msg, err=True)
-        sys.exit(1)
 
 
+@click.option('--ip', default='0.0.0.0', help='optional bind IP address')
+@click.option('--port', default='5000', help='optional bind port')
 @click.command()
-@click.pass_context
-def start(ctx):
+def start(ip, port):
     """Launch the local registry"""
-    click.echo("Launching the local registry")
+    click.echo("Launching container: registry")
+    success = services.registry_start(ip, port)
+    if success:
+        click.echo('Done')
+    else:
+        click.echo('Failed to launch - Maybe its already running?')
 
 
 registry.add_command(start)
