@@ -49,7 +49,7 @@ class Docker(object):
 
     def _get_repo_prefix(self):
         """ Remove the protocol from registry cred to make the image prefix """
-        prefix = self.creds['registry'].replace('https://', '')
+        prefix = self._creds['registry'].replace('https://', '')
         prefix = prefix.replace('http://', '')
         return prefix
 
