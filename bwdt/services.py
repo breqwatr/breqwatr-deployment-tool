@@ -12,35 +12,33 @@ def registry_start(ip='0.0.0.0', port=5000):
     docker.pull(repository=repo, tag=tag)
     http_addr = "{}:{}".format(ip, port)
     image = '{}:{}'.format(repo, tag)
-    env = {'REGISTRY_HTTP_ADDR': http_addr}
-    ports = {'5000': '5000'}
-    success = docker.run(image, name='registry', environment=env, ports=ports)
+    docker_kwargs = {
+        'environment': {'REGISTRY_HTTP_ADDR': http_addr},
+        'ports': {'5000': '5000'}
+    }
+    success = docker.run(image, name='registry', **docker_kwargs)
     return success
 
 
-def pxe_start(uplink_interface, pxe_interface, dhcp_start, dhcp_end,
-              dhcp_subnet, listen_ip, dns_ip='8.8.8.8', tag=None):
-    """ Start the PXE container """
+def pxe_start(interface, dhcp_start, dhcp_end, dns_ip='8.8.8.8'):
+    """ Start the bw-pxe container """
     repo = "breqwatr/pxe"
-    if tag is None:
-        tag = get_latest_tag(repo)
+    tag = get_latest_tag(repo)
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
     image = '{}:{}'.format(repo, tag)
-    env = {
-        'NAT_UPLINK': uplink_interface,
-        'INTERFACE': pxe_interface,
-        'DHCP_RANGE_START': dhcp_start,
-        'DHCP_RANGE_END': dhcp_end,
-        'DHCP_RANGE_SUBNET': dhcp_subnet,
-        'ENABLE_ROUTER': 'true',
-        'PXE_IP': listen_ip,
-        'DNS_IP': dns_ip
+    docker_kwargs = {
+        'privileged': True,
+        'network_mode': 'host',
+        'environment': {
+            'INTERFACE': interface,
+            'DHCP_RANGE_START': dhcp_start,
+            'DHCP_RANGE_END': dhcp_end,
+            'DNS_IP': dns_ip
+        },
+        'sysctls': {'net.ipv4.ip_forward': 1}
     }
-    sysctls = {'net.ipv4.ip_forward': 1}
-    # TODO: Volumes
-    success = docker.run(image, name='bw-pxe', environment=env,
-                         sysctls=sysctls, privileged=True, network_mode='host')
+    success = docker.run(image, name='bw-pxe', **docker_kwargs)
     return success
 
 
