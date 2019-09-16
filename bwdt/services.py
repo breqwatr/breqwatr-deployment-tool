@@ -21,7 +21,7 @@ def registry_start(ip='0.0.0.0', port=5000):
 
 
 def pxe_start(interface, dhcp_start, dhcp_end, dns_ip='8.8.8.8'):
-    """ Start the bw-pxe container """
+    """ Start the breqwatr-pxe container """
     name = 'breqwatr_pxe'
     repo = "breqwatr/pxe"
     tag = get_latest_tag(repo)

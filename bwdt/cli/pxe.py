@@ -18,7 +18,7 @@ def pxe():
 @click.command()
 def start(interface, dhcp_start, dhcp_end, dns_ip):
     """Launch the local registry"""
-    click.echo("Launching container: bw-pxe")
+    click.echo("Launching container: breqwatr-pxe")
     success = services.pxe_start(
         interface=interface,
         dhcp_start=dhcp_start,
