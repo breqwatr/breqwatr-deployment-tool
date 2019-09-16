@@ -11,7 +11,8 @@ import bwdt.lib as lib
 class Docker(object):
     """Object to interact with docker & ECR"""
     def __init__(self):
-        with open(lib.env()['auth_file'], 'r') as auth_file:
+        auth_file_path = lib.env()['auth_file']
+        with open(auth_file_path, 'r') as auth_file:
             self.auth = json.load(auth_file)
         self.token = self._get_ecr_token()
         self.creds = self._get_docker_creds()
@@ -69,7 +70,7 @@ class Docker(object):
         return matches[0]
 
     def run(self, image, name, **kwargs):
-        """ Launch a docker container (noop if it already exists)i
+        """ Launch a docker container (noop if it already exists)
             Return True if launched, else False
         """
         if self.get_container(name):
