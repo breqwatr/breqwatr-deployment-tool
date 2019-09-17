@@ -6,6 +6,7 @@ from bwdt.lib import get_latest_tag
 
 def registry_start(ip='0.0.0.0', port=5000):
     """ Start the registry container """
+    name='registry'
     repo = 'registry'
     tag = get_latest_tag(repo)
     http_addr = "{}:{}".format(ip, port)
@@ -16,13 +17,13 @@ def registry_start(ip='0.0.0.0', port=5000):
     }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
-    success = docker.run(image, name='registry', **docker_kwargs)
+    success = docker.run(image, name=name, **docker_kwargs)
     return success
 
 
 def pxe_start(interface, dhcp_start, dhcp_end, dns_ip='8.8.8.8'):
     """ Start the breqwatr-pxe container """
-    name = 'breqwatr_pxe'
+    name = 'pxe'
     repo = "breqwatr/pxe"
     tag = get_latest_tag(repo)
     image = '{}:{}'.format(repo, tag)
@@ -45,7 +46,7 @@ def pxe_start(interface, dhcp_start, dhcp_end, dns_ip='8.8.8.8'):
 
 def ansible_start(ssh_key_path, globals_path):
     """ Start the Ansible container """
-    name = 'breqwatr_ansible'
+    name = 'ansible'
     repo = 'breqwatr/ansible'
     tag = get_latest_tag(repo)
     image = '{}:{}'.format(repo, tag)
@@ -61,7 +62,7 @@ def ansible_start(ssh_key_path, globals_path):
 
 def apt_start(tag=None, passkey=None):
     """ Start the APT container """
-    name = 'breqwatr_apt'
+    name = 'apt'
     repo = 'breqwatr/apt'
     tag = get_latest_tag(repo)
     image = '{}:{}'.format(repo, tag)
@@ -82,7 +83,7 @@ def apt_start(tag=None, passkey=None):
 
 def pip_start(tag=None):
     """ Start the PIP container """
-    repo = 'breqwatr/pip'
+    repo = 'pip'
     if tag is None:
         tag = get_latest_tag(repo)
     docker = Docker()
@@ -97,6 +98,7 @@ def pip_start(tag=None):
 
 def dns_start(interface_name, cloud_vip, cloud_fqdn, tag=None):
     """ Start the DNS container """
+    name='dns'
     repo = 'breqwatr/dns'
     if tag is None:
         tag = get_latest_tag(repo)
@@ -108,15 +110,16 @@ def dns_start(interface_name, cloud_vip, cloud_fqdn, tag=None):
         'CLOUD_VIP': cloud_vip,
         'CLOUD_FQDN': cloud_fqdn,
     }
-    docker.run(image, name='bw-dns', network_mode='host', environment=env)
+    docker.run(image, name=name, network_mode='host', environment=env)
 
 
 def ntp_start(tag=None):
     """ Start the NTP service """
+    name='ntp'
     repo = 'breqwatr/ntp'
     if tag is None:
         tag = get_latest_tag(repo)
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
     image = '{}:{}'.format(repo, tag)
-    docker.run(image, name='bw-ntp', network_mode='host', privileged=True)
+    docker.run(image, name=name, network_mode='host', privileged=True)
