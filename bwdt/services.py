@@ -43,6 +43,22 @@ def pxe_start(interface, dhcp_start, dhcp_end, dns_ip='8.8.8.8'):
     return success
 
 
+def ansible_start(ssh_key_path, globals_path):
+    """ Start the Ansible container """
+    name = 'breqwatr_ansible'
+    repo = 'breqwatr/ansible'
+    tag = get_latest_tag(repo)
+    image = '{}:{}'.format(repo, tag)
+    docker_kwargs = {
+        'volumes':  {
+            ssh_key_path: {'bind': '/root/.ssh/id_rsa', 'mode': 'ro'},
+            globals_path: {'bind': '/etc/breqwatr/globals.yml', 'mode': 'rw'}}}
+    docker = Docker()
+    docker.pull(repository=repo, tag=tag)
+    success = docker.run(image, name=name, **docker_kwargs)
+    return success
+
+
 def apt_start(tag=None, passkey=None):
     """ Start the APT container """
     name = 'breqwatr_apt'
@@ -77,17 +93,6 @@ def pip_start(tag=None):
     docker.run(image, name='bw-pip', network_mode='host')
 
 
-def ansible_start(tag=None):
-    """ Start the Ansible container """
-    repo = 'breqwatr/ansible'
-    if tag is None:
-        tag = get_latest_tag(repo)
-    docker = Docker()
-    docker.pull(repository=repo, tag=tag)
-    image = '{}:{}'.format(repo, tag)
-    env = {'BW_GLOBALS_FILE': '/etc/breqwatr/globals.yml'}
-    # TODO: Volumes
-    docker.run(image, name='bw-ansible', network_mode='host', environment=env)
 
 
 def dns_start(interface_name, cloud_vip, cloud_fqdn, tag=None):
