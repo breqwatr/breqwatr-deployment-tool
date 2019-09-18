@@ -22,4 +22,23 @@ def start(ip, port):
         click.echo('Failed to launch - Maybe its already running?')
 
 
+@click.argument('image_name')
+@click.argument('registry_url')
+@click.option('--tag', default=None, help='optional image tag')
+@click.command(name='sync-image')
+def sync_image(image_name, registry_url, tag):
+    """ Load image_name and push it to the local registry """
+    click.echo('Sync {} to {}...'.format(image_name, registry_url))
+    registry.sync_image(image=image_name, registry_url=registry_url, tag=tag)
+
+
+@click.argument('registry_url')
+@click.option('--tag', default=None, help='optional image tag')
+@click.command(name='sync-all-images')
+def sync_all_images(registry_url, tag):
+    """ Load all images and push them to the local registry """
+    click.echo('Pushing all images to {}'.format(registry_url))
+    registry.sync_all_images(registry_url=registry_url, tag=tag)
+
+
 registry_group.add_command(start)

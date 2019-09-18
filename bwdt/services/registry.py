@@ -1,6 +1,7 @@
 """ Controls for the registry service """
-from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from click import echo
+from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
+from bwdt.container import Docker, get_auth
 
 
 def start(ip='0.0.0.0', port=5000):
@@ -20,13 +21,37 @@ def start(ip='0.0.0.0', port=5000):
     return success
 
 
-# def online_sync_img(image, local_registry, port=5000, silent=False, tag=TAG):
-#     """ Pull image from upstream,push to local registry """
-#    if not silent:
-#         print('Pulling from upstream repo: {}'.format(image))
+def _offline_sync_image(registry_url, image, tag):
+    """ Import image and push to local registry """
+    echo('> Importing {}:{}'.format(image, tag))
+    echo('> Pushing {}:{} to {}'.format(image, tag, registry_url))
+    raise Exception('Offline is not supported yet')
 
 
-# def registry_sync(local_registry, port=5000, silent=False):
-#     """ Pull images from upstream or import from media, push to registry """
-#     # for image in IMAGES:
-#     # docker = Docker()
+def _online_sync_image(registry_url, image, tag):
+    """ Pull image from upstream,push to local registry """
+    echo('> Pulling image: {}:{}'.format(image, tag))
+    docker = Docker()
+    docker.pull(image, tag)
+    echo('> Applying new tag')
+    docker.retag(image, tag, registry_url)
+    echo('Pushing {}:{} to {}'.format(image, tag, registry_url))
+    docker.push(image, tag, registry_url)
+
+
+def sync_image(registry_url, image, tag=None):
+    """ Pull images from upstream or import from media, push to registry """
+    if tag is None:
+        tag = KOLLA_IMAGE_TAGS[image]
+    auth = get_auth()
+    offline_str = str(auth['offline']).lower()
+    if offline_str == "true":
+        _offline_sync_image(registry_url, image, tag)
+    else:
+        _online_sync_image(registry_url, image, tag)
+
+
+def sync_all_images(registry_url, tag=None):
+    """ Sync all images to registry_url """
+    for image in KOLLA_IMAGE_TAGS:
+        sync_image(registry_url, image, tag)

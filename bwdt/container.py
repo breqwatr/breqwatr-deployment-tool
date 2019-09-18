@@ -5,6 +5,7 @@ from base64 import b64decode
 
 import boto3
 import docker
+from click import echo
 
 
 def _env_get(env_name, default_val):
@@ -22,12 +23,18 @@ def env():
     }
 
 
+def get_auth():
+    """ Return JSON of the auth file """
+    auth_file_path = env()['auth_file']
+    with open(auth_file_path, 'r') as auth_file:
+        auth = json.load(auth_file)
+    return auth
+
+
 class Docker(object):
     """Object to interact with docker & ECR"""
     def __init__(self):
-        auth_file_path = env()['auth_file']
-        with open(auth_file_path, 'r') as auth_file:
-            self.auth = json.load(auth_file)
+        self.auth = get_auth()
         self._token = self._get_ecr_token()
         self._creds = self._get_docker_creds()
         self.client = self._get_docker_client()
@@ -72,6 +79,18 @@ class Docker(object):
         full_repo_name = "{}/{}".format(self.repo_prefix, repository)
         self.client.images.pull(repository=full_repo_name, tag=tag)
 
+    def retag(self, image_name, tag, new_registry_url):
+        """ retag an upstream image to the new_registry_url """
+        repository = '{}/{}:{}'.format(self.repo_prefix, image_name, tag)
+        image = self.client.images.get(repository)
+        new_repository = '{}/{}'.format(new_registry_url, image_name)
+        image.tag(new_repository, tag=tag)
+
+    def push(self, image_name, tag, registry_url):
+        """ Push an image to a remote registry """
+        repository = '{}/{}'.format(registry_url, image_name)
+        self.client.images.push(repository, tag=tag)
+
     def list(self, **kwargs):
         """ List the running containers """
         if 'all' not in kwargs:
@@ -102,7 +121,7 @@ class Docker(object):
     def execute(self, container_name, cmd, silent=False):
         """ Run docker exec """
         if not silent:
-            print('{}> {}'.format(container_name, cmd))
+            echo('{}> {}'.format(container_name, cmd))
         container = self.get_container(container_name)
         if not container:
             return {'exit_code': 1, 'output': 'Container not found'}
