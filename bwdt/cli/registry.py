@@ -42,3 +42,5 @@ def sync_all_images(registry_url, tag):
 
 
 registry_group.add_command(start)
+registry_group.add_command(sync_image)
+registry_group.add_command(sync_all_images)
