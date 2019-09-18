@@ -1,11 +1,11 @@
 """Commands for operating the local registry"""
 import click
 
-import bwdt.services as services
+import bwdt.services.registry as registry
 
 
-@click.group()
-def registry():
+@click.group(name='registry')
+def registry_group():
     """Command group for bwdt registry"""
 
 
@@ -15,11 +15,11 @@ def registry():
 def start(ip, port):
     """Launch the local registry"""
     click.echo("Launching container: registry")
-    success = services.registry_start(ip, port)
+    success = registry.start(ip, port)
     if success:
         click.echo('Done')
     else:
         click.echo('Failed to launch - Maybe its already running?')
 
 
-registry.add_command(start)
+registry_group.add_command(start)

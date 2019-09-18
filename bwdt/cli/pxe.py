@@ -1,11 +1,11 @@
 """ Commands for operating the PXE service """
 import click
 
-import bwdt.services as services
+import bwdt.services.pxe as pxe
 
 
-@click.group()
-def pxe():
+@click.group(name='pxe')
+def pxe_group():
     """ Command group for bwdt PXE service """
 
 
@@ -19,7 +19,7 @@ def pxe():
 def start(interface, dhcp_start, dhcp_end, dns_ip):
     """Launch the local registry"""
     click.echo("Launching container: breqwatr-pxe")
-    success = services.pxe_start(
+    success = pxe.start(
         interface=interface,
         dhcp_start=dhcp_start,
         dhcp_end=dhcp_end,
@@ -30,4 +30,4 @@ def start(interface, dhcp_start, dhcp_end, dns_ip):
         click.echo('Failed to launch - Maybe its already running?')
 
 
-pxe.add_command(start)
+pxe_group.add_command(start)

@@ -1,41 +1,52 @@
 """ BWDT Constants """
 
+# Current latest tag
+TAG = '7.0'
+
+# Images used for breqwatr deployment & mgmt
+SERVICE_IMAGE_TAGS = {
+    'registry': '2',
+    'breqwatr/ansible': TAG,
+    'breqwatr/pxe': TAG
+}
+
 # Images to pull when syncing the registry
-IMAGES = [
-    'kolla/ubuntu-source-neutron-server',
-    'kolla/ubuntu-source-neutron-openvswitch-agent',
-    'kolla/ubuntu-source-neutron-dhcp-agent',
-    'kolla/ubuntu-source-neutron-l3-agent',
-    'kolla/ubuntu-source-neutron-metadata-agent',
-    'kolla/ubuntu-source-heat-api',
-    'kolla/ubuntu-source-heat-engine',
-    'kolla/ubuntu-source-heat-api-cfn',
-    'kolla/ubuntu-source-nova-compute',
-    'kolla/ubuntu-source-nova-novncproxy',
-    'kolla/ubuntu-source-nova-ssh',
-    'kolla/ubuntu-source-nova-placement-api',
-    'kolla/ubuntu-source-nova-api',
-    'kolla/ubuntu-source-nova-consoleauth',
-    'kolla/ubuntu-source-nova-conductor',
-    'kolla/ubuntu-source-keystone-ssh',
-    'kolla/ubuntu-source-nova-scheduler',
-    'kolla/ubuntu-source-keystone',
-    'kolla/ubuntu-source-keystone-fernet',
-    'kolla/ubuntu-source-cinder-volume',
-    'kolla/ubuntu-source-cinder-api',
-    'kolla/ubuntu-source-cinder-scheduler',
-    'kolla/ubuntu-source-glance-api',
-    'kolla/ubuntu-source-openvswitch-db-server',
-    'kolla/ubuntu-source-openvswitch-vswitchd',
-    'kolla/ubuntu-source-kolla-toolbox',
-    'kolla/ubuntu-source-fluentd',
-    'kolla/ubuntu-source-memcached',
-    'kolla/ubuntu-source-nova-libvirt',
-    'kolla/ubuntu-source-keepalived',
-    'kolla/ubuntu-source-chrony',
-    'kolla/ubuntu-source-mariadb',
-    'kolla/ubuntu-source-haproxy',
-    'kolla/ubuntu-source-iscsid',
-    'kolla/ubuntu-source-rabbitmq',
-    'kolla/ubuntu-source-cron'
-]
+KOLLA_IMAGE_TAGS = {
+    'kolla/ubuntu-source-neutron-server': TAG,
+    'kolla/ubuntu-source-neutron-openvswitch-agent': TAG,
+    'kolla/ubuntu-source-neutron-dhcp-agent': TAG,
+    'kolla/ubuntu-source-neutron-l3-agent': TAG,
+    'kolla/ubuntu-source-neutron-metadata-agent': TAG,
+    'kolla/ubuntu-source-heat-api': TAG,
+    'kolla/ubuntu-source-heat-engine': TAG,
+    'kolla/ubuntu-source-heat-api-cfn': TAG,
+    'kolla/ubuntu-source-nova-compute': TAG,
+    'kolla/ubuntu-source-nova-novncproxy': TAG,
+    'kolla/ubuntu-source-nova-ssh': TAG,
+    'kolla/ubuntu-source-nova-placement-api': TAG,
+    'kolla/ubuntu-source-nova-api': TAG,
+    'kolla/ubuntu-source-nova-consoleauth': TAG,
+    'kolla/ubuntu-source-nova-conductor': TAG,
+    'kolla/ubuntu-source-keystone-ssh': TAG,
+    'kolla/ubuntu-source-nova-scheduler': TAG,
+    'kolla/ubuntu-source-keystone': TAG,
+    'kolla/ubuntu-source-keystone-fernet': TAG,
+    'kolla/ubuntu-source-cinder-volume': TAG,
+    'kolla/ubuntu-source-cinder-api': TAG,
+    'kolla/ubuntu-source-cinder-scheduler': TAG,
+    'kolla/ubuntu-source-glance-api': TAG,
+    'kolla/ubuntu-source-openvswitch-db-server': TAG,
+    'kolla/ubuntu-source-openvswitch-vswitchd': TAG,
+    'kolla/ubuntu-source-kolla-toolbox': TAG,
+    'kolla/ubuntu-source-fluentd': TAG,
+    'kolla/ubuntu-source-memcached': TAG,
+    'kolla/ubuntu-source-multipathd': TAG,
+    'kolla/ubuntu-source-nova-libvirt': TAG,
+    'kolla/ubuntu-source-keepalived': TAG,
+    'kolla/ubuntu-source-chrony': TAG,
+    'kolla/ubuntu-source-mariadb': TAG,
+    'kolla/ubuntu-source-haproxy': TAG,
+    'kolla/ubuntu-source-iscsid': TAG,
+    'kolla/ubuntu-source-rabbitmq': TAG,
+    'kolla/ubuntu-source-cron': TAG
+}

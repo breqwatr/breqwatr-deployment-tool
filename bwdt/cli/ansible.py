@@ -1,11 +1,11 @@
 """ Commands for operating the Ansible service """
 import click
 
-import bwdt.services as services
+import bwdt.services.ansible as ansible
 
 
-@click.group()
-def ansible():
+@click.group(name='ansible')
+def ansible_group():
     """ Command group for bwdt Ansible service """
 
 
@@ -15,7 +15,7 @@ def ansible():
 def start(ssh_key_path, cloud_yml_path):
     """Launch the local registry"""
     click.echo("Launching container: breqwatr-pxe")
-    success = services.ansible_start(
+    success = ansible.start(
         ssh_key_path=ssh_key_path,
         cloud_yml_path=cloud_yml_path)
     if success:
@@ -33,7 +33,7 @@ def openstack():
 def gen_config():
     """ Generate OpenStack config files in the ansible container """
     click.echo("Generating OpenStack config files")
-    result = services.ansible_openstack_genconfig()
+    result = ansible.openstack_genconfig()
     click.echo(result['output'])
 
 
@@ -41,7 +41,7 @@ def gen_config():
 def bootstrap():
     """ Run kolla-ansible bootstrap """
     click.echo("Running bootstrap task")
-    result = services.ansible_openstack_bootstrap()
+    result = ansible.openstack_bootstrap()
     click.echo(result['output'])
 
 
@@ -49,7 +49,7 @@ def bootstrap():
 def deploy():
     """ Run kolla-ansible deploy """
     click.echo("Running deploy task")
-    result = services.ansible_openstack_deploy()
+    result = ansible.openstack_deploy()
     click.echo(result['output'])
 
 
@@ -57,14 +57,14 @@ def deploy():
 def post_deploy():
     """ Run kolla-ansible post-deploy """
     click.echo("Running post-deploy task")
-    result = services.ansible_openstack_postdeploy()
+    result = ansible.openstack_postdeploy()
     click.echo(result['output'])
 
 
-ansible.add_command(start)
+ansible_group.add_command(start)
 
 openstack.add_command(gen_config)
 openstack.add_command(bootstrap)
 openstack.add_command(deploy)
 openstack.add_command(post_deploy)
-ansible.add_command(openstack)
+ansible_group.add_command(openstack)
