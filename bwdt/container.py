@@ -74,6 +74,7 @@ class Docker(object):
 
     def run(self, image, name, **kwargs):
         """ Launch a docker container (noop if it already exists)
+
             Return True if launched, else False
         """
         if self.get_container(name):
@@ -83,3 +84,13 @@ class Docker(object):
         full_image = "{}/{}".format(self.repo_prefix, image)
         self.client.containers.run(full_image, name=name, **kwargs)
         return True
+
+    def execute(self, container_name, cmd, silent=False):
+        """ Run docker exec """
+        if not silent:
+            print('{}> {}'.format(container_name, cmd))
+        container = self.get_container(container_name)
+        if not container:
+            return {'exit_code': 1, 'output': 'Container not found'}
+        exit_code, output = container.exec_run(cmd)
+        return {'exit_code': exit_code, 'output': output}

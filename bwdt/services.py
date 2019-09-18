@@ -6,7 +6,7 @@ from bwdt.lib import get_latest_tag
 
 def registry_start(ip='0.0.0.0', port=5000):
     """ Start the registry container """
-    name='registry'
+    name = 'registry'
     repo = 'registry'
     tag = get_latest_tag(repo)
     http_addr = "{}:{}".format(ip, port)
@@ -44,7 +44,7 @@ def pxe_start(interface, dhcp_start, dhcp_end, dns_ip='8.8.8.8'):
     return success
 
 
-def ansible_start(ssh_key_path, globals_path):
+def ansible_start(ssh_key_path, cloud_yml_path):
     """ Start the Ansible container """
     name = 'ansible'
     repo = 'breqwatr/ansible'
@@ -53,11 +53,39 @@ def ansible_start(ssh_key_path, globals_path):
     docker_kwargs = {
         'volumes':  {
             ssh_key_path: {'bind': '/root/.ssh/id_rsa', 'mode': 'ro'},
-            globals_path: {'bind': '/etc/breqwatr/globals.yml', 'mode': 'rw'}}}
+            cloud_yml_path: {'bind': '/etc/breqwatr/cloud.yml', 'mode': 'rw'}}}
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
     success = docker.run(image, name=name, **docker_kwargs)
     return success
+
+
+def ansible_openstack_genconfig():
+    """ Runs the openstack genconfig task """
+    cloud_yml = '-e @/etc/breqwatr/cloud.yml'
+    conn = '-e ansible_connection=local'
+    inv = '-i localhost,'
+    playbook = '/var/repos/bw-ansible/generate-kolla-config.yml'
+    cmd = 'ansible-playbook {} {} {} {}'.format(cloud_yml, conn, inv, playbook)
+    return Docker().execute('ansible', cmd)
+
+
+def ansible_openstack_bootstrap():
+    """ Runs kolla-ansible bootstrap """
+    cmd = 'kolla-ansible -i /etc/kolla/inventory bootstrap-servers'
+    return Docker().execute(container_name='ansible', cmd=cmd)
+
+
+def ansible_openstack_deploy():
+    """ Runs kolla-ansible deploy and post-deploy """
+    cmd = 'kolla-ansible -i /etc/kolla/inventory deploy'
+    return Docker().execute(container_name='ansible', cmd=cmd)
+
+
+def ansible_openstack_postdeploy():
+    """ Runs kolla-ansible post-deploy """
+    cmd = 'kolla-ansible -i /etc/kolla/inventory post-deploy'
+    return Docker().execute(container_name='ansible', cmd=cmd)
 
 
 def apt_start(tag=None, passkey=None):
@@ -94,11 +122,9 @@ def pip_start(tag=None):
     docker.run(image, name='bw-pip', network_mode='host')
 
 
-
-
 def dns_start(interface_name, cloud_vip, cloud_fqdn, tag=None):
     """ Start the DNS container """
-    name='dns'
+    name = 'dns'
     repo = 'breqwatr/dns'
     if tag is None:
         tag = get_latest_tag(repo)
@@ -115,7 +141,7 @@ def dns_start(interface_name, cloud_vip, cloud_fqdn, tag=None):
 
 def ntp_start(tag=None):
     """ Start the NTP service """
-    name='ntp'
+    name = 'ntp'
     repo = 'breqwatr/ntp'
     if tag is None:
         tag = get_latest_tag(repo)
