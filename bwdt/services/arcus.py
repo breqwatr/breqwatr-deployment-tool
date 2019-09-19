@@ -7,8 +7,9 @@ def _create_arcus_database(cursor):
     cursor.execute("SHOW DATABASES;")
     databases = cursor.fetchall()
     if ('arcus',) in databases:
-        return
+        return False
     cursor.execute("CREATE DATABASE arcus;")
+    return True
 
 
 def _create_arcus_dbuser(cursor, password):
@@ -16,11 +17,12 @@ def _create_arcus_dbuser(cursor, password):
     cursor.execute('SELECT user FROM mysql.user;')
     users = cursor.fetchall()
     if (bytearray(b'arcus'),) in users:
-        return
+        return False
     create_cmd = 'CREATE USER arcus IDENTIFIED BY "{}"'.format(password)
     cursor.execute(create_cmd)
     grant_cmd = 'GRANT ALL privileges ON arcus.* TO "arcus";'
     cursor.execute(grant_cmd)
+    return True
 
 
 def init_database(host, admin_user, admin_passwd, arcus_passwd):
@@ -28,5 +30,6 @@ def init_database(host, admin_user, admin_passwd, arcus_passwd):
     conn = mysql.connector.connect(host=host, user=admin_user,
                                    passwd=admin_passwd)
     cursor = conn.cursor()
-    _create_arcus_database(cursor)
-    _create_arcus_dbuser(cursor, arcus_passwd)
+    created_db = _create_arcus_database(cursor)
+    created_user = _create_arcus_dbuser(cursor, arcus_passwd)
+    return {'created_db': created_db, 'created_user': created_user}

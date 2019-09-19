@@ -16,7 +16,9 @@ def arcus_group():
 @click.command(name='database-init')
 def database_init(host, admin_user, admin_pass, arcus_pass):
     """ Initialize the Arcus database """
-    arcus.init_database(host, admin_user, admin_pass, arcus_pass)
+    result = arcus.init_database(host, admin_user, admin_pass, arcus_pass)
+    for key in result:
+        click.echo('{}: {}'.format(key, result[key]))
 
 
 arcus_group.add_command(database_init)

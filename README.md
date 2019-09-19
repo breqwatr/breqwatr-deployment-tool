@@ -53,8 +53,18 @@ bwdt registry list-images <registry url>
 
 ### Launch PXE
 
+Example of launching the PXE service:
+
 ```bash
 bwdt pxe start --interface enp0s25 --dhcp-start 10.1.0.90 --dhcp-end 10.1.0.99
 ```
 
+### Arcus
 
+Arcus is the custom web UI Breqwatr uses to replace Horizon.
+
+To initialize the datbase Arcus will use:
+
+```bash
+bwdt arcus database-init --host <host> --admin-user root --admin-pass <password> --arcus-pass <password>
+```
