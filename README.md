@@ -63,8 +63,15 @@ bwdt pxe start --interface enp0s25 --dhcp-start 10.1.0.90 --dhcp-end 10.1.0.99
 
 Arcus is the custom web UI Breqwatr uses to replace Horizon.
 
-To initialize the datbase Arcus will use:
+Initialize the datbase for the Arcus service:
 
 ```bash
 bwdt arcus database-init --host <host> --admin-user root --admin-pass <password> --arcus-pass <password>
 ```
+
+Create the Openstack service account for Arcus:
+
+```bash
+bwdt arcus create-service-account --cloud-fqdn <fqdn or vip> --bootstrap-password <password of bootstrap user> --sa-password <password for arcus SA>
+```
+
