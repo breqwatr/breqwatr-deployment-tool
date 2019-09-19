@@ -35,7 +35,7 @@ def _online_sync_image(registry_url, image, tag):
     docker.pull(image, tag)
     echo('> Applying new tag')
     docker.retag(image, tag, registry_url)
-    echo('Pushing {}:{} to {}'.format(image, tag, registry_url))
+    echo('> Pushing {}:{} to {}'.format(image, tag, registry_url))
     docker.push(image, tag, registry_url)
 
 

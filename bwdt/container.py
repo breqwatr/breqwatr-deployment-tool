@@ -87,9 +87,13 @@ class Docker(object):
         image.tag(new_repository, tag=tag)
 
     def push(self, image_name, tag, registry_url):
-        """ Push an image to a remote registry """
+        """ Push an image to a remote registry. Return true if success """
         repository = '{}/{}'.format(registry_url, image_name)
-        self.client.images.push(repository, tag=tag)
+        result = self.client.images.push(repository, tag=tag)
+        if 'gave HTTP response to HTTPS' in result:
+            echo('ERROR: This registry is not HTTPS and not trusted')
+            return False
+        return True
 
     def list(self, **kwargs):
         """ List the running containers """
