@@ -45,7 +45,7 @@ def _create_arcusadmin_openstack_user(openstack, password):
         return False
     openstack.keystone.users.create(
         name='arcusadmin',
-        domain='Default',
+        domain='default',
         password=password,
         email='alerts@breqwatr.com',
         description='Arcus service account')
