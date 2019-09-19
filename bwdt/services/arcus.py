@@ -113,7 +113,7 @@ def client_start(api_ip, openstack_ip, https=True):
     tag = SERVICE_IMAGE_TAGS[repo]
     image = '{}:{}'.format(repo, tag)
     docker_kwargs = {
-        'environments': {
+        'environment': {
             'ARCUS_API_IP': api_ip,
             'ARCUS_API_PORT': '1234',
             'OPENSTACK_VIP': openstack_ip,
@@ -139,7 +139,7 @@ def mgr_start(openstack_ip, sql_ip, sql_pass, rabbit_ip_list, rabbit_pass,
     image = '{}:{}'.format(repo, tag)
     rabbit_ips_csv = ','.join(rabbit_ip_list)
     docker_kwargs = {
-        'environments': {
+        'environment': {
             'OPENSTACK_VIP': openstack_ip,
             'SQL_USERNAME': 'arcus',
             'SQL_PASSWORD': sql_pass,

@@ -91,6 +91,7 @@ def client():
 @click.command(name='start')
 def client_start(api_ip, openstack_ip, https):
     """ Start the Arcus Client container """
+    click.echo('Starting arcus_client')
     success = arcus.client_start(api_ip=api_ip, openstack_ip=openstack_ip,
                                  https=https)
     if success:
@@ -115,6 +116,7 @@ def mgr():
 def mgr_start(openstack_ip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
               kolla_dir):
     """ Start the Arcus Mgr container """
+    click.echo('Starting arcus_mgr')
     success = arcus.mgr_start(
         openstack_ip=openstack_ip,
         sql_ip=sql_ip,
