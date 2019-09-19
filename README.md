@@ -85,3 +85,23 @@ bwdt arcus api start \
   --rabbit-ip <server ip addr 1> --rabbit-ip <server 2> --rabbit-ip <server 3> \
   --rabbit-pass <rabbitmq openstack user password>
 ```
+
+Start the Arcus Client
+
+```bash
+bwdt arcus client start \
+  --openstack-ip <vip or fqdn to openstack> \
+  --api-ip <vip or fqdn of arcus-api>
+```
+
+Start the Arcus Mgr.
+
+```bash
+bwdt arcus mgr start \
+  --kolla-dir <directory of Kolla files> \
+  --openstack-ip <vip or fqdn of openstack> \
+  --rabbit-ip <server ip addr 1> --rabbit-ip <server 2> --rabbit-ip <server 3> \
+  --rabbit-pass <rabbitmq openstack user password> \
+  --sql-ip <database IP address> \
+  --sql-password <arcus user password for database>
+```
