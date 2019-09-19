@@ -75,3 +75,13 @@ Create the Openstack service account for Arcus:
 bwdt arcus create-service-account --cloud-fqdn <fqdn or vip> --bootstrap-password <password of bootstrap user> --sa-password <password for arcus SA>
 ```
 
+Start the Arcus API service
+
+```bash
+bwdt arcus api start \
+  --openstack-fqdn <fqdn or vip for openstack> \
+  --sql-ip <database IP or FQDN> \
+  --sql-password <db password for arcus user> \
+  --rabbit-ip <server ip addr 1> --rabbit-ip <server 2> --rabbit-ip <server 3> \
+  --rabbit-pass <rabbitmq openstack user password>
+```

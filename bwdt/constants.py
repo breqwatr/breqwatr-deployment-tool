@@ -7,6 +7,9 @@ TAG = '7.0'
 SERVICE_IMAGE_TAGS = {
     'registry': '2',
     'breqwatr/ansible': TAG,
+    'breqwatr/arcus-api': TAG,
+    'breqwatr/arcus-client': TAG,
+    'breqwatr/arcus-mgr': TAG,
     'breqwatr/pxe': TAG
 }
 

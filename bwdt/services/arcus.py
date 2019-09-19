@@ -1,6 +1,8 @@
 """ Controls for the Arcus service """
 import mysql.connector
 
+from bwdt.constants import SERVICE_IMAGE_TAGS
+from bwdt.container import Docker
 from bwdt.openstack import Openstack
 
 
@@ -72,3 +74,33 @@ def create_openstack_sa(fqdn, admin_password, arcus_pass, https=True):
     if created:
         _grant_arcusadmin_openstack_admin_roles(openstack)
     return created
+
+
+# pylint: disable=R0914
+def api_start(fqdn, rabbit_pass, rabbit_ips_list, sql_ip,
+              sql_password, ceph_enabled=False, https=True):
+    """ Start the Arcus API service """
+    name = "arcus_api"
+    repo = "breqwatr/arcus-api"
+    tag = SERVICE_IMAGE_TAGS[repo]
+    image = '{}:{}'.format(repo, tag)
+    rabbit_ips_csv = ','.join(rabbit_ips_list)
+    docker_kwargs = {
+        'environment': {
+            'OPENSTACK_VIP': fqdn,
+            'PUBLIC_ENDPOINT': 'true',
+            'HTTPS_OPENSTACK_APIS': str(https).lower(),
+            'RABBITMQ_USERNAME': 'openstack',
+            'RABBITMQ_PASSWORD': rabbit_pass,
+            'RABBIT_IPS_CSV': rabbit_ips_csv,
+            'SQL_USERNAME': 'arcus',
+            'SQL_PASSWORD': sql_password,
+            'SQL_IP': sql_ip,
+            'CEPH_ENABLED': str(ceph_enabled).lower()
+        },
+        'ports': {'1234': ('0.0.0.0', '1234')}
+    }
+    docker = Docker()
+    docker.pull(repository=repo, tag=tag)
+    success = docker.run(image, name=name, **docker_kwargs)
+    return success
