@@ -24,10 +24,25 @@ pip install git+https://github.com/breqwatr/breqwatr-deployment-tool.git
 bwdt --help
 ```
 
-### Launch registry
+## Registry
+
+Start the registry service
 
 ```bash
 bwdt registry start
+```
+
+Sync an OpenStack image from Breqwatr's upstream online registry to a  locally
+hosted registry.
+
+```bash
+bwdt registry sync-openstack-image <registry url> <image name>
+```
+
+Sync all the required images for an OpenStack deployment to a local registry.
+
+```bash
+git registry sync-all-openstack-images <registry url>
 ```
 
 ### Launch PXE
