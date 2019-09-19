@@ -62,7 +62,7 @@ def api():
               help='Use --http to disable HTTPS')
 @click.command(name='start')
 def api_start(openstack_fqdn, rabbit_pass, rabbit_ip, sql_ip, sql_password,
-              ceph_enabled, https):
+              ceph, https):
     """ Start the Arcus API container """
     arcus.api_start(
         fqdn=openstack_fqdn,
@@ -70,7 +70,7 @@ def api_start(openstack_fqdn, rabbit_pass, rabbit_ip, sql_ip, sql_password,
         rabbit_ips_list=rabbit_ip,
         sql_ip=sql_ip,
         sql_password=sql_password,
-        ceph_enabled=ceph_enabled,
+        ceph_enabled=ceph,
         https=https)
 
 
