@@ -42,7 +42,13 @@ bwdt registry sync-openstack-image <registry url> <image name>
 Sync all the required images for an OpenStack deployment to a local registry.
 
 ```bash
-git registry sync-all-openstack-images <registry url>
+bwdt registry sync-all-openstack-images <registry url>
+```
+
+List the images in a local registry and their tags
+
+```bash
+bwdt registry list-images <registry url>
 ```
 
 ### Launch PXE

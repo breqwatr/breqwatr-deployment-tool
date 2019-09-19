@@ -53,12 +53,12 @@ def list_images(registry_url):
     response = requests.get(url=catalog_url)
     repositories = response.json()['repositories']
     for repo in repositories:
-        click.echo('- {}'.format(repo))
+        click.echo('{}'.format(repo))
         tags_url = '{}/v2/{}/tags/list'.format(registry_url, repo)
         tag_resp = requests.get(url=tags_url)
         tags = tag_resp.json()['tags']
         for tag in tags:
-            click.echo('    - {}'.format(tag))
+            click.echo('  - {}'.format(tag))
 
 
 registry_group.add_command(start)
