@@ -104,3 +104,58 @@ def api_start(fqdn, rabbit_pass, rabbit_ips_list, sql_ip,
     docker.pull(repository=repo, tag=tag)
     success = docker.run(image, name=name, **docker_kwargs)
     return success
+
+
+def client_start(api_ip, openstack_ip, https=True):
+    """ Start the Arcus Client service """
+    name = 'arcus_client'
+    repo = 'breqwatr/arcus-client'
+    tag = SERVICE_IMAGE_TAGS[repo]
+    image = '{}:{}'.format(repo, tag)
+    docker_kwargs = {
+        'environments': {
+            'ARCUS_API_IP': api_ip,
+            'ARCUS_API_PORT': '1234',
+            'OPENSTACK_VIP': openstack_ip,
+            'GLANCE_HTTPS': str(https).lower()
+        },
+        'ports': {
+            '80': ('0.0.0.0', '80'),
+            '443': ('0.0.0.0', '443')
+        }
+    }
+    docker = Docker()
+    docker.pull(repository=repo, tag=tag)
+    success = docker.run(image, name=name, **docker_kwargs)
+    return success
+
+
+def mgr_start(openstack_ip, sql_ip, sql_pass, rabbit_ip_list, rabbit_pass,
+              kolla_dir):
+    """ Start the Arcus Mgr service """
+    name = 'arcus_mgr'
+    repo = 'breqwatr/arcus-mgr'
+    tag = SERVICE_IMAGE_TAGS[repo]
+    image = '{}:{}'.format(repo, tag)
+    rabbit_ips_csv = ','.join(rabbit_ip_list)
+    docker_kwargs = {
+        'environments': {
+            'OPENSTACK_VIP': openstack_ip,
+            'SQL_USERNAME': 'arcus',
+            'SQL_PASSWORD': sql_pass,
+            'SQL_IP': sql_ip,
+            'DR_SQL_USERNAME': 'arcus',
+            'DR_SQL_PASSWORD': sql_pass,
+            'DR_SQL_IP': sql_ip,
+            'RABBIT_NODES_CSV': rabbit_ips_csv,
+            'RABBIT_USERNAME': 'openstack',
+            'RABBIT_PASSWORD': rabbit_pass,
+        },
+        'volumes': {
+            kolla_dir: {'bind': '/etc/kolla/', 'mode': 'rw'}
+        }
+    }
+    docker = Docker()
+    docker.pull(repository=repo, tag=tag)
+    success = docker.run(image, name=name, **docker_kwargs)
+    return success
