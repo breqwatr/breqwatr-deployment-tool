@@ -1,4 +1,6 @@
 """Commands for operating the local registry"""
+import requests
+
 import click
 
 import bwdt.services.registry as registry
@@ -41,6 +43,25 @@ def sync_all_images(registry_url, tag):
     registry.sync_all_images(registry_url=registry_url, tag=tag)
 
 
+@click.argument('registry_url')
+@click.command(name='list-images')
+def list_images(registry_url):
+    """ List the images in a registry """
+    if 'http' not in registry_url:
+        registry_url = 'http://{}'.format(registry_url)
+    catalog_url = '{}/v2/_catalog'.format(registry_url)
+    response = requests.get(url=catalog_url)
+    repositories = response.json()['repositories']
+    for repo in repositories:
+        click.echo('- {}'.format(repo))
+        tags_url = '{}/v2/{}/tags/list'.format(registry_url, repo)
+        tag_resp = requests.get(url=tags_url)
+        tags = tag_resp.json()['tags']
+        for tag in tags:
+            click.echo('    - {}'.format(tag))
+
+
 registry_group.add_command(start)
 registry_group.add_command(sync_image)
 registry_group.add_command(sync_all_images)
+registry_group.add_command(list_images)

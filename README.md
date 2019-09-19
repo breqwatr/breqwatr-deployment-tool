@@ -24,7 +24,7 @@ pip install git+https://github.com/breqwatr/breqwatr-deployment-tool.git
 bwdt --help
 ```
 
-## Registry
+### Registry
 
 Start the registry service
 
