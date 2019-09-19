@@ -40,7 +40,8 @@ def init_database(host, admin_user, admin_passwd, arcus_passwd):
 def _create_arcusadmin_openstack_user(openstack, password):
     """ Create the arcusadmin service account in OpenStack """
     users = openstack.keystone.users.list()
-    arcus_user = next((usr for usr in users if usr.name == 'arcus'), False)
+    arcus_user = next((usr for usr in users if usr.name == 'arcusadmin'),
+                      False)
     if arcus_user:
         return False
     openstack.keystone.users.create(
