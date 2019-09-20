@@ -49,7 +49,7 @@ def openstack_postdeploy():
 
 def transfer_kolla_dir(server_ip, user='root'):
     """ Transfers the kolla-dir to a remote server """
-    mkdir = 'ssh {}@{} "mkdir -p /etc/kolla'.format(user, server_ip)
+    mkdir = 'ssh {}@{} "mkdir -p /etc/kolla"'.format(user, server_ip)
     Docker().execute(container_name='ansible', cmd=mkdir)
     scp = 'scp -r /etc/kolla {}@{}:/etc/'.format(user, server_ip)
     Docker().execute(container_name='ansible', cmd=scp)
