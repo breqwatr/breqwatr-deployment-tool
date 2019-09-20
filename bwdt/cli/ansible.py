@@ -73,6 +73,7 @@ def transfer_kolla_dir(server_ip, user):
     click.echo('Done')
 
 
+ansible_group.add_command(transfer_kolla_dir)
 ansible_group.add_command(start)
 
 openstack.add_command(gen_config)
