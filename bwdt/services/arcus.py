@@ -98,7 +98,8 @@ def api_start(fqdn, rabbit_pass, rabbit_ips_list, sql_ip,
             'SQL_IP': sql_ip,
             'CEPH_ENABLED': str(ceph_enabled).lower()
         },
-        'ports': {'1234': ('0.0.0.0', '1234')}
+        'ports': {'1234': ('0.0.0.0', '1234')},
+        'restart_policy': {'Name': 'always', 'MaximumRetryCount': 5}
     }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
@@ -122,7 +123,8 @@ def client_start(api_ip, openstack_ip, https=True):
         'ports': {
             '80': ('0.0.0.0', '80'),
             '443': ('0.0.0.0', '443')
-        }
+        },
+        'restart_policy': {'Name': 'always', 'MaximumRetryCount': 5}
     }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
@@ -153,7 +155,8 @@ def mgr_start(openstack_ip, sql_ip, sql_pass, rabbit_ip_list, rabbit_pass,
         },
         'volumes': {
             kolla_dir: {'bind': '/etc/kolla/', 'mode': 'rw'}
-        }
+        },
+        'restart_policy': {'Name': 'always', 'MaximumRetryCount': 5}
     }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
