@@ -45,3 +45,11 @@ def openstack_postdeploy():
     """ Runs kolla-ansible post-deploy """
     cmd = 'kolla-ansible -i /etc/kolla/inventory post-deploy'
     return Docker().execute(container_name='ansible', cmd=cmd)
+
+
+def transfer_kolla_dir(server_ip, user='root'):
+    """ Transfers the kolla-dir to a remote server """
+    mkdir = 'ssh {}@{} "mkdir -p /etc/kolla'.format(user, server_ip)
+    Docker().execute(container_name='ansible', cmd=mkdir)
+    scp = 'scp -r /etc/kolla {}@{}:/etc/'.format(user, server_ip)
+    Docker().execute(container_name='ansible', cmd=scp)

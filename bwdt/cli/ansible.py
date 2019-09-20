@@ -61,6 +61,18 @@ def post_deploy():
     click.echo(result['output'])
 
 
+@click.option('--server-ip', required=True, help='IP of compute node')
+@click.option('--user', required=False, default='root',
+              help='Optional username for SSH/SCP. Default: root')
+@click.command(name='transfer-kolla-dir')
+def transfer_kolla_dir(server_ip, user):
+    """ Transfer the Ansible service's kolla dir to a compute node """
+    txt = 'Transfering kolla to {}@{}:/etc/kolla'.format(server_ip, user)
+    click.echo(txt)
+    ansible.transfer_kolla_dir(server_ip, user=user)
+    click.echo('Done')
+
+
 ansible_group.add_command(start)
 
 openstack.add_command(gen_config)
