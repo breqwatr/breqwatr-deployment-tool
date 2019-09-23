@@ -41,7 +41,11 @@ class Docker(object):
                 'registry': registry}
 
     def _get_docker_client(self):
-        """Returns an authenticated docker client"""
+        """ Delete current login. Return an authenticated docker client """
+        home = os.path.expanduser("~")
+        docker_cred_path = '{}/.docker/config.json'.format(home)
+        if os.path.exists(docker_cred_path):
+            os.remove(docker_cred_path)
         client = docker.from_env()
         client.login(
             username=self._creds['username'],

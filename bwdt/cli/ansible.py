@@ -11,13 +11,15 @@ def ansible_group():
 
 @click.option('--ssh-key-path', required=True, help='path to SSH private key')
 @click.option('--cloud-yml-path', required=True, help='path to cloud.yml file')
+@click.option('--kolla-dir', required=True, help='Mount path for kolla files')
 @click.command()
-def start(ssh_key_path, cloud_yml_path):
+def start(ssh_key_path, cloud_yml_path, kolla_dir):
     """Launch the local registry"""
     click.echo("Launching container: breqwatr-pxe")
     success = ansible.start(
         ssh_key_path=ssh_key_path,
-        cloud_yml_path=cloud_yml_path)
+        cloud_yml_path=cloud_yml_path,
+        kolla_dir=kolla_dir)
     if success:
         click.echo('Done')
     else:

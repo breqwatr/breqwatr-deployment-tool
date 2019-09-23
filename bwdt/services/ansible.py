@@ -3,7 +3,7 @@ from bwdt.constants import SERVICE_IMAGE_TAGS
 from bwdt.container import Docker
 
 
-def start(ssh_key_path, cloud_yml_path):
+def start(ssh_key_path, cloud_yml_path, kolla_dir):
     """ Start the Ansible container """
     name = 'ansible'
     repo = 'breqwatr/ansible'
@@ -12,7 +12,10 @@ def start(ssh_key_path, cloud_yml_path):
     docker_kwargs = {
         'volumes':  {
             ssh_key_path: {'bind': '/root/.ssh/id_rsa', 'mode': 'ro'},
-            cloud_yml_path: {'bind': '/etc/breqwatr/cloud.yml', 'mode': 'rw'}}}
+            cloud_yml_path: {'bind': '/etc/breqwatr/cloud.yml', 'mode': 'rw'},
+            kolla_dir: {'bind': '/etc/kolla', 'mode': 'rw'}
+        }
+    }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
     success = docker.run(image, name=name, **docker_kwargs)

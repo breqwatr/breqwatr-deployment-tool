@@ -71,6 +71,20 @@ Example of launching the PXE service:
 bwdt pxe start --interface enp0s25 --dhcp-start 10.1.0.90 --dhcp-end 10.1.0.99
 ```
 
+### Ansible
+
+The Ansible service is used to deploy OpenStack onto the servers.
+The `--kolla-dir` path helps to keep the files generated on the host.
+
+```bash
+bwdt ansible start \
+  --ssh-key-path <path to id_rsa> \
+  --cloud-yml-path <path to cloud.yml> \
+  --kolla-dir <path kolla files>
+```
+
+
+
 ### Arcus
 
 Arcus is the custom web UI Breqwatr uses to replace Horizon.
