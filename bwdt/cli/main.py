@@ -3,6 +3,7 @@ import click
 
 import bwdt.cli.ansible
 import bwdt.cli.arcus
+import bwdt.cli.configure
 import bwdt.cli.docker
 import bwdt.cli.registry
 import bwdt.cli.pxe
@@ -15,7 +16,7 @@ def main():
 
 main.add_command(bwdt.cli.ansible.ansible_group)
 main.add_command(bwdt.cli.arcus.arcus_group)
+main.add_command(bwdt.cli.configure.configure)
+main.add_command(bwdt.cli.docker.docker)
 main.add_command(bwdt.cli.registry.registry_group)
 main.add_command(bwdt.cli.pxe.pxe_group)
-
-main.add_command(bwdt.cli.docker.docker)

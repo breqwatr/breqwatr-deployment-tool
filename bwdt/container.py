@@ -7,34 +7,14 @@ import boto3
 import docker
 from click import echo
 
-
-def _env_get(env_name, default_val):
-    """ Return an environment variable if defined else default value """
-    if env_name in os.environ:
-        return os.environ[env_name]
-    return default_val
-
-
-def env():
-    """ Dictionary of environment variables or their default value """
-    return {
-        'auth_file': _env_get('BWDT_AUTH_FILE', '/etc/breqwatr/auth.json'),
-        'region': _env_get('BWDT_REGION', 'ca-central-1'),
-    }
-
-
-def get_auth():
-    """ Return JSON of the auth file """
-    auth_file_path = env()['auth_file']
-    with open(auth_file_path, 'r') as auth_file:
-        auth = json.load(auth_file)
-    return auth
+import bwdt.auth as auth
+from bwdt.envvar import env
 
 
 class Docker(object):
     """Object to interact with docker & ECR"""
     def __init__(self):
-        self.auth = get_auth()
+        self.auth = auth.get()
         self._token = self._get_ecr_token()
         self._creds = self._get_docker_creds()
         self.client = self._get_docker_client()
@@ -45,7 +25,8 @@ class Docker(object):
         session = boto3.Session(
             aws_access_key_id=self.auth['key_id'],
             aws_secret_access_key=self.auth['key'])
-        client = session.client('ecr', region_name=env()['region'])
+        region = env()['region']
+        client = session.client('ecr', region_name=region)
         return client.get_authorization_token()
 
     def _get_docker_creds(self):

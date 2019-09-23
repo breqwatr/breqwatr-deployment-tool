@@ -24,6 +24,18 @@ pip install git+https://github.com/breqwatr/breqwatr-deployment-tool.git
 bwdt --help
 ```
 
+### Configuration
+
+This defines if you're doing an online/offline install.
+
+```bash
+# Online Example
+bwdt configure --key-id <key ID> --key <key> --online
+
+# Offline Example
+bwdt configure --offline --offline-path <directory of offline files>
+```
+
 ### Registry
 
 Start the registry service
@@ -94,9 +106,16 @@ bwdt arcus client start \
   --api-ip <vip or fqdn of arcus-api>
 ```
 
-Start the Arcus Mgr.
+Start the Arcus Mgr
+
+arcus-mgr needs Kolla-Ansible's files to do some things like repairing Mariadb
+when it goes down. Distribute those files to the control nodes first.
 
 ```bash
+# From the Deployment Server
+bwdt ansible transfer-kolla-dir --server-ip <ip address>
+
+# On the OpenStack control node
 bwdt arcus mgr start \
   --kolla-dir <directory of Kolla files> \
   --openstack-ip <vip or fqdn of openstack> \

@@ -1,7 +1,9 @@
 """ Controls for the registry service """
 from click import echo
+
+import bwdt.auth
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.container import Docker, get_auth
+from bwdt.container import Docker
 
 
 def start(ip='0.0.0.0', port=5000):
@@ -43,7 +45,7 @@ def sync_image(registry_url, image, tag=None):
     """ Pull images from upstream or import from media, push to registry """
     if tag is None:
         tag = KOLLA_IMAGE_TAGS[image]
-    auth = get_auth()
+    auth = bwdt.auth.get()
     offline_str = str(auth['offline']).lower()
     if offline_str == "true":
         _offline_sync_image(registry_url, image, tag)
