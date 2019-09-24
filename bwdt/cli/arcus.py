@@ -112,9 +112,11 @@ def mgr():
               help='IP(s) of RabbitMQ service. Repeat for each IP.')
 @click.option('--rabbit-pass', required=True, help='RabbitMQ password')
 @click.option('--kolla-dir', required=True, help='Path to kolla files')
+@click.option('--ceph/--no-ceph', required=False, default=False,
+              help='Enable monitoring of Ceph services')
 @click.command(name='start')
 def mgr_start(openstack_ip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
-              kolla_dir):
+              kolla_dir, ceph):
     """ Start the Arcus Mgr container """
     click.echo('Starting arcus_mgr')
     success = arcus.mgr_start(
@@ -123,7 +125,8 @@ def mgr_start(openstack_ip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
         sql_pass=sql_password,
         rabbit_ip_list=rabbit_ip,
         rabbit_pass=rabbit_pass,
-        kolla_dir=kolla_dir)
+        kolla_dir=kolla_dir,
+        enable_ceph=ceph)
     if success:
         click.echo('Started arcus_mgr')
     else:
