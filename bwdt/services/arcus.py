@@ -158,7 +158,8 @@ def mgr_start(openstack_ip, sql_ip, sql_pass, rabbit_ip_list, rabbit_pass,
         'volumes': {
             kolla_dir: {'bind': '/etc/kolla/', 'mode': 'rw'}
         },
-        'restart_policy': {'Name': 'always'}
+        'restart_policy': {'Name': 'always'},
+        'network_mode': 'host'
     }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
