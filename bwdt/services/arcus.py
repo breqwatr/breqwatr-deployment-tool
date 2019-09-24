@@ -118,7 +118,8 @@ def client_start(api_ip, openstack_ip, https=True):
             'ARCUS_API_IP': api_ip,
             'ARCUS_API_PORT': '1234',
             'OPENSTACK_VIP': openstack_ip,
-            'GLANCE_HTTPS': str(https).lower()
+            'GLANCE_HTTPS': str(https).lower(),
+            'VERSION': tag
         },
         'ports': {
             '80': ('0.0.0.0', '80'),
