@@ -77,12 +77,22 @@ The Ansible service is used to deploy OpenStack onto the servers.
 The `--kolla-dir` path helps to keep the files generated on the host.
 
 ```bash
+mkdir -p /etc/kolla
 bwdt ansible start \
   --ssh-key-path <path to id_rsa> \
   --cloud-yml-path <path to cloud.yml> \
-  --kolla-dir <path kolla files>
+  --kolla-dir /etc/kolla
 ```
 
+The `bwdt ansible` commands can also interact within the container.
+
+```bash
+# generate kolla config
+bwdt ansible openstack gen-config
+
+# bootstrap the servers
+bwdt ansible openstack bootstrap
+```
 
 
 ### Arcus
