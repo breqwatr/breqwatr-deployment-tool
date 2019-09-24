@@ -61,6 +61,13 @@ def list_images(registry_url):
             click.echo('  - {}'.format(tag))
 
 
+@click.argument('path')
+@click.command()
+def export_images(path):
+    """ Export all images to the specified path for a later offline install """
+    registry.export_images(path)
+
+
 registry_group.add_command(start)
 registry_group.add_command(sync_image)
 registry_group.add_command(sync_all_images)

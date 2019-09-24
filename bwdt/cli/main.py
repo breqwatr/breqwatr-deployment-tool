@@ -17,6 +17,6 @@ def main():
 main.add_command(bwdt.cli.ansible.ansible_group)
 main.add_command(bwdt.cli.arcus.arcus_group)
 main.add_command(bwdt.cli.configure.configure)
-main.add_command(bwdt.cli.docker.docker)
+main.add_command(bwdt.cli.docker.docker_group)
 main.add_command(bwdt.cli.registry.registry_group)
 main.add_command(bwdt.cli.pxe.pxe_group)

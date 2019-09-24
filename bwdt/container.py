@@ -1,8 +1,8 @@
 """Container class for interacting with Docker """
-import json
 import os
 from base64 import b64decode
 
+# pylint: disable=import-error
 import boto3
 import docker
 from click import echo
@@ -59,10 +59,29 @@ class Docker(object):
         prefix = prefix.replace('http://', '')
         return prefix
 
-    def pull(self, repository, tag):
+    def pull(self, repository, tag, retag=True, remove_long=True):
         """ Pull an image from the registry """
         full_repo_name = "{}/{}".format(self.repo_prefix, repository)
         self.client.images.pull(repository=full_repo_name, tag=tag)
+        if retag:
+            self.tag(
+                old_repo=full_repo_name,
+                old_tag=tag,
+                new_repo=repository,
+                new_tag=tag)
+            if remove_long:
+                self.remove(repo=full_repo_name, tag=tag)
+
+    def tag(self, old_repo, old_tag, new_repo, new_tag):
+        """ docker tag """
+        old_repo_full = '{}:{}'.format(old_repo, old_tag)
+        image = self.client.images.get(old_repo_full)
+        image.tag(new_repo, tag=new_tag)
+
+    def remove(self, repo, tag):
+        """ Docker rmi """
+        image = '{}:{}'.format(repo, tag)
+        self.client.images.remove(image=image)
 
     def retag(self, image_name, tag, new_registry_url):
         """ retag an upstream image to the new_registry_url """
@@ -116,3 +135,13 @@ class Docker(object):
             return {'exit_code': 1, 'output': 'Container not found'}
         exit_code, output = container.exec_run(cmd)
         return {'exit_code': exit_code, 'output': output}
+
+    def export(self, image_name, tag, directory):
+        """ Save a docker image from ECR to  directory """
+        repository = '{}/{}:{}'.format(self.repo_prefix, image_name, tag)
+        image = self.client.images.get(repository)
+        filename_base = image_name.replace('/', '-')
+        path = '{}/{}-{}.docker'.format(directory, filename_base, tag)
+        with open(path, 'wb') as _file:
+            for chunk in image.save(named=repository):
+                _file.write(chunk)
