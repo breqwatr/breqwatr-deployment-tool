@@ -93,7 +93,7 @@ class Docker(object):
 
     def retag(self, image_name, tag, new_registry_url):
         """ retag an upstream image to the new_registry_url """
-        repository = '{}/{}:{}'.format(self.repo_prefix, image_name, tag)
+        repository = '{}:{}'.format(image_name, tag)
         image = self.client.images.get(repository)
         new_repository = '{}/{}'.format(new_registry_url, image_name)
         image.tag(new_repository, tag=tag)
