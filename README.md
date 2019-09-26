@@ -148,3 +148,36 @@ bwdt arcus mgr start \
   --sql-ip <database IP address> \
   --sql-password <arcus user password for database>
 ```
+
+
+## Docker Utilities
+
+### Pull images from the upstream registry
+
+This one's mostly for troubleshooting / advanced users
+
+```bash
+# Pull one image
+bwdt docker pull breqwatr/pxe --tag 7.0
+
+# Pull all images
+bwdt docker pull-all
+```
+
+### Export image to disk
+
+Useful for building offline installer media
+
+```bash
+# make a directory to export to
+mkdir -p /Volumes/Breqwatr7/images/
+
+# export one image
+bwdt docker export-image \
+  --tag '7.0' \
+  --repository 'breqwatr/pxe' \
+  -o '/Volumes/Breqwatr7/images/'
+
+# export all images to build the offline installer media
+bwdt docker export-image-all -o '/Volumes/Breqwatr7/images/'
+```

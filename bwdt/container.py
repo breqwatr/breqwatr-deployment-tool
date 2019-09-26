@@ -11,6 +11,14 @@ import bwdt.auth as auth
 from bwdt.envvar import env
 
 
+def get_image_as_filename(image_name, tag, directory):
+    """ Returns an image as a filename - used for export operations """
+    filename_base = image_name.replace('/', '-')
+    directory = directory.rstrip('/')
+    path = '{}/{}-{}.docker'.format(directory, filename_base, tag)
+    return path
+
+
 class Docker(object):
     """Object to interact with docker & ECR"""
     def __init__(self):
@@ -122,8 +130,7 @@ class Docker(object):
             return False
         if 'detach' not in kwargs:
             kwargs['detach'] = True
-        full_image = "{}/{}".format(self.repo_prefix, image)
-        self.client.containers.run(full_image, name=name, **kwargs)
+        self.client.containers.run(image, name=name, **kwargs)
         return True
 
     def execute(self, container_name, cmd, silent=False):
@@ -138,10 +145,10 @@ class Docker(object):
 
     def export(self, image_name, tag, directory):
         """ Save a docker image from ECR to  directory """
-        repository = '{}/{}:{}'.format(self.repo_prefix, image_name, tag)
+        path = get_image_as_filename(image_name, tag, directory)
+        repository = '{}:{}'.format(image_name, tag)
         image = self.client.images.get(repository)
-        filename_base = image_name.replace('/', '-')
-        path = '{}/{}-{}.docker'.format(directory, filename_base, tag)
         with open(path, 'wb') as _file:
             for chunk in image.save(named=repository):
                 _file.write(chunk)
+        os.chmod(path, 0o755)
