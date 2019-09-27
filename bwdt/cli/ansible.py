@@ -15,7 +15,7 @@ def ansible_group():
 @click.command()
 def start(ssh_key_path, cloud_yml_path, kolla_dir):
     """Launch the local registry"""
-    click.echo("Launching container: breqwatr-pxe")
+    click.echo("Launching container: breqwatr/ansible")
     success = ansible.start(
         ssh_key_path=ssh_key_path,
         cloud_yml_path=cloud_yml_path,
@@ -24,6 +24,18 @@ def start(ssh_key_path, cloud_yml_path, kolla_dir):
         click.echo('Done')
     else:
         click.echo('Failed to launch - Maybe its already running?')
+
+
+@click.option('--server-ip', required=True, help='IP of compute node')
+@click.option('--user', required=False, default='root',
+              help='Optional username for SSH/SCP. Default: root')
+@click.command(name='transfer-kolla-dir')
+def transfer_kolla_dir(server_ip, user):
+    """ Transfer the Ansible service's kolla dir to a compute node """
+    txt = 'Transfering kolla to {}@{}:/etc/kolla'.format(server_ip, user)
+    click.echo(txt)
+    ansible.transfer_kolla_dir(server_ip, user=user)
+    click.echo('Done')
 
 
 @click.group()
@@ -61,18 +73,6 @@ def post_deploy():
     click.echo("Running post-deploy task")
     result = ansible.openstack_postdeploy()
     click.echo(result['output'])
-
-
-@click.option('--server-ip', required=True, help='IP of compute node')
-@click.option('--user', required=False, default='root',
-              help='Optional username for SSH/SCP. Default: root')
-@click.command(name='transfer-kolla-dir')
-def transfer_kolla_dir(server_ip, user):
-    """ Transfer the Ansible service's kolla dir to a compute node """
-    txt = 'Transfering kolla to {}@{}:/etc/kolla'.format(server_ip, user)
-    click.echo(txt)
-    ansible.transfer_kolla_dir(server_ip, user=user)
-    click.echo('Done')
 
 
 ansible_group.add_command(transfer_kolla_dir)
