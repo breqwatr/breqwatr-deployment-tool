@@ -1,7 +1,5 @@
 """ Commands for operating Docker on the host """
 # pylint disable=broad-except,W0703
-import sys
-
 import click
 
 import bwdt.auth
@@ -44,8 +42,13 @@ def pull_one(repository, tag):
 @click.command(name='pull-all')
 def pull_all(tag):
     """ Pull all images """
-    for repository in _all_images():
+    all_images = _all_images()
+    i = 1
+    count = len(all_images)
+    for repository in all_images:
+        click.echo('Pulling image {} of {}'.format(i, count))
         _pull(repository, tag)
+        i += 1
 
 
 def _export_image(repository, tag, pull, force):
@@ -87,8 +90,13 @@ def export_image(repository, tag, pull, force):
 @click.command(name='export-image-all')
 def export_image_all(pull, tag, force):
     """ Export all images to directory  """
-    for repository in _all_images():
+    all_images = _all_images()
+    i = 1
+    count = len(all_images)
+    for repository in all_images:
+        click.echo('Exporting image {} of {}'.format(i, count))
         _export_image(repository, tag, pull, force)
+        i += 1
 
 
 docker_group.add_command(pull_one)

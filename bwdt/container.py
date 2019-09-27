@@ -143,10 +143,18 @@ class Docker(object):
                 for chunk in image.save(named=repository):
                     _file.write(chunk)
         except ReadTimeout:
-            err = 'Docker timeout trying to export file. Check CPU usage?'
+            # Sometimes Docker will time out trying to export the image
+            err = 'Docker timeout trying to export file. Check CPU usage?\n'
             sys.stderr.write('ERROR: {}'.format(err))
-            sys.exit(1)
-        os.chmod(path, 0o755)
+        if os.path.exists(path):
+            # Worse the ReadTimeout leaves a 0b file behind
+            if os.path.getsize(path) == 0:
+                sys.stderr.write('WARN: Removing empty file {}\n'.format(path))
+                os.remove(path)
+            else:
+                os.chmod(path, 0o755)
+        else:
+            sys.stderr.write('ERROR: Failed to create {}\n'.format(path))
 
     def import_image(self, image_name, tag):
         """ Load a docker image from a file """
