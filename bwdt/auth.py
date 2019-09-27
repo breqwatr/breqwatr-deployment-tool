@@ -64,4 +64,4 @@ def set(key_id, key, offline, offline_path):
 def use_ecr():
     """ Return if ECR should be used, safely handing str values """
     data = get()
-    return str(data['offline']).lower() == 'true'
+    return str(data['offline']).lower() == 'false'

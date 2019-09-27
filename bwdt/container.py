@@ -1,6 +1,7 @@
 """ Container class for interacting with Docker """
 import os
 import sys
+from requests.exceptions import ReadTimeout
 
 # pylint: disable=import-error
 import docker
@@ -137,9 +138,14 @@ class Docker(object):
         path = get_image_as_filename(image_name, tag, directory)
         repository = '{}:{}'.format(image_name, tag)
         image = self.client.images.get(repository)
-        with open(path, 'wb') as _file:
-            for chunk in image.save(named=repository):
-                _file.write(chunk)
+        try:
+            with open(path, 'wb') as _file:
+                for chunk in image.save(named=repository):
+                    _file.write(chunk)
+        except ReadTimeout:
+            err = 'Docker timeout trying to export file. Check CPU usage?'
+            sys.stderr.write('ERROR: {}'.format(err))
+            sys.exit(1)
         os.chmod(path, 0o755)
 
     def import_image(self, image_name, tag):

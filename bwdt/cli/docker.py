@@ -6,7 +6,7 @@ import click
 
 import bwdt.auth
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.container import Docker, offline_image_exists
+from bwdt.container import Docker, get_image_as_filename, offline_image_exists
 
 
 def _all_images():
@@ -50,24 +50,25 @@ def pull_all(tag):
 
 def _export_image(repository, tag, pull, force):
     """ Re-usable command to export image to directory """
+    if tag is None:
+        tag = _all_images()[repository]
     if offline_image_exists(repository, tag) and not force:
-        click.echo('Skipping (already exists): {}'.format(repository))
+        base = bwdt.auth.get()['offline_path']
+        filename = get_image_as_filename(repository, tag, base)
+        click.echo('Skipping (already exists): {}'.format(filename))
         return
     client = Docker()
-    try:
-        if pull:
-            click.echo('Pulling {}:{}'.format(repository, tag))
-            client.pull(repository=repository, tag=tag)
-        offln_path = bwdt.auth.get()['offline_path']
-        click.echo('Saving {}:{} to {}'.format(repository, tag, offln_path))
-        client.export_image(repository, tag)
-    except Exception:
-        sys.stderr('ERROR: Failed to pull or save {}\n'.format(repository))
-        sys.exit(1)
+    # try:
+    if pull:
+        click.echo('Pulling {}:{}'.format(repository, tag))
+        client.pull(repository=repository, tag=tag)
+    offln_path = bwdt.auth.get()['offline_path']
+    click.echo('Saving {}:{} to {}'.format(repository, tag, offln_path))
+    client.export_image(repository, tag)
 
 
-@click.option('--repository', required=True, help='Image name')
-@click.option('--tag', required=True, help='Image tag')
+@click.argument('repository')
+@click.option('--tag', required=False, help='Image tag', default=None)
 @click.option('--pull/--no-pull', required=False, default=True,
               help='Use --no-pull to keep older image for this export')
 @click.option('--force/--keep-old', required=False, default=False,
@@ -86,7 +87,7 @@ def export_image(repository, tag, pull, force):
 @click.command(name='export-image-all')
 def export_image_all(pull, tag, force):
     """ Export all images to directory  """
-    for repository in all_images():
+    for repository in _all_images():
         _export_image(repository, tag, pull, force)
 
 
