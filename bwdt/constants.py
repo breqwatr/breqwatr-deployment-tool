@@ -1,5 +1,9 @@
 """ BWDT Constants """
 
+# OSTools data
+S3_BUCKET = 'breqwatr-deployment-tool'
+OSTOOLS_KEY = 'ostools.tar.gz'
+
 # Current latest tag
 TAG = '7.0'
 

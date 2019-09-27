@@ -6,7 +6,7 @@ import bwdt.envvar
 
 
 def get_dir_path():
-    """ Return the path of the auth file """
+    """ Return the path of the auth file's directory """
     env_auth_dir = bwdt.envvar.env()['auth_dir']
     if env_auth_dir is not None:
         path = os.environ[env_auth_dir]
@@ -59,3 +59,9 @@ def set(key_id, key, offline, offline_path):
     filename = get_file_path()
     with open(filename, 'w+') as out_file:
         out_file.write(jdata)
+
+
+def use_ecr():
+    """ Return if ECR should be used, safely handing str values """
+    data = get()
+    return str(data['offline']).lower() == 'true'

@@ -1,25 +1,12 @@
 """ Commands for operating Docker on the host """
-import os
+# pylint disable=broad-except,W0703
+import sys
 
 import click
 
+import bwdt.auth
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.container import Docker, get_image_as_filename
-
-
-@click.group(name='docker')
-def docker_group():
-    """ Command group for local docker commands """
-
-
-@click.argument('repository')
-@click.option('--tag', default='latest',
-              help='optional tag to pull, default=latest')
-@click.command(name='pull')
-def _pull(repository, tag):
-    """ Pull an image from the upstream registry """
-    click.echo('Pulling {}:{}'.format(repository, tag))
-    Docker().pull(repository=repository, tag=tag)
+from bwdt.container import Docker, offline_image_exists
 
 
 def _all_images():
@@ -30,42 +17,66 @@ def _all_images():
     return images
 
 
+@click.group(name='docker')
+def docker_group():
+    """ Command group for local docker commands """
+
+
+def _pull(repository, tag):
+    """ Reusable pull command """
+    if tag is None:
+        tag = _all_images()[repository]
+    click.echo('Pulling {}:{}'.format(repository, tag))
+    Docker().pull(repository=repository, tag=tag)
+
+
+@click.argument('repository')
+@click.option('--tag', default=None,
+              help='optional tag to pull, default=(current stable)')
+@click.command(name='pull')
+def pull_one(repository, tag):
+    """ Pull an image from the upstream registry """
+    _pull(repository, tag)
+
+
 @click.option('--tag', default=None, required=False,
               help='optional tag to pull. Default=(current stable)')
 @click.command(name='pull-all')
 def pull_all(tag):
     """ Pull all images """
-    images = _all_images()
-    for repository in images:
-        if tag is None:
-            tag = images[repository]
+    for repository in _all_images():
+        _pull(repository, tag)
+
+
+def _export_image(repository, tag, pull, force):
+    """ Re-usable command to export image to directory """
+    if offline_image_exists(repository, tag) and not force:
+        click.echo('Skipping (already exists): {}'.format(repository))
+        return
+    client = Docker()
+    try:
+        if pull:
             click.echo('Pulling {}:{}'.format(repository, tag))
-            Docker().pull(repository=repository, tag=tag)
+            client.pull(repository=repository, tag=tag)
+        offln_path = bwdt.auth.get()['offline_path']
+        click.echo('Saving {}:{} to {}'.format(repository, tag, offln_path))
+        client.export_image(repository, tag)
+    except Exception:
+        sys.stderr('ERROR: Failed to pull or save {}\n'.format(repository))
+        sys.exit(1)
 
 
 @click.option('--repository', required=True, help='Image name')
 @click.option('--tag', required=True, help='Image tag')
-@click.option('--output', '-o', required=True, help='Output dir  override')
 @click.option('--pull/--no-pull', required=False, default=True,
               help='Use --no-pull to keep older image for this export')
 @click.option('--force/--keep-old', required=False, default=False,
               help='--force will overwrite files found at the destination')
 @click.command(name='export-image')
-def export_image(repository, tag, output, pull, force):
+def export_image(repository, tag, pull, force):
     """ Export an image to directory """
-    path = get_image_as_filename(repository, tag, output)
-    if os.path.exists(path) and not force:
-        click.echo('Skipping (already exists): {}'.format(path))
-        return
-    client = Docker()
-    if pull:
-        click.echo('Pulling {}:{}'.format(repository, tag))
-        client.pull(repository=repository, tag=tag)
-    click.echo('Saving {}:{} to {}'.format(repository, tag, output))
-    client.export(repository, tag, output)
+    _export_image(repository, tag, pull, force)
 
-
-@click.option('--output', '-o', required=False, help='Output dir override')
 @click.option('--pull/--no-pull', required=False, default=True,
               help='Use --no-pull to keep older image for this export')
 @click.option('--tag', default=None, required=False,
@@ -73,30 +84,13 @@ def export_image(repository, tag, output, pull, force):
 @click.option('--force/--keep-old', required=False, default=False,
               help='--force will overwrite files found at the destination')
 @click.command(name='export-image-all')
-def export_image_all(output, pull, tag, force):
+def export_image_all(pull, tag, force):
     """ Export all images to directory  """
-    # Check if the file exists
-    # Export the file
-    client = Docker()
-    images = _all_images()
-    for repository in images:
-        image_tag = images[repository] if tag is None else tag
-        path = get_image_as_filename(repository, image_tag, output)
-        if os.path.exists(path) and not force:
-            click.echo('Skipping (already exists): {}'.format(path))
-            continue
-        try:
-            if pull:
-                click.echo('Pulling {}:{}'.format(repository, image_tag))
-                client.pull(repository=repository, tag=image_tag)
-            click.echo('Saving: {}'.format(path))
-            client.export(repository, image_tag, output)
-        except Exception as e:
-            click.echo('ERROR: Failed to pull or save {}'.format(repository))
-            raise(e)
+    for repository in all_images():
+        _export_image(repository, tag, pull, force)
 
 
-docker_group.add_command(_pull)
+docker_group.add_command(pull_one)
 docker_group.add_command(pull_all)
 docker_group.add_command(export_image)
 docker_group.add_command(export_image_all)

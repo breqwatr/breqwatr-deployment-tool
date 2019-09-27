@@ -1,14 +1,13 @@
-"""Container class for interacting with Docker """
+""" Container class for interacting with Docker """
 import os
-from base64 import b64decode
+import sys
 
 # pylint: disable=import-error
-import boto3
 import docker
 from click import echo
 
-import bwdt.auth as auth
-from bwdt.envvar import env
+import bwdt.auth
+from bwdt.aws.ecr import ECR
 
 
 def get_image_as_filename(image_name, tag, directory):
@@ -19,66 +18,54 @@ def get_image_as_filename(image_name, tag, directory):
     return path
 
 
+def offline_image_exists(image_name, tag):
+    """ Return true if the offline image file exists """
+    auth = bwdt.auth.get()
+    directory = auth['offline_path']
+    path = get_image_as_filename(image_name, tag, directory)
+    return os.path.exists(path)
+
+
+def delete_docker_credential():
+    """ Deletes the current docker login file """
+    home = os.path.expanduser("~")
+    docker_cred_path = '{}/.docker/config.json'.format(home)
+    if os.path.exists(docker_cred_path):
+        os.remove(docker_cred_path)
+
+
 class Docker(object):
     """Object to interact with docker & ECR"""
     def __init__(self):
-        self.auth = auth.get()
-        self._token = self._get_ecr_token()
-        self._creds = self._get_docker_creds()
-        self.client = self._get_docker_client()
-        self.repo_prefix = self._get_repo_prefix()
-
-    def _get_ecr_token(self):
-        """ Return the token to auth to ECR """
-        session = boto3.Session(
-            aws_access_key_id=self.auth['key_id'],
-            aws_secret_access_key=self.auth['key'])
-        region = env()['region']
-        client = session.client('ecr', region_name=region)
-        return client.get_authorization_token()
-
-    def _get_docker_creds(self):
-        """Extract docker login credentials from an ECR token"""
-        b64token = self._token['authorizationData'][0]['authorizationToken']
-        decoded_token = b64decode(b64token)
-        token_data = decoded_token.split(':')
-        username = token_data[0]
-        password = token_data[1]
-        registry = self._token['authorizationData'][0]['proxyEndpoint']
-        return {'username': username, 'password': password,
-                'registry': registry}
-
-    def _get_docker_client(self):
-        """ Delete current login. Return an authenticated docker client """
-        home = os.path.expanduser("~")
-        docker_cred_path = '{}/.docker/config.json'.format(home)
-        if os.path.exists(docker_cred_path):
-            os.remove(docker_cred_path)
         client = docker.from_env()
-        client.login(
-            username=self._creds['username'],
-            password=self._creds['password'],
-            registry=self._creds['registry'])
-        return client
+        repo_prefix = ""
+        if bwdt.auth.use_ecr():
+            ecr = ECR()
+            delete_docker_credential()
+            client.login(
+                username=ecr.credentials['username'],
+                password=ecr.credentials['password'],
+                registry=ecr.credentials['registry'])
+            repo_prefix = '{}/'.format(ecr.registry_prefix())
+        self.client = client
+        self.repo_prefix = repo_prefix
 
-    def _get_repo_prefix(self):
-        """ Remove the protocol from registry cred to make the image prefix """
-        prefix = self._creds['registry'].replace('https://', '')
-        prefix = prefix.replace('http://', '')
-        return prefix
-
-    def pull(self, repository, tag, retag=True, remove_long=True):
-        """ Pull an image from the registry """
-        full_repo_name = "{}/{}".format(self.repo_prefix, repository)
+    def _pull_ecr(self, repository, tag, retag=True, remove_long_tag=True):
+        """ Pull from ECR's registry """
+        full_repo_name = "{}{}".format(self.repo_prefix, repository)
         self.client.images.pull(repository=full_repo_name, tag=tag)
         if retag:
-            self.tag(
-                old_repo=full_repo_name,
-                old_tag=tag,
-                new_repo=repository,
-                new_tag=tag)
-            if remove_long:
+            self.tag(old_repo=full_repo_name, old_tag=tag, new_repo=repository,
+                     new_tag=tag)
+            if remove_long_tag:
                 self.remove(repo=full_repo_name, tag=tag)
+
+    def pull(self, repository, tag, retag=True, remove_long_tag=True):
+        """ Pull or import an image """
+        if bwdt.auth.use_ecr():
+            self._pull_ecr(repository, tag, retag, remove_long_tag)
+        else:
+            self.import_image(repository, tag)
 
     def tag(self, old_repo, old_tag, new_repo, new_tag):
         """ docker tag """
@@ -143,8 +130,10 @@ class Docker(object):
         exit_code, output = container.exec_run(cmd)
         return {'exit_code': exit_code, 'output': output}
 
-    def export(self, image_name, tag, directory):
-        """ Save a docker image from ECR to  directory """
+    def export_image(self, image_name, tag):
+        """ Save a docker image to a file in directory """
+        auth = bwdt.auth.get()
+        directory = auth['offline_path']
         path = get_image_as_filename(image_name, tag, directory)
         repository = '{}:{}'.format(image_name, tag)
         image = self.client.images.get(repository)
@@ -152,3 +141,14 @@ class Docker(object):
             for chunk in image.save(named=repository):
                 _file.write(chunk)
         os.chmod(path, 0o755)
+
+    def import_image(self, image_name, tag):
+        """ Load a docker image from a file """
+        auth = bwdt.auth.get()
+        directory = auth['offline_path']
+        path = get_image_as_filename(image_name, tag, directory)
+        if not os.path.exists(path):
+            sys.stderr.write('ERROR: file {} not found\n'.format(path))
+            sys.exit(1)
+        with open(path, 'r') as image:
+            self.client.images.load(image)
