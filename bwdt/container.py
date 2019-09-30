@@ -164,5 +164,5 @@ class Docker(object):
         if not os.path.exists(path):
             sys.stderr.write('ERROR: file {} not found\n'.format(path))
             sys.exit(1)
-        with open(path, 'r') as image:
+        with open(path, 'rb') as image:
             self.client.images.load(image)
