@@ -1,8 +1,9 @@
 """ BWDT Constants """
 
-# OSTools data
+# S3 Configs
 S3_BUCKET = 'breqwatr-deployment-tool'
 OSTOOLS_KEY = 'ostools.tar.gz'
+CLOUDYML_KEY = 'cloud.yml'
 
 # Current latest tag
 TAG = '7.0'
