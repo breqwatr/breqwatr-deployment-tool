@@ -49,30 +49,56 @@ def gen_config():
     click.echo("Generating OpenStack config files")
     result = ansible.openstack_genconfig()
     click.echo(result['output'])
+    # TODO: Temprary print instead of run until streaming output and socket
+    # timeout issues are fixed:
+    #
+    # NOTE(kyle): I think this one always runs fast enough that streaming
+    # output isn't really needed and the socket won't time out.
+    #
+    # cloud_yml = '-e @/etc/breqwatr/cloud.yml'
+    # conn = '-e ansible_connection=local'
+    # inv = '-i localhost,'
+    # playbook = '/var/repos/bw-ansible/generate-kolla-config.yml'
+    # cmd = 'ansible-playbook {} {} {} {}'.format(cloud_yml, conn, inv, playbook)
+    # docker_cmd = 'docker exec -it ansible "{}"'.format(cmd)
+    # click.echo('Run:')
+    # click.echo(docker_cmd)
 
 
 @click.command()
 def bootstrap():
     """ Run kolla-ansible bootstrap """
-    click.echo("Running bootstrap task")
-    result = ansible.openstack_bootstrap()
-    click.echo(result['output'])
+    # click.echo("Running bootstrap task")
+    # result = ansible.openstack_bootstrap()
+    # click.echo(result['output'])
+    # TODO: Temprary print instead of run until streaming output and socket
+    # timeout issues are fixed:
+    click.echo('Run:')
+    click.echo('docker exec -it ansible "kolla-ansible -i /etc/kolla/inventory bootstrap-servers"')
 
 
 @click.command()
 def deploy():
     """ Run kolla-ansible deploy """
-    click.echo("Running deploy task")
-    result = ansible.openstack_deploy()
-    click.echo(result['output'])
+    # click.echo("Running deploy task")
+    # result = ansible.openstack_deploy()
+    # click.echo(result['output'])
+    # TODO: Temprary print instead of run until streaming output and socket
+    # timeout issues are fixed:
+    click.echo('RUN:')
+    click.echo('docker exec -it ansible "kolla-ansible -i /etc/kolla/inventory deploy"')
 
 
 @click.command(name='post-deploy')
 def post_deploy():
     """ Run kolla-ansible post-deploy """
-    click.echo("Running post-deploy task")
-    result = ansible.openstack_postdeploy()
-    click.echo(result['output'])
+    # click.echo("Running post-deploy task")
+    # result = ansible.openstack_postdeploy()
+    # click.echo(result['output'])
+    # TODO: Temprary print instead of run until streaming output and socket
+    # timeout issues are fixed:
+    click.echo('Run:')
+    click.echo('docker exec -it ansible "kolla-ansible -i /etc/kolla/inventory post-deploy"')
 
 
 ansible_group.add_command(transfer_kolla_dir)
