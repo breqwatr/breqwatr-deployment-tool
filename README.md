@@ -94,6 +94,22 @@ bwdt ansible openstack gen-config
 bwdt ansible openstack bootstrap
 ```
 
+### Apt
+
+To deploy a private APT server:
+
+```bash
+bwdt apt start
+```
+
+### Pip
+
+To launch a private Pip repo for python
+
+```bash
+bwdt pip start
+```
+
 
 ### Arcus
 
