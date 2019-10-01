@@ -15,6 +15,7 @@ SERVICE_IMAGE_TAGS = {
     'breqwatr/arcus-api': TAG,
     'breqwatr/arcus-client': TAG,
     'breqwatr/arcus-mgr': TAG,
+    'breqwatr/apt': TAG,
     'breqwatr/pxe': TAG
 }
 

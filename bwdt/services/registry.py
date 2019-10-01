@@ -1,7 +1,6 @@
 """ Controls for the registry service """
 from click import echo
 
-import bwdt.auth
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
 from bwdt.container import Docker
 
@@ -23,34 +22,16 @@ def start(ip='0.0.0.0', port=5000):
     return success
 
 
-def _offline_sync_image(registry_url, image, tag):
-    """ Import image and push to local registry """
-    echo('> Importing {}:{}'.format(image, tag))
-    echo('> Pushing {}:{} to {}'.format(image, tag, registry_url))
-    raise Exception('Offline is not supported yet')
-
-
-def _online_sync_image(registry_url, image, tag):
-    """ Pull image from upstream,push to local registry """
-    echo('> Pulling image: {}:{}'.format(image, tag))
+def sync_image(registry_url, image, tag=None):
+    """ Pull images from upstream or import from media, push to registry """
+    if tag is None:
+        tag = KOLLA_IMAGE_TAGS[image]
     docker = Docker()
     docker.pull(image, tag)
     echo('> Applying new tag')
     docker.retag(image, tag, registry_url)
     echo('> Pushing {}:{} to {}'.format(image, tag, registry_url))
     docker.push(image, tag, registry_url)
-
-
-def sync_image(registry_url, image, tag=None):
-    """ Pull images from upstream or import from media, push to registry """
-    if tag is None:
-        tag = KOLLA_IMAGE_TAGS[image]
-    auth = bwdt.auth.get()
-    offline_str = str(auth['offline']).lower()
-    if offline_str == "true":
-        _offline_sync_image(registry_url, image, tag)
-    else:
-        _online_sync_image(registry_url, image, tag)
 
 
 def sync_all_images(registry_url, tag=None):

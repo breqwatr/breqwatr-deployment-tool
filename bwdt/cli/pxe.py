@@ -17,8 +17,8 @@ def pxe_group():
               help='Optional alternative DNS IP')
 @click.command()
 def start(interface, dhcp_start, dhcp_end, dns_ip):
-    """Launch the local registry"""
-    click.echo("Launching container: breqwatr-pxe")
+    """Launch the local PXE service"""
+    click.echo("Launching container: pxe")
     success = pxe.start(
         interface=interface,
         dhcp_start=dhcp_start,

@@ -3,6 +3,7 @@ import click
 
 import bwdt.auth
 import bwdt.cli.ansible
+import bwdt.cli.apt
 import bwdt.cli.arcus
 import bwdt.cli.configure
 import bwdt.cli.docker
@@ -17,6 +18,7 @@ def main():
 
 
 main.add_command(bwdt.cli.ansible.ansible_group)
+main.add_command(bwdt.cli.apt.apt_group)
 main.add_command(bwdt.cli.arcus.arcus_group)
 main.add_command(bwdt.cli.configure.configure)
 main.add_command(bwdt.cli.docker.docker_group)
