@@ -74,7 +74,7 @@ def bootstrap():
     # TODO: Temprary print instead of run until streaming output and socket
     # timeout issues are fixed:
     click.echo('Run:')
-    click.echo('docker exec -it ansible "kolla-ansible -i /etc/kolla/inventory bootstrap-servers"')
+    click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory bootstrap-servers')
 
 
 @click.command()
@@ -86,7 +86,7 @@ def deploy():
     # TODO: Temprary print instead of run until streaming output and socket
     # timeout issues are fixed:
     click.echo('RUN:')
-    click.echo('docker exec -it ansible "kolla-ansible -i /etc/kolla/inventory deploy"')
+    click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory deploy')
 
 
 @click.command(name='post-deploy')
@@ -98,7 +98,7 @@ def post_deploy():
     # TODO: Temprary print instead of run until streaming output and socket
     # timeout issues are fixed:
     click.echo('Run:')
-    click.echo('docker exec -it ansible "kolla-ansible -i /etc/kolla/inventory post-deploy"')
+    click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory post-deploy')
 
 
 ansible_group.add_command(transfer_kolla_dir)
