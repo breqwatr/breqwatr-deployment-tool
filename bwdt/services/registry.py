@@ -36,5 +36,9 @@ def sync_image(registry_url, image, tag=None):
 
 def sync_all_images(registry_url, tag=None):
     """ Sync all images to registry_url """
+    i = 0
+    length = len(KOLLA_IMAGE_TAGS)
     for image in KOLLA_IMAGE_TAGS:
+        echo('Progress: {} / {}'.format(i, length))
         sync_image(registry_url, image, tag)
+        i += 1
