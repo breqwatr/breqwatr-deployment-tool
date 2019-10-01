@@ -10,13 +10,12 @@ def apt_group():
 
 
 @click.option('--tag', required=False, default=None, help='optional tag')
-@click.option('--passkey', required=False, default=None, help='optional key')
 @click.option('--port', required=False, default=81, help='listen port')
 @click.command()
-def start(tag, passkey, port):
+def start(tag, port):
     """Launch the Apt service"""
     click.echo("Launching container: apt")
-    success = apt.start(tag=tag, passkey=passkey, port=port)
+    success = apt.start(tag=tag, port=port)
     if success:
         click.echo('Done')
     else:

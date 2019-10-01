@@ -4,12 +4,16 @@ from bwdt.container import Docker
 
 
 def start(tag=None):
-    """ Start the PIP container """
-    repo = 'pip'
+    """ Start the APT container """
+    name = 'pip'
+    repo = 'breqwatr/pip'
     tag = SERVICE_IMAGE_TAGS[repo]
-    docker = Docker()
-    docker.pull(repository=repo, tag=tag)
     image = '{}:{}'.format(repo, tag)
+    docker_kwargs = {
+        'network_mode': 'host',
+        'restart_policy': {'Name': 'always'}
+    }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
-    docker.run(image, name='bw-pip', network_mode='host')
+    success = docker.run(image, name=name, **docker_kwargs)
+    return success

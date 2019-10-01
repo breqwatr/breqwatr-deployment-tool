@@ -3,17 +3,14 @@ from bwdt.constants import SERVICE_IMAGE_TAGS
 from bwdt.container import Docker
 
 
-def start(tag=None, passkey=None, port=81):
+def start(tag=None, port=81):
     """ Start the APT container """
     name = 'apt'
     repo = 'breqwatr/apt'
     tag = SERVICE_IMAGE_TAGS[repo]
     image = '{}:{}'.format(repo, tag)
     restart_policy = {'Name': 'always'}
-    if passkey is None:
-        passkey = 'FfMm5s3a'
     env = {
-        'GPG_PASSKEY': passkey,
         'GPG_PRIVATE_KEY_FILE': '/keys/breqwatr-private-key.asc',
         'GPG_PUBLIC_KEY_FILE': '/keys/breqwatr-private-key.asc',
     }

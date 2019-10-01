@@ -9,6 +9,7 @@ import bwdt.cli.configure
 import bwdt.cli.docker
 import bwdt.cli.download
 import bwdt.cli.registry
+import bwdt.cli.pip
 import bwdt.cli.pxe
 
 
@@ -24,4 +25,5 @@ main.add_command(bwdt.cli.configure.configure)
 main.add_command(bwdt.cli.docker.docker_group)
 main.add_command(bwdt.cli.download.download_group)
 main.add_command(bwdt.cli.registry.registry_group)
+main.add_command(bwdt.cli.pip.pip_group)
 main.add_command(bwdt.cli.pxe.pxe_group)
