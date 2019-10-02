@@ -58,5 +58,6 @@ KOLLA_IMAGE_TAGS = {
     'kolla/ubuntu-source-haproxy': TAG,
     'kolla/ubuntu-source-iscsid': TAG,
     'kolla/ubuntu-source-rabbitmq': TAG,
-    'kolla/ubuntu-source-cron': TAG
+    'kolla/ubuntu-source-cron': TAG,
+    'kolla/ubuntu-source-tgtd': TAG
 }

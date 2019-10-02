@@ -53,6 +53,7 @@ class Docker(object):
 
     def _pull_ecr(self, repository, tag, retag=True, remove_long_tag=True):
         """ Pull from ECR's registry """
+        echo('Pulling {}:{} from upstream registry'.format(repository, tag))
         full_repo_name = "{}{}".format(self.repo_prefix, repository)
         self.client.images.pull(repository=full_repo_name, tag=tag)
         if retag:
@@ -158,6 +159,7 @@ class Docker(object):
 
     def import_image(self, image_name, tag):
         """ Load a docker image from a file """
+        echo('Loading {}:{} from offline media'.format(image_name, tag))
         auth = bwdt.auth.get()
         directory = auth['offline_path']
         path = get_image_as_filename(image_name, tag, directory)
