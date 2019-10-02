@@ -68,5 +68,5 @@ def use_ecr():
         data = get()
         return str(data['offline']).lower() == 'false'
     except TypeError:
-        sys.stderr.write('ERROR: BWDT not configured / misconfigured')
+        sys.stderr.write('ERROR: BWDT not configured / misconfigured\n')
         sys.exit()
