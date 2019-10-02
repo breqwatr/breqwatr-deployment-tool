@@ -46,7 +46,7 @@ def ostools(path, force):
 def cloud_yml(path, force):
     """ Download a commented cloud.yml template """
     _handle_path(path, CLOUDYML_KEY, force)
-    click.echo('Saving {}'.format(path))
+    click.echo('Saving {}/{}'.format(path, CLOUDYML_KEY))
     full_path = '{}/{}'.format(path, CLOUDYML_KEY)
     S3().download(full_path, S3_BUCKET, CLOUDYML_KEY)
 
