@@ -1,5 +1,0 @@
-boto3
-click
-docker
-mysql-connector
-python-keystoneclient
