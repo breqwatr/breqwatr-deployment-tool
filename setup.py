@@ -7,14 +7,14 @@ with open('README.md', 'r') as readme_file:
 setup(
     name='breqwatr-deployment-tool',
     packages=find_packages(),
-    version='1.00',
+    version='1.01',
     license='',
     description='Deploy and manage Breqwatr services',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Kyle Pericak',
     author_email='kyle@breqwatr.com',
-    download_url='https://github.com/breqwatr/breqwatr-deployment-tool/archive/1.00.tar.gz',
+    download_url='https://github.com/breqwatr/breqwatr-deployment-tool/archive/1.01.tar.gz',
     url='https://github.com/breqwatr/breqwatr-deployment-tool',
     keywords=['Breqwatr', 'Openstack', 'Kolla'],
     install_requires=[
