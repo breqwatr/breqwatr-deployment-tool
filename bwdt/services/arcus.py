@@ -107,7 +107,8 @@ def api_start(fqdn, rabbit_pass, rabbit_ips_list, sql_ip,
     return success
 
 
-def client_start(api_ip, openstack_ip, https=True):
+def client_start(api_ip, openstack_ip, glance_https=True, arcus_https=False,
+                 cert_path=None, cert_key_path=None):
     """ Start the Arcus Client service """
     name = 'arcus_client'
     repo = 'breqwatr/arcus-client'
@@ -118,7 +119,8 @@ def client_start(api_ip, openstack_ip, https=True):
             'ARCUS_API_IP': api_ip,
             'ARCUS_API_PORT': '1234',
             'OPENSTACK_VIP': openstack_ip,
-            'GLANCE_HTTPS': str(https).lower(),
+            'ARCUS_USE_HTTPS': arcus_https,
+            'GLANCE_HTTPS': str(glance_https).lower(),
             'VERSION': tag
         },
         'ports': {
@@ -127,6 +129,10 @@ def client_start(api_ip, openstack_ip, https=True):
         },
         'restart_policy': {'Name': 'always'}
     }
+    if arcus_https:
+        docker_kwargs['volumes'] = {
+            cert_path: {'bind': '/etc/nginx/haproxy.crt', 'mode': 'ro'},
+            cert_key_path: {'bind': '/etc/nginx/haproxy.key', 'mode': 'ro'}}
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
     success = docker.run(image, name=name, **docker_kwargs)

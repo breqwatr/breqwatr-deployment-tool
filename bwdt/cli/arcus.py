@@ -86,14 +86,29 @@ def client():
 
 @click.option('--api-ip', required=True, help='IP/VIP of Arcus API')
 @click.option('--openstack-ip', required=True, help='IP/VIP of Openstack')
-@click.option('--https/--http', default=True, required=False,
-              help='Use --http to disable HTTPS')
+@click.option('--glance-https/--glance-http', requred=False, default=True,
+              help='Use --glance-http to disable HTTPS for Glance redirects')
+@click.option('--arcus-http/--arcus-https', required=False, default=False,
+              help='Use --arcus-https to enable HTTPS for Arcus Client')
+@client.option('--cert-path', required=False, default=None,
+               help='Enables HTTPS using the specified certificate')
+@client.option('--cert-key-path', required=False, default=None,
+               help='Path the the HTTPS cert private key')
 @click.command(name='start')
-def client_start(api_ip, openstack_ip, https):
+def client_start(api_ip, openstack_ip, glance_https, arcus_https, cert_path,
+                 cert_key_path):
     """ Start the Arcus Client container """
     click.echo('Starting arcus_client')
-    success = arcus.client_start(api_ip=api_ip, openstack_ip=openstack_ip,
-                                 https=https)
+    if arcus_https and (cert_path is None or cert_key_path is None):
+        click.echo('ERROR: --cert-path and --cert-key-path are required')
+        return
+    success = arcus.client_start(
+        api_ip=api_ip,
+        openstack_ip=openstack_ip,
+        glance_https=glance_https,
+        arcus_https=arcus_https,
+        cert_path=cert_path,
+        cert_key_path=cert_key_path)
     if success:
         click.echo('Started arcus_client')
     else:
