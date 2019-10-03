@@ -105,7 +105,7 @@ def mgr():
     """ Command group for Arcus Mgr """
 
 
-@click.option('--openstack-ip', required=True, help='IP/VIP of Openstack')
+@click.option('--internal-vip', required=True, help='Internal VIP')
 @click.option('--sql-ip', required=True, help='IP/VIP of SQL service')
 @click.option('--sql-password', required=True, help='password for SQL service')
 @click.option('--rabbit-ip', required=True, multiple=True,
@@ -114,19 +114,22 @@ def mgr():
 @click.option('--kolla-dir', required=True, help='Path to kolla files')
 @click.option('--ceph/--no-ceph', required=False, default=False,
               help='Enable monitoring of Ceph services')
+@click.option('--ssh-key-path', required=True,
+              help='Path to SSH private key authorized to all nodes')
 @click.command(name='start')
-def mgr_start(openstack_ip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
-              kolla_dir, ceph):
+def mgr_start(internal_vip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
+              kolla_dir, ceph, ssh_key_path):
     """ Start the Arcus Mgr container """
     click.echo('Starting arcus_mgr')
     success = arcus.mgr_start(
-        openstack_ip=openstack_ip,
+        openstack_ip=internal_vip,
         sql_ip=sql_ip,
         sql_pass=sql_password,
         rabbit_ip_list=rabbit_ip,
         rabbit_pass=rabbit_pass,
         kolla_dir=kolla_dir,
-        enable_ceph=ceph)
+        enable_ceph=ceph,
+        ssh_key_path=ssh_key_path)
     if success:
         click.echo('Started arcus_mgr')
     else:

@@ -134,7 +134,7 @@ def client_start(api_ip, openstack_ip, https=True):
 
 
 def mgr_start(openstack_ip, sql_ip, sql_pass, rabbit_ip_list, rabbit_pass,
-              kolla_dir, enable_ceph):
+              kolla_dir, enable_ceph, ssh_key_path):
     """ Start the Arcus Mgr service """
     name = 'arcus_mgr'
     repo = 'breqwatr/arcus-mgr'
@@ -156,7 +156,8 @@ def mgr_start(openstack_ip, sql_ip, sql_pass, rabbit_ip_list, rabbit_pass,
             'ENABLE_CEPH': str(enable_ceph).lower()
         },
         'volumes': {
-            kolla_dir: {'bind': '/etc/kolla/', 'mode': 'rw'}
+            kolla_dir: {'bind': '/etc/kolla/', 'mode': 'rw'},
+            ssh_key_path: {'bind': '/root/.ssh/id_rsa', 'mode': 'ro'}
         },
         'restart_policy': {'Name': 'always'},
         'network_mode': 'host'
