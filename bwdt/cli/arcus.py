@@ -86,14 +86,29 @@ def client():
 
 @click.option('--api-ip', required=True, help='IP/VIP of Arcus API')
 @click.option('--openstack-ip', required=True, help='IP/VIP of Openstack')
-@click.option('--https/--http', default=True, required=False,
-              help='Use --http to disable HTTPS')
+@click.option('--glance-https/--glance-http', required=False, default=True,
+              help='Use --glance-http to disable HTTPS for Glance redirects')
+@click.option('--arcus-https/--arcus-http', required=False, default=False,
+              help='Use --arcus-https to enable HTTPS for Arcus Client')
+@click.option('--cert-path', required=False, default=None,
+              help='Enables HTTPS using the specified certificate')
+@click.option('--cert-key-path', required=False, default=None,
+              help='Path the the HTTPS cert private key')
 @click.command(name='start')
-def client_start(api_ip, openstack_ip, https):
+def client_start(api_ip, openstack_ip, glance_https, arcus_https, cert_path,
+                 cert_key_path):
     """ Start the Arcus Client container """
     click.echo('Starting arcus_client')
-    success = arcus.client_start(api_ip=api_ip, openstack_ip=openstack_ip,
-                                 https=https)
+    if arcus_https and (cert_path is None or cert_key_path is None):
+        click.echo('ERROR: --cert-path and --cert-key-path are required')
+        return
+    success = arcus.client_start(
+        api_ip=api_ip,
+        openstack_ip=openstack_ip,
+        glance_https=glance_https,
+        arcus_https=arcus_https,
+        cert_path=cert_path,
+        cert_key_path=cert_key_path)
     if success:
         click.echo('Started arcus_client')
     else:
@@ -105,7 +120,7 @@ def mgr():
     """ Command group for Arcus Mgr """
 
 
-@click.option('--openstack-ip', required=True, help='IP/VIP of Openstack')
+@click.option('--internal-vip', required=True, help='Internal VIP')
 @click.option('--sql-ip', required=True, help='IP/VIP of SQL service')
 @click.option('--sql-password', required=True, help='password for SQL service')
 @click.option('--rabbit-ip', required=True, multiple=True,
@@ -114,19 +129,22 @@ def mgr():
 @click.option('--kolla-dir', required=True, help='Path to kolla files')
 @click.option('--ceph/--no-ceph', required=False, default=False,
               help='Enable monitoring of Ceph services')
+@click.option('--ssh-key-path', required=True,
+              help='Path to SSH private key authorized to all nodes')
 @click.command(name='start')
-def mgr_start(openstack_ip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
-              kolla_dir, ceph):
+def mgr_start(internal_vip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
+              kolla_dir, ceph, ssh_key_path):
     """ Start the Arcus Mgr container """
     click.echo('Starting arcus_mgr')
     success = arcus.mgr_start(
-        openstack_ip=openstack_ip,
+        openstack_ip=internal_vip,
         sql_ip=sql_ip,
         sql_pass=sql_password,
         rabbit_ip_list=rabbit_ip,
         rabbit_pass=rabbit_pass,
         kolla_dir=kolla_dir,
-        enable_ceph=ceph)
+        enable_ceph=ceph,
+        ssh_key_path=ssh_key_path)
     if success:
         click.echo('Started arcus_mgr')
     else:

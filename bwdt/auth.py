@@ -1,5 +1,6 @@
 """ BWDT Authentication File functions """
 import json
+import sys
 import os
 
 import bwdt.envvar
@@ -63,5 +64,9 @@ def set(key_id, key, offline, offline_path):
 
 def use_ecr():
     """ Return if ECR should be used, safely handing str values """
-    data = get()
-    return str(data['offline']).lower() == 'false'
+    try:
+        data = get()
+        return str(data['offline']).lower() == 'false'
+    except TypeError:
+        sys.stderr.write('ERROR: BWDT not configured / misconfigured\n')
+        sys.exit()
