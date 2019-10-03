@@ -88,7 +88,7 @@ def client():
 @click.option('--openstack-ip', required=True, help='IP/VIP of Openstack')
 @click.option('--glance-https/--glance-http', required=False, default=True,
               help='Use --glance-http to disable HTTPS for Glance redirects')
-@click.option('--arcus-http/--arcus-https', required=False, default=False,
+@click.option('--arcus-https/--arcus-http', required=False, default=False,
               help='Use --arcus-https to enable HTTPS for Arcus Client')
 @click.option('--cert-path', required=False, default=None,
               help='Enables HTTPS using the specified certificate')
