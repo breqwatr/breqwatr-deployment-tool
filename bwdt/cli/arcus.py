@@ -90,10 +90,10 @@ def client():
               help='Use --glance-http to disable HTTPS for Glance redirects')
 @click.option('--arcus-http/--arcus-https', required=False, default=False,
               help='Use --arcus-https to enable HTTPS for Arcus Client')
-@client.option('--cert-path', required=False, default=None,
-               help='Enables HTTPS using the specified certificate')
-@client.option('--cert-key-path', required=False, default=None,
-               help='Path the the HTTPS cert private key')
+@click.option('--cert-path', required=False, default=None,
+              help='Enables HTTPS using the specified certificate')
+@click.option('--cert-key-path', required=False, default=None,
+              help='Path the the HTTPS cert private key')
 @click.command(name='start')
 def client_start(api_ip, openstack_ip, glance_https, arcus_https, cert_path,
                  cert_key_path):
