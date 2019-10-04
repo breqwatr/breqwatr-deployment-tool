@@ -21,7 +21,7 @@ def _save(path, key, force):
     if not os.path.exists(files_dir):
         os.mkdir(files_dir)
     if os.path.exists(full_path) and not force:
-        err = 'WARN: File {} exists. Use --force to overwrite\n'.format(path)
+        err = 'WARN: File {} exists. Use --force to replace'.format(full_path)
         click.echo(err)
         return False
     click.echo('Saving {}'.format(full_path))
