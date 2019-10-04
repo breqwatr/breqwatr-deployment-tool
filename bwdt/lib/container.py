@@ -205,10 +205,10 @@ class Docker(object):
 
     def import_image(self, image_name, tag):
         """ Load a docker image from a file """
-        echo('Loading {}:{} from offline media'.format(image_name, tag))
         auth = bwdt.lib.auth.get()
         directory = '{}/images/'.format(auth['offline_path'])
         path = get_image_as_filename(image_name, tag, directory)
+        echo('Loading {}:{} from {}'.format(image_name, tag, path))
         if not os.path.exists(path):
             sys.stderr.write('ERROR: file {} not found\n'.format(path))
             sys.exit(1)
