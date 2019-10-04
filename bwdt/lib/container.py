@@ -8,7 +8,7 @@ import docker
 from click import echo
 
 import bwdt.auth
-from bwdt.aws.ecr import ECR
+from bwdt.lib.aws.ecr import ECR
 
 
 def get_image_as_filename(image_name, tag, directory):

@@ -2,7 +2,7 @@
 import mysql.connector
 
 from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from bwdt.lib.container import Docker
 from bwdt.openstack import Openstack
 
 

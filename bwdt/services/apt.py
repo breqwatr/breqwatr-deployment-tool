@@ -1,6 +1,6 @@
 """ Controls for the apt service """
 from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from bwdt.lib.container import Docker
 
 
 def start(tag=None, port=81):

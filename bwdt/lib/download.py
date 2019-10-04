@@ -4,7 +4,7 @@ import sys
 
 import click
 
-from bwdt.aws.s3 import S3
+from bwdt.lib.aws.s3 import S3
 from bwdt.constants import (APT_TARGZ_KEY, BWDT_TARGZ_KEY, CLOUDYML_KEY,
                             S3_BUCKET)
 

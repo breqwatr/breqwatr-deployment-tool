@@ -4,7 +4,7 @@ import click
 
 import bwdt.auth
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.container import Docker, get_image_as_filename, offline_image_exists
+from bwdt.lib.container import Docker, get_image_as_filename, offline_image_exists
 
 
 def _all_images():
