@@ -7,7 +7,7 @@ from requests.exceptions import ReadTimeout
 import docker
 from click import echo
 
-import bwdt.auth
+import bwdt.lib.auth
 from bwdt.lib.aws.ecr import ECR
 
 
@@ -21,7 +21,7 @@ def get_image_as_filename(image_name, tag, directory):
 
 def offline_image_exists(image_name, tag):
     """ Return true if the offline image file exists """
-    auth = bwdt.auth.get()
+    auth = bwdt.lib.auth.get()
     directory = auth['offline_path']
     path = get_image_as_filename(image_name, tag, directory)
     return os.path.exists(path)
@@ -40,7 +40,7 @@ class Docker(object):
     def __init__(self):
         client = docker.from_env()
         repo_prefix = ""
-        if bwdt.auth.use_ecr():
+        if bwdt.lib.auth.use_ecr():
             ecr = ECR()
             delete_docker_credential()
             client.login(
@@ -64,7 +64,7 @@ class Docker(object):
 
     def pull(self, repository, tag, retag=True, remove_long_tag=True):
         """ Pull or import an image """
-        if bwdt.auth.use_ecr():
+        if bwdt.lib.auth.use_ecr():
             self._pull_ecr(repository, tag, retag, remove_long_tag)
         else:
             self.import_image(repository, tag)
@@ -134,7 +134,7 @@ class Docker(object):
 
     def export_image(self, image_name, tag):
         """ Save a docker image to a file in directory """
-        auth = bwdt.auth.get()
+        auth = bwdt.lib.auth.get()
         directory = auth['offline_path']
         path = get_image_as_filename(image_name, tag, directory)
         repository = '{}:{}'.format(image_name, tag)
@@ -160,7 +160,7 @@ class Docker(object):
     def import_image(self, image_name, tag):
         """ Load a docker image from a file """
         echo('Loading {}:{} from offline media'.format(image_name, tag))
-        auth = bwdt.auth.get()
+        auth = bwdt.lib.auth.get()
         directory = auth['offline_path']
         path = get_image_as_filename(image_name, tag, directory)
         if not os.path.exists(path):

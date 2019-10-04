@@ -3,12 +3,12 @@ import json
 import sys
 import os
 
-import bwdt.envvar
+import bwdt.lib.envvar
 
 
 def get_dir_path():
     """ Return the path of the auth file's directory """
-    env_auth_dir = bwdt.envvar.env()['auth_dir']
+    env_auth_dir = bwdt.lib.envvar.env()['auth_dir']
     if env_auth_dir is not None:
         path = os.environ[env_auth_dir]
     else:

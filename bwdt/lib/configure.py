@@ -1,7 +1,7 @@
 """ Commands to configure BWDT """
 import click
 
-import bwdt.auth as auth
+import bwdt.lib.auth as auth
 
 
 def configure(key_id, key, online, offline_path):

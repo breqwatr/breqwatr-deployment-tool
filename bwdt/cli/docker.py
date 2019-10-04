@@ -2,7 +2,7 @@
 # pylint disable=broad-except,W0703
 import click
 
-import bwdt.auth
+import bwdt.lib.auth
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
 from bwdt.lib.container import Docker, get_image_as_filename, offline_image_exists
 
@@ -56,7 +56,7 @@ def _export_image(repository, tag, pull, force):
     if tag is None:
         tag = _all_images()[repository]
     if offline_image_exists(repository, tag) and not force:
-        base = bwdt.auth.get()['offline_path']
+        base = bwdt.lib.auth.get()['offline_path']
         filename = get_image_as_filename(repository, tag, base)
         click.echo('Skipping (already exists): {}'.format(filename))
         return
@@ -65,7 +65,7 @@ def _export_image(repository, tag, pull, force):
     if pull:
         click.echo('Pulling {}:{}'.format(repository, tag))
         client.pull(repository=repository, tag=tag)
-    offln_path = bwdt.auth.get()['offline_path']
+    offln_path = bwdt.lib.auth.get()['offline_path']
     click.echo('Saving {}:{} to {}'.format(repository, tag, offln_path))
     client.export_image(repository, tag)
 

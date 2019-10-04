@@ -1,7 +1,6 @@
 """ Entrypoint for breqwatr-deployment-tool cli """
 import click
 
-import bwdt.auth
 import bwdt.cli.ansible
 import bwdt.cli.apt
 import bwdt.cli.arcus
