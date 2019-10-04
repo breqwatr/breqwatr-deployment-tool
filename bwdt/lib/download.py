@@ -11,19 +11,23 @@ from bwdt.constants import (APT_TARGZ_KEY, BWDT_TARGZ_KEY, CLOUDYML_KEY,
 
 def _save(path, key, force):
     """ Download the specified file """
+    files_dir = '{}/{}'.format(path, 'files')
     if os.path.isdir(path):
-        path = '{}/{}'.format(path, key)
+        full_path = '{}/{}'.format(files_dir, key)
     else:
         err = 'ERROR: path {} must be a directory and exist\n'.format(path)
         sys.stderr.write(err)
-        sys.exit(1)
-    if os.path.exists(path) and not force:
-        err = 'ERROR: File {} exists. Use --force to overwrite\n'.format(path)
-        sys.stderr.write(err)
-        sys.exit(1)
-    click.echo('Saving {}'.format(path))
-    full_path = '{}/files/{}'.format(path, APT_TARGZ_KEY)
-    S3().download(full_path, S3_BUCKET, APT_TARGZ_KEY)
+        return False
+    if not os.path.exists(files_dir):
+        os.mkdir(files_dir)
+    if os.path.exists(full_path) and not force:
+        err = 'WARN: File {} exists. Use --force to overwrite\n'.format(path)
+        click.echo(err)
+        return False
+    click.echo('Saving {}'.format(full_path))
+    full_path = '{}/{}'.format(files_dir, key)
+    S3().download(full_path, S3_BUCKET, key)
+    return True
 
 
 def offline_apt(path, force):

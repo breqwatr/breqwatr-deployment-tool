@@ -8,7 +8,16 @@ import docker
 from click import echo
 
 import bwdt.lib.auth
+from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
 from bwdt.lib.aws.ecr import ECR
+
+
+def _all_images():
+    """ Return dict of all images """
+    images = {}
+    images.update(SERVICE_IMAGE_TAGS)
+    images.update(KOLLA_IMAGE_TAGS)
+    return images
 
 
 def get_image_as_filename(image_name, tag, directory):
@@ -22,7 +31,7 @@ def get_image_as_filename(image_name, tag, directory):
 def offline_image_exists(image_name, tag):
     """ Return true if the offline image file exists """
     auth = bwdt.lib.auth.get()
-    directory = auth['offline_path']
+    directory = '{}/{}'.format(auth['offline_path'], '/images/')
     path = get_image_as_filename(image_name, tag, directory)
     return os.path.exists(path)
 
@@ -62,12 +71,25 @@ class Docker(object):
             if remove_long_tag:
                 self.remove(repo=full_repo_name, tag=tag)
 
-    def pull(self, repository, tag, retag=True, remove_long_tag=True):
+    def pull(self, repository, tag=None, retag=True, remove_long_tag=True):
         """ Pull or import an image """
+        if tag is None:
+            tag = _all_images()[repository]
         if bwdt.lib.auth.use_ecr():
             self._pull_ecr(repository, tag, retag, remove_long_tag)
         else:
             self.import_image(repository, tag)
+
+    def pull_all(self, tag=None, retag=True, remove_long_tag=True):
+        """ Pull or import all images """
+        all_images = _all_images()
+        i = 1
+        count = len(all_images)
+        for repository in all_images:
+            echo('Pulling image {} of {}'.format(i, count))
+            i += 1
+            self.pull(repository=repository, tag=tag, retag=retag,
+                      remove_long_tag=remove_long_tag)
 
     def tag(self, old_repo, old_tag, new_repo, new_tag):
         """ docker tag """
@@ -132,13 +154,27 @@ class Docker(object):
         exit_code, output = container.exec_run(cmd)
         return {'exit_code': exit_code, 'output': output}
 
-    def export_image(self, image_name, tag):
+    def export_image(self, image_name, tag=None, force=False):
         """ Save a docker image to a file in directory """
+        if tag is None:
+            tag = _all_images()[image_name]
         auth = bwdt.lib.auth.get()
-        directory = auth['offline_path']
+        base_dir = auth['offline_path']
+        if not os.path.isdir(base_dir):
+            echo('ERROR: Directory {} not found'.format(base_dir))
+            return
+        directory = '{}/images/'.format(base_dir)
+        if not os.path.isdir(directory):
+            echo('Creating directory: {}'.format(directory))
+            os.mkdir(directory)
         path = get_image_as_filename(image_name, tag, directory)
+        if offline_image_exists(image_name, tag) and not force:
+            echo('WARN: {} already exists: --force to overwrite'.format(path))
+            return
         repository = '{}:{}'.format(image_name, tag)
         image = self.client.images.get(repository)
+        echo('Saving: {}'.format(path))
+        # Do the export and handle errors. A few things might go wrong
         try:
             with open(path, 'wb') as _file:
                 for chunk in image.save(named=repository):
@@ -157,11 +193,21 @@ class Docker(object):
         else:
             sys.stderr.write('ERROR: Failed to create {}\n'.format(path))
 
+    def export_image_all(self, tag=None, force=False):
+        """ Pull or import all images """
+        all_images = _all_images()
+        i = 1
+        count = len(all_images)
+        for repository in all_images:
+            echo('Pulling image {} of {}'.format(i, count))
+            i += 1
+            self.export_image(image_name=repository, tag=tag, force=force)
+
     def import_image(self, image_name, tag):
         """ Load a docker image from a file """
         echo('Loading {}:{} from offline media'.format(image_name, tag))
         auth = bwdt.lib.auth.get()
-        directory = auth['offline_path']
+        directory = '{}/images/'.format(auth['offline_path'])
         path = get_image_as_filename(image_name, tag, directory)
         if not os.path.exists(path):
             sys.stderr.write('ERROR: file {} not found\n'.format(path))

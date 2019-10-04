@@ -2,30 +2,12 @@
 # pylint disable=broad-except,W0703
 import click
 
-import bwdt.lib.auth
-from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.lib.container import Docker, get_image_as_filename, offline_image_exists
-
-
-def _all_images():
-    """ Return dict of all images """
-    images = {}
-    images.update(SERVICE_IMAGE_TAGS)
-    images.update(KOLLA_IMAGE_TAGS)
-    return images
+from bwdt.lib.container import Docker
 
 
 @click.group(name='docker')
 def docker_group():
     """ Command group for local docker commands """
-
-
-def _pull(repository, tag):
-    """ Reusable pull command """
-    if tag is None:
-        tag = _all_images()[repository]
-    click.echo('Pulling {}:{}'.format(repository, tag))
-    Docker().pull(repository=repository, tag=tag)
 
 
 @click.argument('repository')
@@ -34,7 +16,7 @@ def _pull(repository, tag):
 @click.command(name='pull')
 def pull_one(repository, tag):
     """ Pull an image from the upstream registry """
-    _pull(repository, tag)
+    Docker().pull(repository=repository, tag=tag)
 
 
 @click.option('--tag', default=None, required=False,
@@ -42,32 +24,7 @@ def pull_one(repository, tag):
 @click.command(name='pull-all')
 def pull_all(tag):
     """ Pull all images """
-    all_images = _all_images()
-    i = 1
-    count = len(all_images)
-    for repository in all_images:
-        click.echo('Pulling image {} of {}'.format(i, count))
-        _pull(repository, tag)
-        i += 1
-
-
-def _export_image(repository, tag, pull, force):
-    """ Re-usable command to export image to directory """
-    if tag is None:
-        tag = _all_images()[repository]
-    if offline_image_exists(repository, tag) and not force:
-        base = bwdt.lib.auth.get()['offline_path']
-        filename = get_image_as_filename(repository, tag, base)
-        click.echo('Skipping (already exists): {}'.format(filename))
-        return
-    client = Docker()
-    # try:
-    if pull:
-        click.echo('Pulling {}:{}'.format(repository, tag))
-        client.pull(repository=repository, tag=tag)
-    offln_path = bwdt.lib.auth.get()['offline_path']
-    click.echo('Saving {}:{} to {}'.format(repository, tag, offln_path))
-    client.export_image(repository, tag)
+    Docker().pull_all(tag=tag)
 
 
 @click.argument('repository')
@@ -79,7 +36,10 @@ def _export_image(repository, tag, pull, force):
 @click.command(name='export-image')
 def export_image(repository, tag, pull, force):
     """ Export an image to directory """
-    _export_image(repository, tag, pull, force)
+    client = Docker()
+    if pull:
+        client.pull(repository=repository, tag=tag)
+    client.export_image(repository, tag=tag, force=force)
 
 @click.option('--pull/--no-pull', required=False, default=True,
               help='Use --no-pull to keep older image for this export')
@@ -90,13 +50,10 @@ def export_image(repository, tag, pull, force):
 @click.command(name='export-image-all')
 def export_image_all(pull, tag, force):
     """ Export all images to directory  """
-    all_images = _all_images()
-    i = 1
-    count = len(all_images)
-    for repository in all_images:
-        click.echo('Exporting image {} of {}'.format(i, count))
-        _export_image(repository, tag, pull, force)
-        i += 1
+    client = Docker()
+    if pull:
+        client.pull_all(tag=tag)
+    client.export_image_all(tag=tag, force=force)
 
 
 docker_group.add_command(pull_one)
