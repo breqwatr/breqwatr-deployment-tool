@@ -4,15 +4,15 @@ from base64 import b64decode
 # pylint: disable=import-error
 import boto3
 
-import bwdt.auth
-from bwdt.envvar import env
+import bwdt.lib.auth
+from bwdt.lib.envvar import env
 
 
 # pylint: disable=too-few-public-methods
 class ECR(object):
     """ Class for interacting with AWS ECR """
     def __init__(self):
-        auth = bwdt.auth.get()
+        auth = bwdt.lib.auth.get()
         session = boto3.Session(aws_access_key_id=auth['key_id'],
                                 aws_secret_access_key=auth['key'])
         region = env()['region']

@@ -1,6 +1,6 @@
 """ Controls for the ansible service """
 from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from bwdt.lib.container import Docker
 
 
 def start(ssh_key_path, cloud_yml_path, kolla_dir):

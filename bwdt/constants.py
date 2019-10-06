@@ -2,7 +2,8 @@
 
 # S3 Configs
 S3_BUCKET = 'breqwatr-deployment-tool'
-OSTOOLS_KEY = 'ostools.tar.gz'
+APT_TARGZ_KEY = 'apt.tar.gz'
+BWDT_TARGZ_KEY = 'bwdt.tar.gz'
 CLOUDYML_KEY = 'cloud.yml'
 
 # Current latest tag

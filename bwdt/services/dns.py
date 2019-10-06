@@ -1,6 +1,6 @@
 """ Controls for the dns service """
 from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from bwdt.lib.container import Docker
 
 
 def start(interface_name, cloud_vip, cloud_fqdn, tag=None):

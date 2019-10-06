@@ -2,7 +2,7 @@
 from click import echo
 
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from bwdt.lib.container import Docker
 
 
 def start(ip='0.0.0.0', port=5000):
@@ -14,7 +14,7 @@ def start(ip='0.0.0.0', port=5000):
     image = '{}:{}'.format(repo, tag)
     docker_kwargs = {
         'environment': {'REGISTRY_HTTP_ADDR': http_addr},
-        'ports': {'5000': '5000'}
+        'ports': {port: port}
     }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)

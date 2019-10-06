@@ -2,13 +2,13 @@
 # pylint: disable=import-error
 import boto3
 
-import bwdt.auth
+import bwdt.lib.auth
 
 
 class S3(object):
     """ Object class for S3 """
     def __init__(self):
-        auth = bwdt.auth.get()
+        auth = bwdt.lib.auth.get()
         session = boto3.Session(aws_access_key_id=auth['key_id'],
                                 aws_secret_access_key=auth['key'])
         self.client = session.client('s3')

@@ -1,6 +1,6 @@
 """ Controls for the ntp service """
 from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from bwdt.lib.container import Docker
 
 
 def start(tag=None):

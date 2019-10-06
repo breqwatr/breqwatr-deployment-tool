@@ -1,6 +1,6 @@
 """ Controls for the PXE service """
 from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.container import Docker
+from bwdt.lib.container import Docker
 
 
 def start(interface, dhcp_start, dhcp_end, dns_ip='8.8.8.8'):
