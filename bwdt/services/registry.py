@@ -14,7 +14,7 @@ def start(ip='0.0.0.0', port=5000):
     image = '{}:{}'.format(repo, tag)
     docker_kwargs = {
         'environment': {'REGISTRY_HTTP_ADDR': http_addr},
-        'ports': {'5000': '5000'}
+        'ports': {port: port}
     }
     docker = Docker()
     docker.pull(repository=repo, tag=tag)
