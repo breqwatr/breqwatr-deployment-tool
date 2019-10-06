@@ -57,7 +57,6 @@ def gen_config():
     playbook = '/var/repos/bw-ansible/generate-kolla-config.yml'
     cmd = 'ansible-playbook {} {} {} {}'.format(cloud_yml, conn, inv, playbook)
     docker_cmd = 'docker exec -it ansible "{}"'.format(cmd)
-    click.echo('# Run:')
     click.echo(docker_cmd)
 
 
@@ -69,7 +68,6 @@ def bootstrap():
     # click.echo(result['output'])
     # TODO: Temprary print instead of run until streaming output and socket
     # timeout issues are fixed:
-    click.echo('# Run:')
     click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory bootstrap-servers')
 
 
@@ -81,7 +79,6 @@ def deploy():
     # click.echo(result['output'])
     # TODO: Temprary print instead of run until streaming output and socket
     # timeout issues are fixed:
-    click.echo('# RUN:')
     click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory deploy')
 
 
@@ -93,7 +90,6 @@ def post_deploy():
     # click.echo(result['output'])
     # TODO: Temprary print instead of run until streaming output and socket
     # timeout issues are fixed:
-    click.echo('# Run:')
     click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory post-deploy')
 
 
