@@ -56,7 +56,7 @@ def gen_config():
     inv = '-i localhost,'
     playbook = '/var/repos/bw-ansible/generate-kolla-config.yml'
     cmd = 'ansible-playbook {} {} {} {}'.format(cloud_yml, conn, inv, playbook)
-    docker_cmd = 'docker exec -it ansible "{}"'.format(cmd)
+    docker_cmd = 'docker exec -it ansible {}'.format(cmd)
     click.echo(docker_cmd)
 
 
