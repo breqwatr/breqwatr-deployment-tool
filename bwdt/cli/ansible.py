@@ -4,6 +4,7 @@ import click
 import bwdt.services.ansible as ansible
 import bwdt.cli.ceph
 
+
 @click.group(name='ansible')
 def ansible_group():
     """ Command group for bwdt Ansible service """
