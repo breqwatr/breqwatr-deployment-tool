@@ -46,11 +46,6 @@ def openstack():
 @click.command(name='gen-config')
 def gen_config():
     """ Generate OpenStack config files in the ansible container """
-    #click.echo("Generating OpenStack config files")
-    #result = ansible.openstack_genconfig()
-    #click.echo(result['output'])
-    # TODO: Temprary print instead of run until streaming output and socket
-    # timeout issues are fixed:
     cloud_yml = '-e @/etc/breqwatr/cloud.yml'
     conn = '-e ansible_connection=local'
     inv = '-i localhost,'
@@ -63,34 +58,25 @@ def gen_config():
 @click.command()
 def bootstrap():
     """ Run kolla-ansible bootstrap """
-    # click.echo("Running bootstrap task")
-    # result = ansible.openstack_bootstrap()
-    # click.echo(result['output'])
-    # TODO: Temprary print instead of run until streaming output and socket
-    # timeout issues are fixed:
-    click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory bootstrap-servers')
+    cmd = ('docker exec -it ansible kolla-ansible'
+           '-i /etc/kolla/inventory bootstrap-servers')
+    click.echo(cmd)
 
 
 @click.command()
 def deploy():
     """ Run kolla-ansible deploy """
-    # click.echo("Running deploy task")
-    # result = ansible.openstack_deploy()
-    # click.echo(result['output'])
-    # TODO: Temprary print instead of run until streaming output and socket
-    # timeout issues are fixed:
-    click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory deploy')
+    cmd = ('docker exec -it ansible kolla-ansible'
+           '-i /etc/kolla/inventory deploy')
+    click.echo(cmd)
 
 
 @click.command(name='post-deploy')
 def post_deploy():
     """ Run kolla-ansible post-deploy """
-    # click.echo("Running post-deploy task")
-    # result = ansible.openstack_postdeploy()
-    # click.echo(result['output'])
-    # TODO: Temprary print instead of run until streaming output and socket
-    # timeout issues are fixed:
-    click.echo('docker exec -it ansible kolla-ansible -i /etc/kolla/inventory post-deploy')
+    cmd = ('docker exec -it ansible kolla-ansible'
+           '-i /etc/kolla/inventory post-deploy')
+    click.echo(cmd)
 
 
 ansible_group.add_command(transfer_kolla_dir)
