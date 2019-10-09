@@ -13,9 +13,10 @@ def gen_config():
     """ Generates ceph configs in ansible container """
     click.echo("Generating ceph config files")
     cmd = ('ansible-playbook -e @/etc/breqwatr/cloud.yml -e '
-          'ansible_connection=local -i localhost, '
-          '/var/repos/bw-ansible/generate-ceph-config.yml')
+           'ansible_connection=local -i localhost, '
+           '/var/repos/bw-ansible/generate-ceph-config.yml')
     docker_cmd = 'docker exec -it ansible {}'.format(cmd)
     click.echo(docker_cmd)
+
 
 ceph_group.add_command(gen_config)
