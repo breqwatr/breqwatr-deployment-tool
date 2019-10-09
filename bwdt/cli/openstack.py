@@ -21,7 +21,7 @@ def gen_config():
 @click.command()
 def bootstrap():
     """ Run kolla-ansible bootstrap """
-    cmd = ('docker exec -it ansible kolla-ansible'
+    cmd = ('docker exec -it ansible kolla-ansible '
            '-i /etc/kolla/inventory bootstrap-servers')
     click.echo(cmd)
 
@@ -29,7 +29,7 @@ def bootstrap():
 @click.command()
 def deploy():
     """ Run kolla-ansible deploy """
-    cmd = ('docker exec -it ansible kolla-ansible'
+    cmd = ('docker exec -it ansible kolla-ansible '
            '-i /etc/kolla/inventory deploy')
     click.echo(cmd)
 
@@ -37,7 +37,7 @@ def deploy():
 @click.command(name='post-deploy')
 def post_deploy():
     """ Run kolla-ansible post-deploy """
-    cmd = ('docker exec -it ansible kolla-ansible'
+    cmd = ('docker exec -it ansible kolla-ansible '
            '-i /etc/kolla/inventory post-deploy')
     click.echo(cmd)
 
