@@ -10,13 +10,12 @@ def openstack_group():
 @click.command(name='gen-config')
 def gen_config():
     """ Generate OpenStack config files in the ansible container """
-    cloud_yml = '-e @/etc/breqwatr/cloud.yml'
-    conn = '-e ansible_connection=local'
-    inv = '-i localhost,'
-    playbook = '/var/repos/bw-ansible/generate-kolla-config.yml'
-    cmd = 'ansible-playbook {} {} {} {}'.format(cloud_yml, conn, inv, playbook)
-    docker_cmd = 'docker exec -it ansible {}'.format(cmd)
-    click.echo(docker_cmd)
+    cmd = ('docker exec -it ansible '
+           'ansible-playbook '
+           '-e @/etc/breqwatr/cloud.yml '
+           '-i localhost, '
+           '/var/repos/bw-ansible/generate-kolla-config.yml')
+    click.echo(cmd)
 
 
 @click.command()
