@@ -2,7 +2,7 @@
 import click
 
 import bwdt.services.ansible as ansible
-
+import bwdt.cli.ceph
 
 @click.group(name='ansible')
 def ansible_group():
@@ -101,3 +101,5 @@ openstack.add_command(bootstrap)
 openstack.add_command(deploy)
 openstack.add_command(post_deploy)
 ansible_group.add_command(openstack)
+
+ansible_group.add_command(bwdt.cli.ceph.ceph_group)
