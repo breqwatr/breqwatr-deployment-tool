@@ -75,6 +75,10 @@ class Docker(object):
         """ Pull or import an image """
         if tag is None:
             tag = _all_images()[repository]
+        auth = bwdt.lib.auth.get()
+        if 'update_images' in auth and auth['update_images'].lower() != 'true':
+            if self.get_image(repository, tag) is not None:
+                echo('Skipping pull, update_images is false and image exists')
         if bwdt.lib.auth.use_ecr():
             self._pull_ecr(repository, tag, retag, remove_long_tag)
         else:
@@ -214,3 +218,11 @@ class Docker(object):
             sys.exit(1)
         with open(path, 'rb') as image:
             self.client.images.load(image)
+
+    def get_image(self, repository, tag):
+        """ Return a Docker image or None if the image is not found """
+        full_name = ('{}:{}'.format(repository, tag))
+        try:
+            return self.client.images.get(full_name)
+        except docker.errors.ImageNotFound:
+            return None
