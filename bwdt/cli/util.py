@@ -32,20 +32,20 @@ def export_offline_media(path, force, tag):
 
 
 @click.argument('disk')
-@click.option('--force', '-f', required=False, default=False,
+@click.option('--force/--ask', required=False, default=False,
               help='Skip the prompt asking you to type the drive name')
 @click.command(name='zap-disk')
 def zap_disk(disk, force):
     """ Completely delete everything from a disk to prepare it for ceph """
     if not os.path.exists(disk):
-        sys.stderr.write('ERROR: {} not found'.format(disk))
+        sys.stderr.write('ERROR: {} not found\n'.format(disk))
         sys.exit(1)
     click.echo('WARNING: This will wip {}'.format(disk))
     if not force:
         click.echo('Type the drive name again to continue:')
         user_in = raw_input()
         if user_in != disk:
-            sys.stderr.write('ERROR: Confirm does not match {}'.format(disk))
+            sys.stderr.write('ERROR: Confirm does not match {}\n'.format(disk))
             sys.exit(1)
     subprocess.call(['wipefs', '-a', disk])
     dd_cmd = 'dd if=/dev/zero of={} bs=4096k count=100'.format(disk).split(' ')
