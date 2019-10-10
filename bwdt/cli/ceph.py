@@ -11,7 +11,6 @@ def ceph_group():
 @click.command(name='gen-config')
 def gen_config():
     """ Generates ceph configs in ansible container """
-    click.echo("Generating ceph config files")
     cmd = ('ansible-playbook -e @/etc/breqwatr/cloud.yml -e '
            'ansible_connection=local -i localhost, '
            '/var/repos/bw-ansible/generate-ceph-config.yml')
@@ -19,4 +18,13 @@ def gen_config():
     click.echo(docker_cmd)
 
 
+@click.command(name='deploy')
+def deploy():
+    """ Deploy ceph on hosts """
+    cmd = ('ansible-playbook -i /etc/breqwatr/ceph-inventory.yml '
+           '/var/repos/ceph-ansible/site.yml')
+    docker_cmd = 'docker exec -it ansible {}'.format(cmd)
+    click.echo(docker_cmd)
+
+ceph_group.add_command(deploy)
 ceph_group.add_command(gen_config)
