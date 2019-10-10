@@ -79,6 +79,7 @@ class Docker(object):
         if 'update_images' in auth and auth['update_images'].lower() != 'true':
             if self.get_image(repository, tag) is not None:
                 echo('Skipping pull, update_images is false and image exists')
+                return
         if bwdt.lib.auth.use_ecr():
             self._pull_ecr(repository, tag, retag, remove_long_tag)
         else:
