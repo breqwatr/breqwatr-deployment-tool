@@ -1,8 +1,10 @@
 """ Module for interacting with AWS ECR """
+import sys
 from base64 import b64decode
 
 # pylint: disable=import-error
 import boto3
+import botocore.exceptions
 
 import bwdt.lib.auth
 from bwdt.lib.envvar import env
@@ -17,7 +19,11 @@ class ECR(object):
                                 aws_secret_access_key=auth['key'])
         region = env()['region']
         client = session.client('ecr', region_name=region)
-        token = client.get_authorization_token()
+        try:
+            token = client.get_authorization_token()
+        except botocore.exceptions.ClientError:
+            sys.stderr.write('ERROR: Invalid Key or Key ID\n')
+            sys.exit(1)
         b64token = token['authorizationData'][0]['authorizationToken']
         decoded_token = b64decode(b64token)
         token_data = decoded_token.split(':')
