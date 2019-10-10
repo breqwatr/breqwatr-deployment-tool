@@ -11,17 +11,21 @@ import bwdt.cli.makeusb
 import bwdt.cli.registry
 import bwdt.cli.pip
 import bwdt.cli.pxe
+import bwdt.lib.auth as auth
+import bwdt.lib.configure
 
 
 @click.group()
 def main():
     """ Entrypoint for breqwatr deployment tool cli """
+    if auth.get() is None:
+        bwdt.lib.configure.configure()
 
 
 main.add_command(bwdt.cli.ansible.ansible_group)
 main.add_command(bwdt.cli.apt.apt_group)
 main.add_command(bwdt.cli.arcus.arcus_group)
-main.add_command(bwdt.cli.configure.configure)
+main.add_command(bwdt.cli.configure.configure_group)
 main.add_command(bwdt.cli.docker.docker_group)
 main.add_command(bwdt.cli.download.download_group)
 main.add_command(bwdt.cli.makeusb.makeusb)
