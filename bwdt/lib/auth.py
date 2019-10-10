@@ -54,6 +54,11 @@ def set(key_id, key, offline, offline_path):
     """ Write the config file """
     data = {'key_id': key_id, 'key': key, 'offline': offline,
             'offline_path': offline_path}
+    old_data = get()
+    if old_data is not None:
+        for index in data:
+            if data[index] is None and old_data[index] is not None:
+                data[index] = old_data[index]
     jdata = json.dumps(data, indent=4, sort_keys=True)
     jdata = jdata.rstrip()
     mkdir()
