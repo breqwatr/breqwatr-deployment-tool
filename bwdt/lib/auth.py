@@ -53,7 +53,7 @@ def get():
 def set(key_id, key, offline, offline_path):
     """ Write the config file """
     data = {'key_id': key_id, 'key': key, 'offline': offline,
-            'offline_path': offline_path}
+            'offline_path': offline_path, 'update_images': 'true'}
     old_data = get()
     if old_data is not None:
         for index in data:
