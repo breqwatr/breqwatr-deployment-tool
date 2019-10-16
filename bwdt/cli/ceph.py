@@ -26,5 +26,16 @@ def deploy():
     docker_cmd = 'docker exec -it ansible {}'.format(cmd)
     click.echo(docker_cmd)
 
+
+@click.command(name='post-deploy')
+def post_deploy():
+    """ Creates ceph related file and pools """
+    cmd = ('ansible-playbook -e @/etc/breqwatr/globals.yml -i '
+           '/etc/breqwatr/ceph-inventory.yml '
+           '/var/repos/bw-ansible/ceph-post-deploy.yml')
+    docker_cmd = 'docker exec -it ansible {}'.format(cmd)
+    click.echo(docker_cmd)
+
 ceph_group.add_command(deploy)
 ceph_group.add_command(gen_config)
+ceph_group.add_command(post_deploy)
