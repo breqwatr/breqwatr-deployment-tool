@@ -13,6 +13,7 @@ def gen_config():
     cmd = ('docker exec -it ansible '
            'ansible-playbook '
            '-e @/etc/breqwatr/cloud.yml '
+           '-e ansible_connection=local '
            '-i localhost, '
            '/var/repos/bw-ansible/generate-kolla-config.yml')
     click.echo(cmd)
