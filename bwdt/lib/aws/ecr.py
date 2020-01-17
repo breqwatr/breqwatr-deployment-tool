@@ -11,7 +11,7 @@ from bwdt.lib.envvar import env
 
 
 # pylint: disable=too-few-public-methods
-class ECR(object):
+class ECR:
     """ Class for interacting with AWS ECR """
     def __init__(self):
         auth = bwdt.lib.auth.get()

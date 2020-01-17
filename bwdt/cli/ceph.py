@@ -36,6 +36,7 @@ def post_deploy():
     docker_cmd = 'docker exec -it ansible {}'.format(cmd)
     click.echo(docker_cmd)
 
+
 ceph_group.add_command(deploy)
 ceph_group.add_command(gen_config)
 ceph_group.add_command(post_deploy)

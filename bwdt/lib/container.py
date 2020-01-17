@@ -44,7 +44,7 @@ def delete_docker_credential():
         os.remove(docker_cred_path)
 
 
-class Docker(object):
+class Docker:
     """Object to interact with docker & ECR"""
     def __init__(self):
         client = docker.from_env()

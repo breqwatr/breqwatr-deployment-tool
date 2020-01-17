@@ -5,7 +5,7 @@ import boto3
 import bwdt.lib.auth
 
 
-class S3(object):
+class S3:
     """ Object class for S3 """
     def __init__(self):
         auth = bwdt.lib.auth.get()

@@ -24,7 +24,7 @@ def configure(key_id=None, key=None, online=None, offline_path=None):
     if online is None:
         echo('Do you have an internet connection? [y/n]:')
         user_in = input().lower()
-        if user_in != 'y' and user_in != 'n':
+        if user_in not in ('y', 'n'):
             _error('Invalid input. Expected y or n')
         online = (user_in == 'y')
     if online:
