@@ -43,7 +43,7 @@ def zap_disk(disk, force):
     click.echo('WARNING: This will wip {}'.format(disk))
     if not force:
         click.echo('Type the drive name again to continue:')
-        user_in = raw_input()
+        user_in = input()
         if user_in != disk:
             sys.stderr.write('ERROR: Confirm does not match {}\n'.format(disk))
             sys.exit(1)
