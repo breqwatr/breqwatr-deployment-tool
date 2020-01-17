@@ -15,7 +15,7 @@ import bwdt.lib.auth as auth
 import bwdt.lib.configure
 
 
-def get_entrypoint():
+def entrypoint():
     """ Return the entrypoint click group """
     @click.group()
     def entrypoint():
@@ -31,12 +31,11 @@ def get_entrypoint():
     entrypoint.add_command(bwdt.cli.registry.registry_group)
     entrypoint.add_command(bwdt.cli.pip.pip_group)
     entrypoint.add_command(bwdt.cli.pxe.pxe_group)
-    return entrypoint
+    return entrypoint()
 
 
 def main():
     """ Entrypoint defined int setup.py for bwdt command"""
     if auth.get() is None:
         bwdt.lib.configure.configure()
-    entrypoint = get_entrypoint()
     entrypoint()

@@ -21,12 +21,12 @@ def test_main(monkeypatch, parm_auth):
     # bwdt.lib.configure.configure() is not being tested here, should be called
     mm_configure = MagicMock(name='mm_configure')
     monkeypatch.setattr(bwdt.lib.configure, 'configure', mm_configure)
-    # make sure the return value of get_entrypoint runs
-    mm_entrypoint = MagicMock(name='mm_get_entrypoint')
-    monkeypatch.setattr(bwdt.cli.main, 'get_entrypoint', mm_entrypoint)
+    # make sure the return value of entrypoint runs
+    mm_entrypoint = MagicMock(name='mm_entrypoint')
+    monkeypatch.setattr(bwdt.cli.main, 'entrypoint', mm_entrypoint)
     bwdt.cli.main.main()
     assert mm_auth_get.called, 'called auth.get()'
     if not auth_found:
         assert mm_configure.called, 'called configure() when auth not found'
-    assert mm_entrypoint.return_value.called, 'entrypoint ran'
+    assert mm_entrypoint.called, 'entrypoint ran'
 
