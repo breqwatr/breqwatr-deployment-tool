@@ -32,6 +32,16 @@ directory off of the removable media, then install with this command:
 pip install --no-index --find-links <directory>  breqwatr-deployment-tool
 ```
 
+
+## Testing
+
+```bash
+# Run unit tests
+tox -e test
+
+# Run linter
+tox -e lint
+```
 ---
 
 

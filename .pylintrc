@@ -1,0 +1,17 @@
+[MESSAGES CONTROL]
+disable = R0913,C0103,W0622,R0801
+
+; DISABLED RULES NOTES
+
+; R0913: Too many arguments (%n/5) (too-many-arguments)
+;   temporary until the Entry objects can be refactored. For now, they're fine
+; C0103: Variable name "%s" doesn't conform to snake_case naming style (invalid-name)
+;   Lots of 2 letter variables can be perfectly easy to understand, like "ip"
+
+
+; REFACTOR THEN REMOVE THESE
+
+; W0622: Redefining built-in '%s' (redefined-builtin)
+;   id shouldn't be a reserved word anyways, imo
+; R0801: Similar lines in 2 files
+;   need to refactor the image code to use some lib functions
