@@ -15,20 +15,28 @@ import bwdt.lib.auth as auth
 import bwdt.lib.configure
 
 
-@click.group()
+def get_entrypoint():
+    """ Return the entrypoint click group """
+    @click.group()
+    def entrypoint():
+        """ Entrypoint for Click """
+        pass
+    entrypoint.add_command(bwdt.cli.ansible.ansible_group)
+    entrypoint.add_command(bwdt.cli.apt.apt_group)
+    entrypoint.add_command(bwdt.cli.arcus.arcus_group)
+    entrypoint.add_command(bwdt.cli.configure.configure_group)
+    entrypoint.add_command(bwdt.cli.docker.docker_group)
+    entrypoint.add_command(bwdt.cli.download.download_group)
+    entrypoint.add_command(bwdt.cli.util.util_group)
+    entrypoint.add_command(bwdt.cli.registry.registry_group)
+    entrypoint.add_command(bwdt.cli.pip.pip_group)
+    entrypoint.add_command(bwdt.cli.pxe.pxe_group)
+    return entrypoint
+
+
 def main():
-    """ Entrypoint for breqwatr deployment tool cli """
+    """ Entrypoint defined int setup.py for bwdt command"""
     if auth.get() is None:
         bwdt.lib.configure.configure()
-
-
-main.add_command(bwdt.cli.ansible.ansible_group)
-main.add_command(bwdt.cli.apt.apt_group)
-main.add_command(bwdt.cli.arcus.arcus_group)
-main.add_command(bwdt.cli.configure.configure_group)
-main.add_command(bwdt.cli.docker.docker_group)
-main.add_command(bwdt.cli.download.download_group)
-main.add_command(bwdt.cli.util.util_group)
-main.add_command(bwdt.cli.registry.registry_group)
-main.add_command(bwdt.cli.pip.pip_group)
-main.add_command(bwdt.cli.pxe.pxe_group)
+    entrypoint = get_entrypoint()
+    entrypoint()
