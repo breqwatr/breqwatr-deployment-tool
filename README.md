@@ -39,8 +39,12 @@ pip install --no-index --find-links <directory>  breqwatr-deployment-tool
 # Run unit tests
 tox -e test
 
+# show test coverage
+text -e coverage
+
 # Run linter
 tox -e lint
+
 ```
 ---
 
