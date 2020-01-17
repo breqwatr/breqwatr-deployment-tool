@@ -4,7 +4,7 @@ import click
 # Requires python 3
 import sys
 if sys.version_info[0] != 3:
-    sys.stdout.write('ERROR: Python 3 required \n')
+    sys.stderr.write('ERROR: Python 3 required \n')
     sys.exit(42)
 
 import bwdt.cli.ansible
