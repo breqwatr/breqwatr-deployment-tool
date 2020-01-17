@@ -1,6 +1,12 @@
 """ Entrypoint for breqwatr-deployment-tool cli """
 import click
 
+# Requires python 3
+import sys
+if sys.version_info[0] != 3:
+    sys.stdout.write('ERROR: Python 3 required \n')
+    sys.exit(42)
+
 import bwdt.cli.ansible
 import bwdt.cli.apt
 import bwdt.cli.arcus
