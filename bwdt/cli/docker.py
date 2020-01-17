@@ -2,7 +2,8 @@
 # pylint disable=broad-except,W0703
 import click
 
-from bwdt.lib.container import Docker
+import bwdt.lib.container
+
 
 def get_docker_group():
     """ return the docker group function """
@@ -22,7 +23,8 @@ def get_docker_group():
 @click.command(name='pull')
 def pull_one(repository, tag):
     """ Pull an image from the upstream registry """
-    Docker().pull(repository=repository, tag=tag)
+    docker = bwdt.lib.container.Docker()
+    docker.pull(repository=repository, tag=tag)
 
 
 @click.option('--tag', default=None, required=False,
@@ -30,7 +32,8 @@ def pull_one(repository, tag):
 @click.command(name='pull-all')
 def pull_all(tag):
     """ Pull all images """
-    Docker().pull_all(tag=tag)
+    docker = bwdt.lib.container.Docker()
+    docker.pull_all(tag=tag)
 
 
 @click.argument('repository')
@@ -42,10 +45,11 @@ def pull_all(tag):
 @click.command(name='export-image')
 def export_image(repository, tag, pull, force):
     """ Export an image to directory """
-    client = Docker()
+    docker = bwdt.lib.container.Docker()
     if pull:
-        client.pull(repository=repository, tag=tag)
-    client.export_image(repository, tag=tag, force=force)
+        docker.pull(repository=repository, tag=tag)
+    docker.export_image(repository, tag=tag, force=force)
+
 
 @click.option('--pull/--no-pull', required=False, default=True,
               help='Use --no-pull to keep older image for this export')
@@ -56,9 +60,9 @@ def export_image(repository, tag, pull, force):
 @click.command(name='export-image-all')
 def export_image_all(pull, tag, force):
     """ Export all images to directory  """
-    client = Docker()
+    docker = bwdt.lib.container.Docker()
     if pull:
-        client.pull_all(tag=tag)
-    client.export_image_all(tag=tag, force=force)
+        docker.pull_all(tag=tag)
+    docker.export_image_all(tag=tag, force=force)
 
 
