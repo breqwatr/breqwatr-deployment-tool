@@ -1,11 +1,19 @@
 """ CLI entrypoint """
 
+import click
 import pytest
 from mock import MagicMock
 
 import bwdt.cli.main
 import bwdt.lib.configure
 import bwdt.lib.auth
+
+
+def test_get_entrypoint():
+    """ return a click.core.Group object """
+    group = bwdt.cli.main.get_entrypoint()
+    assert isinstance(group, click.core.Group), 'click group is returned'
+
 
 @pytest.mark.parametrize('parm_auth', ['auth_found', 'auth_not_found'])
 def test_main(monkeypatch, parm_auth):
@@ -22,11 +30,11 @@ def test_main(monkeypatch, parm_auth):
     mm_configure = MagicMock(name='mm_configure')
     monkeypatch.setattr(bwdt.lib.configure, 'configure', mm_configure)
     # make sure the return value of entrypoint runs
-    mm_entrypoint = MagicMock(name='mm_entrypoint')
-    monkeypatch.setattr(bwdt.cli.main, 'entrypoint', mm_entrypoint)
+    mm_get_entrypoint = MagicMock(name='mm_get_entrypoint')
+    monkeypatch.setattr(bwdt.cli.main, 'get_entrypoint', mm_get_entrypoint)
     bwdt.cli.main.main()
     assert mm_auth_get.called, 'called auth.get()'
     if not auth_found:
         assert mm_configure.called, 'called configure() when auth not found'
-    assert mm_entrypoint.called, 'entrypoint ran'
+    assert mm_get_entrypoint.return_value.called, 'entrypoint ran'
 

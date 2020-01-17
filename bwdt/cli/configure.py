@@ -7,9 +7,14 @@ import bwdt.lib.auth as auth
 import bwdt.lib.configure
 
 
-@click.group(name='configure')
-def configure_group():
-    """ Interact with the BWDT Configuration """
+def get_configure_group():
+    """ return the configure group function """
+    @click.group(name='configure')
+    def configure_group():
+        """ Interact with the BWDT Configuration """
+    configure_group.add_command(setup)
+    configure_group.add_command(show)
+    return configure_group
 
 
 @click.command()
@@ -24,5 +29,3 @@ def show():
     pprint(auth.get())
 
 
-configure_group.add_command(setup)
-configure_group.add_command(show)

@@ -4,10 +4,16 @@ import click
 
 from bwdt.lib.container import Docker
 
-
-@click.group(name='docker')
-def docker_group():
-    """ Command group for local docker commands """
+def get_docker_group():
+    """ return the docker group function """
+    @click.group(name='docker')
+    def docker_group():
+        """ Command group for local docker commands """
+    docker_group.add_command(pull_one)
+    docker_group.add_command(pull_all)
+    docker_group.add_command(export_image)
+    docker_group.add_command(export_image_all)
+    return docker_group
 
 
 @click.argument('repository')
@@ -56,7 +62,3 @@ def export_image_all(pull, tag, force):
     client.export_image_all(tag=tag, force=force)
 
 
-docker_group.add_command(pull_one)
-docker_group.add_command(pull_all)
-docker_group.add_command(export_image)
-docker_group.add_command(export_image_all)

@@ -9,9 +9,14 @@ import bwdt.lib.download as download
 from bwdt.lib.container import Docker
 
 
-@click.group(name='util')
-def util_group():
-    """ Deployment utility commands """
+def get_util_group():
+    """ return the util group function """
+    @click.group(name='util')
+    def util_group():
+        """ Deployment utility commands """
+    util_group.add_command(export_offline_media)
+    util_group.add_command(zap_disk)
+    return util_group
 
 
 @click.argument('path')
@@ -53,5 +58,3 @@ def zap_disk(disk, force):
     click.echo('Done')
 
 
-util_group.add_command(export_offline_media)
-util_group.add_command(zap_disk)

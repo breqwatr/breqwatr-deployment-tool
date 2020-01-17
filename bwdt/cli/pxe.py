@@ -3,10 +3,12 @@ import click
 
 import bwdt.services.pxe as pxe
 
-
-@click.group(name='pxe')
-def pxe_group():
-    """ Command group for bwdt PXE service """
+def get_pxe_group():
+    @click.group(name='pxe')
+    def pxe_group():
+        """ Command group for bwdt PXE service """
+    pxe_group.add_command(start)
+    return pxe_group
 
 
 @click.option('--interface', required=True,
@@ -30,4 +32,3 @@ def start(interface, dhcp_start, dhcp_end, dns_ip):
         click.echo('Failed to launch - Maybe its already running?')
 
 
-pxe_group.add_command(start)

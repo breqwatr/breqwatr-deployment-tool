@@ -3,10 +3,17 @@ import click
 
 import bwdt.services.arcus as arcus
 
-
-@click.group(name='arcus')
-def arcus_group():
-    """ Command group for Arcus """
+def get_arcus_group():
+    """" return the arcus group function """
+    @click.group(name='arcus')
+    def arcus_group():
+        """ Command group for Arcus """
+    arcus_group.add_command(database_init)
+    arcus_group.add_command(create_service_account)
+    arcus_group.add_command(api)
+    arcus_group.add_command(client)
+    arcus_group.add_command(mgr)
+    return arcus_group
 
 
 @click.option('--host', required=True, help='MariaDB IP or FQDN')
@@ -151,14 +158,9 @@ def mgr_start(internal_vip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
         click.echo('Failed to start arcus_mgr. Is it already running?')
 
 
-arcus_group.add_command(database_init)
-arcus_group.add_command(create_service_account)
 
 api.add_command(api_start)
-arcus_group.add_command(api)
 
 client.add_command(client_start)
-arcus_group.add_command(client)
 
 mgr.add_command(mgr_start)
-arcus_group.add_command(mgr)

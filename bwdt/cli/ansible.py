@@ -6,9 +6,16 @@ import bwdt.cli.ceph
 import bwdt.cli.openstack
 
 
-@click.group(name='ansible')
-def ansible_group():
-    """ Command group for bwdt Ansible service """
+def get_ansible_group():
+    """ Return function of group for bwdt Ansible service """
+    @click.group(name='ansible')
+    def ansible_group():
+        """ Command group for bwdt Ansible service """
+    ansible_group.add_command(transfer_kolla_dir)
+    ansible_group.add_command(start)
+    ansible_group.add_command(bwdt.cli.ceph.ceph_group)
+    ansible_group.add_command(bwdt.cli.openstack.openstack_group)
+    return ansible_group
 
 
 @click.option('--ssh-key-path', required=True, help='path to SSH private key')
@@ -44,7 +51,3 @@ def transfer_kolla_dir(server_ip, user):
     click.echo('Done')
 
 
-ansible_group.add_command(transfer_kolla_dir)
-ansible_group.add_command(start)
-ansible_group.add_command(bwdt.cli.ceph.ceph_group)
-ansible_group.add_command(bwdt.cli.openstack.openstack_group)

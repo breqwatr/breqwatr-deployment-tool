@@ -2,10 +2,15 @@
 import click
 import bwdt.lib.download
 
-
-@click.group(name='download')
-def download_group():
-    """ Download files for offline install """
+def get_download_group():
+    """ return the download group function """
+    @click.group(name='download')
+    def download_group():
+        """ Download files for offline install """
+    download_group.add_command(offline_apt)
+    download_group.add_command(offline_bwdt)
+    download_group.add_command(cloud_yml)
+    return download_group
 
 
 @click.argument('path')
@@ -35,6 +40,3 @@ def cloud_yml(path, force):
     bwdt.lib.download.cloud_yml(path, force)
 
 
-download_group.add_command(offline_apt)
-download_group.add_command(offline_bwdt)
-download_group.add_command(cloud_yml)

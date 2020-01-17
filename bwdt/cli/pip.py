@@ -3,10 +3,13 @@ import click
 
 import bwdt.services.pip as pip
 
-
-@click.group(name='pip')
-def pip_group():
-    """ Command group for bwdt Pip service """
+def get_pip_group():
+    """ return the pip group function """
+    @click.group(name='pip')
+    def pip_group():
+        """ Command group for bwdt Pip service """
+    pip_group.add_command(start)
+    return pip_group
 
 
 @click.option('--tag', required=False, default=None, help='optional tag')
@@ -21,4 +24,3 @@ def start(tag):
         click.echo('Failed to launch - Maybe its already running?')
 
 
-pip_group.add_command(start)

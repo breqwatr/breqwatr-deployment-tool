@@ -15,27 +15,28 @@ import bwdt.lib.auth as auth
 import bwdt.lib.configure
 
 
-def entrypoint():
+def get_entrypoint():
     """ Return the entrypoint click group """
     @click.group()
     def entrypoint():
         """ Entrypoint for Click """
         pass
-    entrypoint.add_command(bwdt.cli.ansible.ansible_group)
-    entrypoint.add_command(bwdt.cli.apt.apt_group)
-    entrypoint.add_command(bwdt.cli.arcus.arcus_group)
-    entrypoint.add_command(bwdt.cli.configure.configure_group)
-    entrypoint.add_command(bwdt.cli.docker.docker_group)
-    entrypoint.add_command(bwdt.cli.download.download_group)
-    entrypoint.add_command(bwdt.cli.util.util_group)
-    entrypoint.add_command(bwdt.cli.registry.registry_group)
-    entrypoint.add_command(bwdt.cli.pip.pip_group)
-    entrypoint.add_command(bwdt.cli.pxe.pxe_group)
-    return entrypoint()
+    entrypoint.add_command(bwdt.cli.ansible.get_ansible_group())
+    entrypoint.add_command(bwdt.cli.apt.get_apt_group())
+    entrypoint.add_command(bwdt.cli.arcus.get_arcus_group())
+    entrypoint.add_command(bwdt.cli.configure.get_configure_group())
+    entrypoint.add_command(bwdt.cli.docker.get_docker_group())
+    entrypoint.add_command(bwdt.cli.download.get_download_group())
+    entrypoint.add_command(bwdt.cli.util.get_util_group())
+    entrypoint.add_command(bwdt.cli.registry.get_registry_group())
+    entrypoint.add_command(bwdt.cli.pip.get_pip_group())
+    entrypoint.add_command(bwdt.cli.pxe.get_pxe_group())
+    return entrypoint
 
 
 def main():
     """ Entrypoint defined int setup.py for bwdt command"""
     if auth.get() is None:
         bwdt.lib.configure.configure()
+    entrypoint = get_entrypoint()
     entrypoint()

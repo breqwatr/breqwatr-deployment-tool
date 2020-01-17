@@ -3,10 +3,13 @@ import click
 
 import bwdt.services.apt as apt
 
-
-@click.group(name='apt')
-def apt_group():
-    """ Command group for bwdt PXE service """
+def get_apt_group():
+    """ return the apt_group """
+    @click.group(name='apt')
+    def apt_group():
+        """ Command group for bwdt PXE service """
+    apt_group.add_command(start)
+    return apt_group
 
 
 @click.option('--tag', required=False, default=None, help='optional tag')
@@ -22,4 +25,3 @@ def start(tag, port):
         click.echo('Failed to launch - Maybe its already running?')
 
 
-apt_group.add_command(start)

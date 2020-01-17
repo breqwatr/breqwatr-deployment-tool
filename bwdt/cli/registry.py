@@ -5,10 +5,16 @@ import click
 
 import bwdt.services.registry as registry
 
-
-@click.group(name='registry')
-def registry_group():
-    """Command group for bwdt registry"""
+def get_registry_group():
+    """ return the registry group function """
+    @click.group(name='registry')
+    def registry_group():
+        """Command group for bwdt registry"""
+    registry_group.add_command(start)
+    registry_group.add_command(sync_image)
+    registry_group.add_command(sync_all_images)
+    registry_group.add_command(list_images)
+    return registry_group
 
 
 @click.option('--ip', default='0.0.0.0', help='optional bind IP address')
@@ -61,7 +67,3 @@ def list_images(registry_url):
             click.echo('  - {}'.format(tag))
 
 
-registry_group.add_command(start)
-registry_group.add_command(sync_image)
-registry_group.add_command(sync_all_images)
-registry_group.add_command(list_images)
