@@ -9,7 +9,7 @@ from click import echo
 
 import bwdt.lib.auth
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.lib.aws.ecr import ECR
+import bwdt.lib.aws.ecr as ecr
 
 
 def _all_images():
@@ -24,14 +24,15 @@ def get_image_as_filename(image_name, tag, directory):
     """ Returns an image as a filename - used for export operations """
     filename_base = image_name.replace('/', '-')
     directory = directory.rstrip('/')
-    path = '{}/{}-{}.docker'.format(directory, filename_base, tag)
+    path = f'{directory}/{filename_base}-{tag}.docker'
     return path
 
 
 def offline_image_exists(image_name, tag):
     """ Return true if the offline image file exists """
     auth = bwdt.lib.auth.get()
-    directory = '{}/{}'.format(auth['offline_path'], '/images/')
+    offline_path = auth['offline_path']
+    directory = f'{offline_path}/images/'
     path = get_image_as_filename(image_name, tag, directory)
     return os.path.exists(path)
 
@@ -39,7 +40,7 @@ def offline_image_exists(image_name, tag):
 def delete_docker_credential():
     """ Deletes the current docker login file """
     home = os.path.expanduser("~")
-    docker_cred_path = '{}/.docker/config.json'.format(home)
+    docker_cred_path = f'{home}/.docker/config.json'
     if os.path.exists(docker_cred_path):
         os.remove(docker_cred_path)
 
@@ -50,19 +51,21 @@ class Docker:
         client = docker.from_env()
         repo_prefix = ""
         if bwdt.lib.auth.use_ecr():
-            ecr = ECR()
             delete_docker_credential()
+            token = ecr.get_ecr_token()
+            credentials = ecr.get_ecr_credentials(token)
+            registry_url = ecr.get_registry_url(credentials)
             client.login(
-                username=ecr.credentials['username'],
-                password=ecr.credentials['password'],
-                registry=ecr.credentials['registry'])
-            repo_prefix = '{}/'.format(ecr.registry_prefix())
+                username=credentials['username'],
+                password=credentials['password'],
+                registry=credentials['registry'])
+            repo_prefix = f'{registry_url}/'
         self.client = client
         self.repo_prefix = repo_prefix
 
     def _pull_ecr(self, repository, tag, retag=True, remove_long_tag=True):
         """ Pull from ECR's registry """
-        echo('Pulling {}:{} from upstream registry'.format(repository, tag))
+        echo(f'Pulling {repository}:{tag} from upstream registry')
         full_repo_name = "{}{}".format(self.repo_prefix, repository)
         self.client.images.pull(repository=full_repo_name, tag=tag)
         if retag:

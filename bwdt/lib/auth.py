@@ -37,12 +37,18 @@ def mkdir():
     return True
 
 
+class ConfigFileNotFound(Exception):
+    """ The configuration file was required but not found """
+    def __init__(self, message):
+        self.message = message
+
+
 def get():
     """ Return the auth file content or None if it can't be opened """
     path = get_file_path()
     exists = os.path.exists(path)
     if not exists:
-        return None
+        raise ConfigFileNotFound(f'ERROR: Failed to load {path}')
     try:
         with open(path, 'r') as auth_file:
             return json.load(auth_file)
