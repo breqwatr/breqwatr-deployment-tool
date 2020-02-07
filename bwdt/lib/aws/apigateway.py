@@ -2,6 +2,7 @@
 import datetime
 import hashlib
 import hmac
+import json
 import requests
 
 
@@ -51,59 +52,65 @@ def get_payload_hash(body):
     return hashlib.sha256(body).hexdigest()
 
 
-def get_cannonical_request_digest(method, host, time, body, uri, query):
-    """ return digest of a cannonical request string """
+def get_canonical_headers(host, time):
+    """ Return the canonical headers """
     amzdate = get_amz_date(time)
-    canonical_headers = (
+    return (
         f'host:{host}\n'
         f'x-amz-date:{amzdate}\n')
+
+
+def get_canonical_request(method, uri, query, canonical_headers, payload_hash):
+    """ return digest of a canonical request string """
+    # https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
     signed_headers = 'host;x-amz-date'
-    payload_hash = get_payload_hash(body)
-    can_req = (
+    return (
         f'{method}\n'
         f'{uri}\n'
         f'{query}\n'
         f'{canonical_headers}\n'
-        f'{signed_headers}\n'
+        'host;x-amz-date\n'
         f'{payload_hash}')
-    return hashlib.sha256(can_req.encode('utf-8')).hexdigest()
 
 
-def get_signature(secret_key, time, region, method, host, body, uri, query):
-    """ Return signature for aws header """
-    sig_key = get_signing_key(secret_key, time, region)
+def get_string_to_sign(time, credential_scope, canonical_request_digest):
+    """ Returnt the AWS String-to-sign in utf-8 """
+    # https://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
     amzdate = get_amz_date(time)
-    cred_scope = get_credential_scope(time, region)
-    req_digest = get_cannonical_request_digest(
-        method=method,
-        host=host,
-        time=time,
-        body=body,
-        uri=uri,
-        query=query)
-    sign_str = (
+    return (
         f'AWS4-HMAC-SHA256\n'
         f'{amzdate}\n'
-        f'{cred_scope}\n'
-        f'{req_digest}')
-    sign_str_utf8 = sign_str.encode('utf-8')
-    algorithm = hashlib.sha256
-    sig_hmac = hmac.new(sig_key, sign_str_utf8, algorithm)
-    return sig_hmac.hexdigest()
+        f'{credential_scope}\n'
+        f'{canonical_request_digest}')
 
 
-def get_authorization_header(time, key_id, secret_key, region, method, host, body, uri, query):
+def get_signature(signing_key, string_to_sign):
+    """ Return hexdigest of signature for aws header """
+    sts_utf8 = string_to_sign.encode('utf-8')
+    sig = hmac.new(signing_key, sts_utf8, hashlib.sha256)
+    return sig.hexdigest()
+
+
+def get_authorization_header(time, key_id, secret_key, region, method, host,
+                             body, uri, query):
     """ Return an aws authorization header """
+    # canonical request is a multi-line string with a particular format
+    canonical_headers = get_canonical_headers(host, time)
+    payload_hash = get_payload_hash(body)
+    canonical_request = get_canonical_request(
+         method=method,
+         uri=uri,
+         query=query,
+         canonical_headers=canonical_headers,
+         payload_hash=payload_hash)
+    # create a string-to-sign from the canonical requests' digest
+    cr_digest = hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
     credential_scope = get_credential_scope(time, region)
-    signature = get_signature(
-        secret_key=secret_key,
-        time=time,
-        region=region,
-        method=method,
-        host=host,
-        body=body,
-        uri=uri,
-        query=query)
+    string_to_sign = get_string_to_sign(time, credential_scope, cr_digest)
+    # sign the String-To-Sign with a signing key derived from secret iam key
+    signing_key = get_signing_key(secret_key, time, region)
+    signature = get_signature(signing_key, string_to_sign)
+    # return the headers all in one string
     return (
         f'AWS4-HMAC-SHA256 Credential={key_id}/{credential_scope}, '
         f'SignedHeaders=host;x-amz-date, '
@@ -123,18 +130,41 @@ def get_headers(key_id, secret_key, region, method, host, body, uri, query):
         body=body,
         uri=uri,
         query=query)
-    headers = {
+    amz_date = get_amz_date(time)
+    payload_hash = get_payload_hash(body)
+    return {
         'Authorization': authorization,
-        'x-amz-date': get_amz_date(time),
-        'x-amz-content-sha256': get_payload_hash(body)}
-    return headers
+        'x-amz-date': amz_date,
+        'x-amz-content-sha256': payload_hash}
 
 
-def post(key_id, secret_key, region, host, body, uri, query):
-    """ do a request - needs some work"""
-    headers = get_headers(key_id, secret_key, region, 'POST', host, body, uri,
-                          query)
+def post(key_id, secret_key, region, host, uri, query, body=''):
+    """ Execute a POST request """
+    body_str = json.dumps(body)
+    headers = get_headers(
+        key_id=key_id,
+        secret_key=secret_key,
+        region=region,
+        method='POST',
+        host=host,
+        body=body_str,
+        uri=uri,
+        query='')
     url = f'https://{host}{uri}'
-    payload = {}
-    return requests.post(url, headers=headers, data=payload)
+    return requests.post(url, headers=headers, json=body)
 
+
+def get(key_id, secret_key, region, host, uri, query):
+    """ Execute a GET request """
+    body_str = ''
+    headers = get_headers(
+        key_id=key_id,
+        secret_key=secret_key,
+        region=region,
+        method='GET',
+        host=host,
+        body=body_str,
+        uri=uri,
+        query='')
+    url = f'https://{host}{uri}'
+    return requests.get(url, headers=headers)

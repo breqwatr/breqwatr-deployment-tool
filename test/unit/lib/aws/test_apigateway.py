@@ -34,31 +34,40 @@ def test_get_credential_scope():
     assert isinstance(result, str)
 
 
-def test_get_cannonical_request_digest():
-    """ Return a cannonical request digest string """
+def test_get_canonical_headers():
+    """ Return a string with host and amz date """
     time = datetime.time(20, 2, 2, 376068)
-    result = bwdt.lib.aws.apigateway.get_cannonical_request_digest(
+    result = bwdt.lib.aws.apigateway.get_canonical_headers('XX', time)
+    assert isinstance(result, str)
+
+
+def test_get_canonical_request():
+    """ Return a canonical request digest string """
+    time = datetime.time(20, 2, 2, 376068)
+    result = bwdt.lib.aws.apigateway.get_canonical_request(
         method='POST',
-        host='abc.com',
-        time=time,
         uri='/FAKE',
-        body='EXAMPLE',
-        query='?example=1')
+        query='?example=1',
+        canonical_headers='X',
+        payload_hash='Y')
+    assert isinstance(result, str)
+
+
+def test_get_string_to_sign():
+    """ return a mutli-line string """
+    time = datetime.time(20, 2, 2, 376068)
+    result = bwdt.lib.aws.apigateway.get_string_to_sign(
+        time=time,
+        credential_scope='x',
+        canonical_request_digest='qwe')
     assert isinstance(result, str)
 
 
 def test_get_signature():
     """ get a signature string """
     time = datetime.time(20, 2, 2, 376068)
-    result = bwdt.lib.aws.apigateway.get_signature(
-        secret_key='FAKE',
-        time=time,
-        region='ca-central-1',
-        method='POST',
-        host='example.com',
-        body='',
-        uri='/',
-        query='?example=1')
+    key = 'qwe'.encode('utf-8')
+    result = bwdt.lib.aws.apigateway.get_signature(key, 'y')
     assert isinstance(result, str)
 
 
@@ -75,6 +84,7 @@ def test_get_authorization_header():
         body='bleh',
         uri='/',
         query='?whatever=1')
+    assert isinstance(result, str)
 
 def test_get_headers():
     """ get headers ... """
