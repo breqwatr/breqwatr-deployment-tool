@@ -13,6 +13,7 @@ import bwdt.cli.arcus
 import bwdt.cli.configure
 import bwdt.cli.docker
 import bwdt.cli.download
+import bwdt.cli.support
 import bwdt.cli.util
 import bwdt.cli.registry
 import bwdt.cli.pip
@@ -33,6 +34,7 @@ def get_entrypoint():
     entrypoint.add_command(bwdt.cli.configure.get_configure_group())
     entrypoint.add_command(bwdt.cli.docker.get_docker_group())
     entrypoint.add_command(bwdt.cli.download.get_download_group())
+    entrypoint.add_command(bwdt.cli.support.get_support_group())
     entrypoint.add_command(bwdt.cli.util.get_util_group())
     entrypoint.add_command(bwdt.cli.registry.get_registry_group())
     entrypoint.add_command(bwdt.cli.pip.get_pip_group())
