@@ -119,7 +119,7 @@ def connect(tunnel):
     cmd = (f'{ssh} -o {no_key_check} -o {no_hosts_file} -p {tunnel["in_port"]}'
           f' -i {PATHS["rsa_private"]} -N -R {rule} {target}')
     args = shlex.split(cmd)
-    process = subprocess.Popen(args, stdout=subprocess.DEVNULL)
+    process = subprocess.Popen(args, stderr=subprocess.DEVNULL)
     write_tunnel_file(process.pid, tunnel['out_port'], tunnel['fqdn'])
 
 

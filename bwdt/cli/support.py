@@ -36,9 +36,8 @@ def open_tunnel():
     # if status['connected']:
     #    click.echo('Support tunnel is already open')
     #    return
-    click.echo('get/create RSA keys ({})'.format(support.PATHS['dir']))
     ssh_keys = support.get_ssh_keys()
-    click.echo('starting support tunnel')
+    click.echo('Starting support tunnel:')
     support.start_tunnel(ssh_keys['public'])
     tunnel_up = False
     backoff_seconds = 30
@@ -46,19 +45,20 @@ def open_tunnel():
     tunnel = None
     for tries in range(1,(max_tries + 1)):
         tunnel = support.get_tunnel()
-        click.echo('tunnel status is "{}"'.format(tunnel['status']))
+        click.echo('... Tunnel status is "{}"'.format(tunnel['status']))
         if tunnel['status'] == 'ONLINE':
             tunnel_up = True
             break
-        click.echo('waiting {backoff_seconds} seconds ({tries}/{max_tries})')
+        click.echo('... Waiting {backoff_seconds}s ({tries}/{max_tries})')
         time.sleep(backoff_seconds)
         if not tunnel_up and tries == max_tries:
             sys.stderr.write('ERROR: Failed to launch the tunnel')
             sys.stderr.write('Status: {} - {}'.format(tunnel['status'],
                                                       tunnel['error']))
             sys.exit(1)
-    click.echo('opening remote support session')
+    click.echo('Opening remote support session')
     support.connect(tunnel)
+    click.echo('Connection established')
 
 
 @click.command(name='close-tunnel')
