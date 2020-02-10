@@ -1,5 +1,6 @@
 """ support commands """
 import click
+import pytest
 from click.testing import CliRunner
 from mock import MagicMock
 
@@ -21,19 +22,23 @@ def test_status(monkeypatch):
     assert result.exit_code == 0
     assert mm_status.called
 
-
-def test_open_tunnel(monkeypatch):
+@pytest.mark.parametrize('status', ['is_online', 'not_online'])
+def test_open_tunnel(monkeypatch, status):
     """ run  bwdt.cli.support.open_tunnel """
+    is_online = status == 'is_online'
     mm_pub_key = MagicMock()
     mm_start = MagicMock()
     mm_status = MagicMock()
     mm_connect = MagicMock()
     mm_tunnel = MagicMock()
+    def start(*args, **kwargs):
+        mm_tunnel.return_value['status'] = 'ONLINE'
+    mm_start = start
+    mm_status.return_value = {'connected': is_online, 'uptime': '0:10:11'}
     mm_tunnel.return_value = {
-        'status': 'ONLINE',
+        'status': 'ONLINE' if is_online else 'BUILDING',
         'error': ''}
-    mm_status.return_value = {'connected': True, 'uptime': '0:10:11'}
-    monkeypatch.setattr(bwdt.lib.support, 'get_ssh_keys', mm_pub_key)
+    monkeypatch.setattr(bwdt.lib.support, 'gen_ssh_keys', mm_pub_key)
     monkeypatch.setattr(bwdt.lib.support, 'start_tunnel', mm_start)
     monkeypatch.setattr(bwdt.lib.support, 'get_connection_status', mm_status)
     monkeypatch.setattr(bwdt.lib.support, 'get_tunnel', mm_tunnel)
@@ -42,8 +47,7 @@ def test_open_tunnel(monkeypatch):
     result = runner.invoke(bwdt.cli.support.open_tunnel)
     assert result.exit_code == 0
     assert mm_pub_key.called
-    assert mm_start.called
-    assert mm_connect.called
+    assert mm_connect.called != is_online, 'already online'
 
 
 def test_close_tunnel():

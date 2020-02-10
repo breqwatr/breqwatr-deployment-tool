@@ -26,8 +26,8 @@ def create_ssh_keys():
         os.system('ssh-keygen -f "{}" -q -N ""'.format(PATHS['rsa_private']))
 
 
-def get_ssh_keys():
-    """ Return the SSH public and private keys of this user """
+def gen_ssh_keys():
+    """ Cretea SSH public and private keys for this session """
     create_ssh_keys()
     with open(PATHS['rsa_public']) as public_file:
         public_key = public_file.read()

@@ -32,11 +32,11 @@ def status():
 @click.command(name='open-tunnel')
 def open_tunnel():
     """ Open a remote support tunnel sesion """
+    ssh_keys = support.gen_ssh_keys()
     status = support.get_connection_status()
-    # if status['connected']:
-    #    click.echo('Support tunnel is already open')
-    #    return
-    ssh_keys = support.get_ssh_keys()
+    if status['connected']:
+       click.echo('Support tunnel is already open')
+       return
     click.echo('Starting support tunnel:')
     support.start_tunnel(ssh_keys['public'])
     tunnel_up = False

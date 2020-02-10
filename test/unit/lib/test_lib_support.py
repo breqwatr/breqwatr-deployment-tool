@@ -32,7 +32,7 @@ def test_get_connection_status(monkeypatch, state):
     assert 'connected' in status
 
 
-def test_connect(monkeypatch):
+def test_open_tunnel(monkeypatch):
     """ Run connect """
     mm_proc = MagicMock(name='subprocess')
     monkeypatch.setattr(bwdt.lib.support, 'subprocess', mm_proc)
