@@ -145,7 +145,7 @@ def mgr():
 @click.option('--tag', help='optional version identifier', default=None)
 @click.command(name='start')
 def mgr_start(internal_vip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
-              kolla_dir, ceph, ssh_key_path):
+              kolla_dir, ceph, ssh_key_path, tag):
     """ Start the Arcus Mgr container """
     click.echo('Starting arcus_mgr')
     success = arcus.mgr_start(
