@@ -78,11 +78,12 @@ def create_openstack_sa(fqdn, admin_password, arcus_pass, https=True):
 
 # pylint: disable=R0914
 def api_start(fqdn, rabbit_pass, rabbit_ips_list, sql_ip,
-              sql_password, ceph_enabled=False, https=True):
+              sql_password, ceph_enabled=False, https=True, tag=None):
     """ Start the Arcus API service """
     name = "arcus_api"
     repo = "breqwatr/arcus-api"
-    tag = SERVICE_IMAGE_TAGS[repo]
+    if tag is None:
+        tag = SERVICE_IMAGE_TAGS[repo]
     image = '{}:{}'.format(repo, tag)
     rabbit_ips_csv = ','.join(rabbit_ips_list)
     docker_kwargs = {
@@ -108,11 +109,12 @@ def api_start(fqdn, rabbit_pass, rabbit_ips_list, sql_ip,
 
 
 def client_start(api_ip, openstack_ip, glance_https=True, arcus_https=False,
-                 cert_path=None, cert_key_path=None):
+                 cert_path=None, cert_key_path=None, tag=None):
     """ Start the Arcus Client service """
     name = 'arcus_client'
     repo = 'breqwatr/arcus-client'
-    tag = SERVICE_IMAGE_TAGS[repo]
+    if tag is None:
+        tag = SERVICE_IMAGE_TAGS[repo]
     image = '{}:{}'.format(repo, tag)
     docker_kwargs = {
         'environment': {
@@ -140,11 +142,12 @@ def client_start(api_ip, openstack_ip, glance_https=True, arcus_https=False,
 
 
 def mgr_start(openstack_ip, sql_ip, sql_pass, rabbit_ip_list, rabbit_pass,
-              kolla_dir, enable_ceph, ssh_key_path):
+              kolla_dir, enable_ceph, ssh_key_path, tag=None):
     """ Start the Arcus Mgr service """
     name = 'arcus_mgr'
     repo = 'breqwatr/arcus-mgr'
-    tag = SERVICE_IMAGE_TAGS[repo]
+    if tag is None:
+        tag = SERVICE_IMAGE_TAGS[repo]
     image = '{}:{}'.format(repo, tag)
     rabbit_ips_csv = ','.join(rabbit_ip_list)
     docker_kwargs = {

@@ -67,9 +67,10 @@ def api():
               help='use --ceph to enable Ceph features')
 @click.option('--https/--http', default=True, required=False,
               help='Use --http to disable HTTPS')
+@click.option('--tag', help='optional version identifier', default=None)
 @click.command(name='start')
 def api_start(openstack_fqdn, rabbit_pass, rabbit_ip, sql_ip, sql_password,
-              ceph, https):
+              ceph, https, tag):
     """ Start the Arcus API container """
     click.echo('Starting arcus_api')
     success = arcus.api_start(
@@ -79,7 +80,8 @@ def api_start(openstack_fqdn, rabbit_pass, rabbit_ip, sql_ip, sql_password,
         sql_ip=sql_ip,
         sql_password=sql_password,
         ceph_enabled=ceph,
-        https=https)
+        https=https,
+        tag=tag)
     if success:
         click.echo('Started arcus_api')
     else:
@@ -101,9 +103,10 @@ def client():
               help='Enables HTTPS using the specified certificate')
 @click.option('--cert-key-path', required=False, default=None,
               help='Path the the HTTPS cert private key')
+@click.option('--tag', help='optional version identifier', default=None)
 @click.command(name='start')
 def client_start(api_ip, openstack_ip, glance_https, arcus_https, cert_path,
-                 cert_key_path):
+                 cert_key_path, tag):
     """ Start the Arcus Client container """
     click.echo('Starting arcus_client')
     if arcus_https and (cert_path is None or cert_key_path is None):
@@ -115,7 +118,8 @@ def client_start(api_ip, openstack_ip, glance_https, arcus_https, cert_path,
         glance_https=glance_https,
         arcus_https=arcus_https,
         cert_path=cert_path,
-        cert_key_path=cert_key_path)
+        cert_key_path=cert_key_path,
+        tag=tag)
     if success:
         click.echo('Started arcus_client')
     else:
@@ -138,6 +142,7 @@ def mgr():
               help='Enable monitoring of Ceph services')
 @click.option('--ssh-key-path', required=True,
               help='Path to SSH private key authorized to all nodes')
+@click.option('--tag', help='optional version identifier', default=None)
 @click.command(name='start')
 def mgr_start(internal_vip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
               kolla_dir, ceph, ssh_key_path):
@@ -151,7 +156,8 @@ def mgr_start(internal_vip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
         rabbit_pass=rabbit_pass,
         kolla_dir=kolla_dir,
         enable_ceph=ceph,
-        ssh_key_path=ssh_key_path)
+        ssh_key_path=ssh_key_path,
+        tag=tag)
     if success:
         click.echo('Started arcus_mgr')
     else:
