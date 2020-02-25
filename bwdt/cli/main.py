@@ -20,6 +20,7 @@ import bwdt.cli.pip
 import bwdt.cli.pxe
 import bwdt.lib.auth as auth
 import bwdt.lib.configure
+import bwdt.lib.envvar
 
 
 def get_entrypoint():
@@ -34,11 +35,13 @@ def get_entrypoint():
     entrypoint.add_command(bwdt.cli.configure.get_configure_group())
     entrypoint.add_command(bwdt.cli.docker.get_docker_group())
     entrypoint.add_command(bwdt.cli.download.get_download_group())
-    entrypoint.add_command(bwdt.cli.support.get_support_group())
     entrypoint.add_command(bwdt.cli.util.get_util_group())
     entrypoint.add_command(bwdt.cli.registry.get_registry_group())
     entrypoint.add_command(bwdt.cli.pip.get_pip_group())
     entrypoint.add_command(bwdt.cli.pxe.get_pxe_group())
+    # These features are not ready for production, but available
+    if bwdt.lib.envvar.env()['preview'] == 'yes':
+        entrypoint.add_command(bwdt.cli.support.get_support_group())
     return entrypoint
 
 

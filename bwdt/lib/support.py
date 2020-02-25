@@ -10,6 +10,8 @@ import subprocess
 import time
 from datetime import datetime
 
+import bwdt.lib.aws.apigateway
+
 
 HOME = os.getenv('HOME')
 PATHS = {
@@ -40,6 +42,7 @@ def start_tunnel(public_key):
     """ Launch the tunnel for this user """
     # TODO: Implement this
     pass
+
 
 
 def get_tunnel():

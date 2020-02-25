@@ -14,4 +14,5 @@ def env():
     return {
         'auth_dir': _env_get('BWDT_AUTH_DIR', None),
         'region': _env_get('BWDT_REGION', 'ca-central-1'),
+        'preview': _env_get('BWDT_PREVIEW', 'no')
     }
