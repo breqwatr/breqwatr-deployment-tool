@@ -1,12 +1,26 @@
 # Breqwatr Deployment Tool
 
-The Breqwatr deployment tool is a toolkit for deploying Breqwatr OpenStack and
-its accompanying services. The Breqwatr Deployment Tool is accessed from the
-command line of an Ubuntu based OS using the command `bwdt`.
+A command-line driven deployment toolkit for containerized, open source cloud
+services such as OpenStack and Ceph. BWDT can also deploy various other
+services to enable air-gap/dark-site installations such as private Apt and Pip
+repositories.
 
-BWDT requires Docker, and either a removable drive provided by Breqwatr for
-offline installs or a special key and ID for configuring the tool to pull files
-and images from the upstream servers.
+The Breqwatr Deployment Tool (BWDT) enables an offline, reliable, and easy
+installation procedure for what are otherwise highly complicated tools.
+
+Breqwatr builds, hosts, and supports Docker images that are known to work well
+with each-other and are easy to support. The BWDT command line is built to
+deploy, launch, and manage those containerised services.
+
+With the exception of a few value-add services, namely Arcus and Support, all
+Breqwatr tools are free and open source. You can use BWDT to deploy OpenStack
+and Ceph in your environment without purchasing a license, though the images
+will come from Docker Hub instead of Breqwatr's registry and might be a bit
+older.
+
+
+For more information, please reference the official documentation:
+[Breqwatr Deployment Tool](http://bwdt.breqwatr.com))
 
 
 ## Installation
@@ -255,3 +269,4 @@ To download a template cloud configuration for use with the Ansible container:
 ```bash
 bwdt download cloud-yml <path>
 ```
+
