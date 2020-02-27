@@ -20,3 +20,4 @@ older.
 ## Table of Contents
 
 - [BWDT Installation & Requirements](/installation.html)
+- [Creating Offline Installation Media](/offline-media.html)

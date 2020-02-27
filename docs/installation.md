@@ -37,10 +37,11 @@ pip install git+https://github.com/breqwatr/breqwatr-deployment-tool.git
 
 ## Install from Offline Media
 
-If you intend to run BWDT in an air-gapped network, you will want to create
-your offline media from an internet-connected network first. Once you have
-created your offline install media, it can be used to install BWDT on the
-air-gapped systems.
+If you intend to run BWDT in an air-gapped network, you'll want to create
+the offline media from an internet-connected network first.
+
+Once you have created your offline install media, it can be used to install
+BWDT on the air-gapped systems.
 
 The offline media contains a file named `bwdt.tar.gz`. Unpack it to a
 directory off the removable media, then install with this command:
