@@ -42,13 +42,15 @@ def pull_all(tag):
               help='Use --no-pull to keep older image for this export')
 @click.option('--force/--keep-old', required=False, default=False,
               help='--force will overwrite files found at the destination')
+@click.option('--directory', required=False, default=None,
+              help='Optionally use a specified path (vs the configured one)')
 @click.command(name='export-image')
-def export_image(repository, tag, pull, force):
+def export_image(repository, tag, pull, force, directory):
     """ Export an image to directory """
     docker = bwdt.lib.container.Docker()
     if pull:
         docker.pull(repository=repository, tag=tag)
-    docker.export_image(repository, tag=tag, force=force)
+    docker.export_image(repository, tag=tag, force=force, directory=directory)
 
 
 @click.option('--pull/--no-pull', required=False, default=True,

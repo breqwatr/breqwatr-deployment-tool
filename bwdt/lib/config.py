@@ -7,9 +7,9 @@ import bwdt.lib.envvar
 
 DEFAULTS = {
     'license': '',
-    'offline': True,
+    'offline': 'true',
     'offline_path': '',
-    'update_images': True}
+    'update_images': 'true'}
 
 
 def get_config():
@@ -41,6 +41,13 @@ def set_config(config):
     jdata = jdata.rstrip()
     with open(filename, 'w+') as out_file:
         out_file.write(jdata)
+
+
+def is_config_found():
+    """ Return bool if config file exists """
+    filename = bwdt.lib.envvar.env()['BWDT_CONF_PATH']
+    path = Path(filename)
+    return path.exists()
 
 
 def is_offline():

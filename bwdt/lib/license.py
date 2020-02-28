@@ -15,3 +15,8 @@ def keys():
     """ Return the AWS Keys and true/false found tupple """
     license = config.get_config()['license']
     return get_keys_from_license(license)
+
+
+def is_licensed():
+    """ Return bool, has this user applied a license """
+    return keys()[0]

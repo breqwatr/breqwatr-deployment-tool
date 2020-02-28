@@ -162,12 +162,15 @@ class Docker:
         exit_code, output = container.exec_run(cmd)
         return {'exit_code': exit_code, 'output': output}
 
-    def export_image(self, image_name, tag=None, force=False):
+    def export_image(self, image_name, tag=None, force=False, directory=None):
         """ Save a docker image to a file in directory """
         if tag is None:
             tag = _all_images()[image_name]
         config = bwdt.lib.config.get_config()
-        base_dir = config['offline_path']
+        if directory is None:
+            base_dir = config['offline_path']
+        else:
+            base_dir = directory
         if not os.path.isdir(base_dir):
             echo('ERROR: Directory {} not found'.format(base_dir))
             return
