@@ -10,6 +10,7 @@ if sys.version_info[0] != 3:
 import bwdt.cli.ansible
 import bwdt.cli.apt
 import bwdt.cli.arcus
+import bwdt.lib.config as config
 import bwdt.cli.configure
 import bwdt.cli.docker
 import bwdt.cli.download
@@ -18,7 +19,6 @@ import bwdt.cli.util
 import bwdt.cli.registry
 import bwdt.cli.pip
 import bwdt.cli.pxe
-import bwdt.lib.auth as auth
 import bwdt.lib.configure
 import bwdt.lib.envvar
 
@@ -40,14 +40,14 @@ def get_entrypoint():
     entrypoint.add_command(bwdt.cli.pip.get_pip_group())
     entrypoint.add_command(bwdt.cli.pxe.get_pxe_group())
     # These features are not ready for production, but available
-    if bwdt.lib.envvar.env()['preview'] == 'yes':
+    if bwdt.lib.envvar.env()['BWDT_FEATURE_PREVIEW'] == 'yes':
         entrypoint.add_command(bwdt.cli.support.get_support_group())
     return entrypoint
 
 
 def main():
     """ Entrypoint defined int setup.py for bwdt command"""
-    if auth.get() is None:
+    if config.get_config() is None:
         bwdt.lib.configure.configure()
     entrypoint = get_entrypoint()
     entrypoint()

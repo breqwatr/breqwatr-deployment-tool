@@ -3,7 +3,7 @@ from pprint import pprint
 
 import click
 
-import bwdt.lib.auth as auth
+import bwdt.lib.config as config
 import bwdt.lib.configure
 
 
@@ -26,6 +26,4 @@ def setup():
 @click.command()
 def show():
     """ Print the current config """
-    pprint(auth.get())
-
-
+    pprint(config.get_config())

@@ -7,7 +7,7 @@ from requests.exceptions import ReadTimeout
 import docker
 from click import echo
 
-import bwdt.lib.auth
+import bwdt.lib.config
 from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
 import bwdt.lib.aws.ecr as ecr
 
@@ -30,8 +30,8 @@ def get_image_as_filename(image_name, tag, directory):
 
 def offline_image_exists(image_name, tag):
     """ Return true if the offline image file exists """
-    auth = bwdt.lib.auth.get()
-    offline_path = auth['offline_path']
+    config = bwdt.lib.config.get_config()
+    offline_path = config['offline_path']
     directory = f'{offline_path}/images/'
     path = get_image_as_filename(image_name, tag, directory)
     return os.path.exists(path)
@@ -50,7 +50,7 @@ class Docker:
     def __init__(self):
         client = docker.from_env()
         repo_prefix = ""
-        if bwdt.lib.auth.use_ecr():
+        if not bwdt.lib.config.is_offline():
             delete_docker_credential()
             token = ecr.get_ecr_token()
             credentials = ecr.get_ecr_credentials(token)
@@ -78,12 +78,12 @@ class Docker:
         """ Pull or import an image """
         if tag is None:
             tag = _all_images()[repository]
-        auth = bwdt.lib.auth.get()
-        if 'update_images' in auth and auth['update_images'].lower() != 'true':
+        config = bwdt.lib.config.get_config()
+        if str(config['update_images'].lower()) != 'true':
             if self.get_image(repository, tag) is not None:
                 echo('Skipping pull, update_images is false and image exists')
                 return
-        if bwdt.lib.auth.use_ecr():
+        if bwdt.lib.config.is_offline():
             self._pull_ecr(repository, tag, retag, remove_long_tag)
         else:
             self.import_image(repository, tag)
@@ -166,8 +166,8 @@ class Docker:
         """ Save a docker image to a file in directory """
         if tag is None:
             tag = _all_images()[image_name]
-        auth = bwdt.lib.auth.get()
-        base_dir = auth['offline_path']
+        config = bwdt.lib.config.get_config()
+        base_dir = config['offline_path']
         if not os.path.isdir(base_dir):
             echo('ERROR: Directory {} not found'.format(base_dir))
             return
@@ -213,12 +213,13 @@ class Docker:
 
     def import_image(self, image_name, tag):
         """ Load a docker image from a file """
-        auth = bwdt.lib.auth.get()
-        directory = '{}/images/'.format(auth['offline_path'])
+        config = bwdt.lib.config.get_config()
+        offline_path = config['offline_path']
+        directory = f'{offline_path}/images/'
         path = get_image_as_filename(image_name, tag, directory)
-        echo('Loading {}:{} from {}'.format(image_name, tag, path))
+        echo(f'Loading {image_name}:{tag} from {path}')
         if not os.path.exists(path):
-            sys.stderr.write('ERROR: file {} not found\n'.format(path))
+            sys.stderr.write(f'ERROR: file {path} not found\n')
             sys.exit(1)
         with open(path, 'rb') as image:
             self.client.images.load(image)

@@ -6,24 +6,24 @@ from base64 import b64decode
 import boto3
 import botocore.exceptions
 
-import bwdt.lib.auth
+import bwdt.lib.license as license
 from bwdt.lib.envvar import env
 
 
-
-def _get_ecr_client():
+def get_ecr_client():
     """ Return an ECR boto3 client """
-    auth = bwdt.lib.auth.get()
-    session = boto3.Session(aws_access_key_id=auth['key_id'],
-                            aws_secret_access_key=auth['key'])
-    region = env()['region']
+    licensed, keys = license.keys()
+    if licensed:
+        session = boto3.Session(aws_access_key_id=keys['id'],
+                                aws_secret_access_key=keys['secret'])
+    region = env()['BWDT_AWS_REGION']
     client = session.client('ecr', region_name=region)
     return client
 
 
 def get_ecr_token():
     """ Get token or fail gracefully """
-    client = _get_ecr_client()
+    client = get_ecr_client()
     try:
         token = client.get_authorization_token()
     except botocore.exceptions.ClientError:

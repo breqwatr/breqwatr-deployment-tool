@@ -2,15 +2,16 @@
 # pylint: disable=import-error
 import boto3
 
-import bwdt.lib.auth
+import bwdt.lib.license as license
 
 
 class S3:
     """ Object class for S3 """
     def __init__(self):
-        auth = bwdt.lib.auth.get()
-        session = boto3.Session(aws_access_key_id=auth['key_id'],
-                                aws_secret_access_key=auth['key'])
+        licensed, keys = license.keys()
+        if licensed:
+            session = boto3.Session(aws_access_key_id=keys['id'],
+                                    aws_secret_access_key=keys['secret'])
         self.client = session.client('s3')
 
     def download(self, path, bucket_name, key):

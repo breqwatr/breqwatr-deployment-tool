@@ -5,7 +5,7 @@ from click.testing import CliRunner
 from mock import MagicMock
 
 import bwdt.cli.configure
-import bwdt.lib.auth
+import bwdt.lib.config
 import bwdt.lib.configure
 
 
@@ -26,9 +26,9 @@ def test_setup(monkeypatch):
 
 
 def test_show(monkeypatch):
-    """ call bwdt.lib.auth.get() """
+    """ call bwdt.lib.config.get_config() """
     mm_cmd = MagicMock()
-    monkeypatch.setattr(bwdt.lib.auth, 'get', mm_cmd)
+    monkeypatch.setattr(bwdt.lib.config, 'get_config', mm_cmd)
     runner = CliRunner()
     result = runner.invoke(bwdt.cli.configure.show)
     assert result.exit_code == 0

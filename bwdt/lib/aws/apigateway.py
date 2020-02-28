@@ -16,7 +16,6 @@ def sign(key, msg):
 
 
 def get_signing_key(secret_key, time, region):
-    # see https://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html#signature-v4-examples-python
     """
         *All hashes use sha256 on utf-8 strings*
         - Using 'AWS4' as the crypto-key, hash your secret key
@@ -26,6 +25,8 @@ def get_signing_key(secret_key, time, region):
         - Using the hmac of your service, hash 'aws4_request'
         Return this hmac to use as a singing key against your message body
     """
+    # pylint: disable=line-too-long
+    # see https://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html#signature-v4-examples-python  # noqa: E50
     datestamp = time.strftime('%Y%m%d')
     aws4_header_bytes = ('AWS4' + secret_key).encode('utf-8')
     key_date = sign(aws4_header_bytes, datestamp)
@@ -63,7 +64,6 @@ def get_canonical_headers(host, time):
 def get_canonical_request(method, uri, query, canonical_headers, payload_hash):
     """ return digest of a canonical request string """
     # https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
-    signed_headers = 'host;x-amz-date'
     return (
         f'{method}\n'
         f'{uri}\n'
@@ -91,6 +91,7 @@ def get_signature(signing_key, string_to_sign):
     return sig.hexdigest()
 
 
+# pylint: disable=R0914
 def get_authorization_header(time, key_id, secret_key, region, method, host,
                              body, uri, query):
     """ Return an aws authorization header """
@@ -98,11 +99,11 @@ def get_authorization_header(time, key_id, secret_key, region, method, host,
     canonical_headers = get_canonical_headers(host, time)
     payload_hash = get_payload_hash(body)
     canonical_request = get_canonical_request(
-         method=method,
-         uri=uri,
-         query=query,
-         canonical_headers=canonical_headers,
-         payload_hash=payload_hash)
+        method=method,
+        uri=uri,
+        query=query,
+        canonical_headers=canonical_headers,
+        payload_hash=payload_hash)
     # create a string-to-sign from the canonical requests' digest
     cr_digest = hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
     credential_scope = get_credential_scope(time, region)

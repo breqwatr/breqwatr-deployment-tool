@@ -4,7 +4,7 @@ import os
 
 from click import echo
 
-import bwdt.lib.auth as auth
+import bwdt.lib.config
 
 
 def _error(msg):
@@ -16,11 +16,7 @@ def _error(msg):
 def configure(key_id=None, key=None, online=None, offline_path=None):
     """ Launch the configuration setup """
     echo('Running BWDT Configuration Wizard')
-    made_dir = auth.mkdir()
-    if made_dir:
-        echo('Created directory {}'.format(auth.get_dir_path()))
-    echo('Writing {}'.format(auth.get_file_path()))
-    data = auth.get()
+    data = bwdt.lib.config.get_config()
     if online is None:
         echo('Do you have an internet connection? [y/n]:')
         user_in = input().lower()
@@ -40,10 +36,8 @@ def configure(key_id=None, key=None, online=None, offline_path=None):
             offline_path = input()
             if not os.path.exists(offline_path):
                 _error('Invalid path: {}'.format(offline_path))
-    offline = not online
-    auth.set(key_id=key_id, key=key, offline=offline,
-             offline_path=offline_path)
-    data = auth.get()
+    bwdt.lib.config.set_config(data)
+    data = bwdt.lib.config.get_config()
     echo('Key ID: {}'.format(data['key_id']))
     echo('Offline: {}'.format(data['offline']))
     echo('Offline Path: {}'.format(data['offline_path']))

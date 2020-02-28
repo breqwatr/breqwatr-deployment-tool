@@ -22,7 +22,11 @@ setup(
         'click',
         'docker',
         'mysql-connector',
-        'python-keystoneclient'
+        'python-keystoneclient',
+        'pytest',
+        'mock',
+        'flake8',
+        'pylint'
     ],
     entry_points='''
         [console_scripts]
