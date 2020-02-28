@@ -9,7 +9,7 @@ def get_docker_group():
     """ return the docker group function """
     @click.group(name='docker')
     def docker_group():
-        """ Command group for local docker commands """
+        """ Pull or export Docker images """
     docker_group.add_command(pull_one)
     docker_group.add_command(pull_all)
     docker_group.add_command(export_image)

@@ -9,7 +9,7 @@ def get_registry_group():
     """ return the registry group function """
     @click.group(name='registry')
     def registry_group():
-        """Command group for bwdt registry"""
+        """ Local Docker image registry """
     registry_group.add_command(start)
     registry_group.add_command(sync_image)
     registry_group.add_command(sync_all_images)

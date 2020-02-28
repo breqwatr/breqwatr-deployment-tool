@@ -3,10 +3,12 @@ import click
 
 import bwdt.services.pxe as pxe
 
+
 def get_pxe_group():
+    """ Return the PXE click group """
     @click.group(name='pxe')
     def pxe_group():
-        """ Command group for bwdt PXE service """
+        """ Network boot service - deploys Ubuntu 18.04 """
     pxe_group.add_command(start)
     return pxe_group
 
@@ -30,5 +32,3 @@ def start(interface, dhcp_start, dhcp_end, dns_ip):
         click.echo('Done')
     else:
         click.echo('Failed to launch - Maybe its already running?')
-
-

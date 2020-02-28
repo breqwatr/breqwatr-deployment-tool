@@ -3,13 +3,12 @@ import click
 
 import bwdt.services.arcus as arcus
 
+
 def get_arcus_group():
     """" return the arcus group function """
     @click.group(name='arcus')
     def arcus_group():
-        """ Command group for Arcus """
-    arcus_group.add_command(database_init)
-    arcus_group.add_command(create_service_account)
+        """ Breqwatr Arcus cloud management services """
     arcus_group.add_command(api)
     arcus_group.add_command(client)
     arcus_group.add_command(mgr)
@@ -54,7 +53,8 @@ def create_service_account(cloud_fqdn, bootstrap_password, sa_password, https):
 
 @click.group()
 def api():
-    """ Command group for Arcus API """
+    """ Back-end API service for Arcus """
+
 
 
 @click.option('--openstack-fqdn', required=True, help='fqdn/VIP of openstack')
@@ -90,7 +90,7 @@ def api_start(openstack_fqdn, rabbit_pass, rabbit_ip, sql_ip, sql_password,
 
 @click.group()
 def client():
-    """ Command group for Arcus Client """
+    """ Front-end client service for Arcus """
 
 
 @click.option('--api-ip', required=True, help='IP/VIP of Arcus API')
@@ -128,7 +128,7 @@ def client_start(api_ip, openstack_ip, glance_https, arcus_https, cert_path,
 
 @click.group()
 def mgr():
-    """ Command group for Arcus Mgr """
+    """ HA Worker service for Arcus """
 
 
 @click.option('--internal-vip', required=True, help='Internal VIP')
@@ -164,9 +164,8 @@ def mgr_start(internal_vip, sql_ip, sql_password, rabbit_ip, rabbit_pass,
         click.echo('Failed to start arcus_mgr. Is it already running?')
 
 
-
 api.add_command(api_start)
-
+api.add_command(database_init)
+api.add_command(create_service_account)
 client.add_command(client_start)
-
 mgr.add_command(mgr_start)

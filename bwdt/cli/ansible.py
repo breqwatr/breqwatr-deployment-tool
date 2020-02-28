@@ -10,7 +10,7 @@ def get_ansible_group():
     """ Return function of group for bwdt Ansible service """
     @click.group(name='ansible')
     def ansible_group():
-        """ Command group for bwdt Ansible service """
+        """ Deprecated """
     ansible_group.add_command(transfer_kolla_dir)
     ansible_group.add_command(start)
     ansible_group.add_command(bwdt.cli.ceph.ceph_group)
