@@ -14,9 +14,11 @@ def query(question, allowed_vals, default):
         vals_str = '/'.join(allowed_vals)
         q_str = question
         if len(allowed_vals) > 0:
-            q_str = f'{question} [{vals_str}] ({default})'
+            q_str = f'{q_str} [{vals_str}]'
+        if default != '':
+            q_str = f'{q_str} ({default})'
         click.echo(q_str)
-        user_input = input().lower()
+        user_input = input()
         if user_input == '':
             user_input = default
         if user_input in allowed_vals or len(allowed_vals) == 0:
@@ -40,11 +42,11 @@ def config_wizard():
         allowed_vals=['true', 'false'],
         default=data['offline'])
     data['offline_path'] = query(
-        question='(optional) Offline media path:',
+        question='*optional* Offline media path:',
         allowed_vals=[],
         default=data['offline_path'])
     data['license'] = query(
-        question='(optional) License key:',
+        question='*optional* License key:',
         allowed_vals=[],
         default=data['license'])
     config.set_config(data)
