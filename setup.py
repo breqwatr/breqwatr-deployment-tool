@@ -4,6 +4,8 @@ from setuptools import setup, find_packages
 with open('README.md', 'r') as readme_file:
     long_description = readme_file.read()
 
+# wrapt==1.11.* is required for 'astroid'
+
 setup(
     name='breqwatr-deployment-tool',
     packages=find_packages(),
@@ -23,6 +25,7 @@ setup(
         'docker',
         'mysql-connector',
         'python-keystoneclient',
+        'wrapt==1.11.*',
         'pytest',
         'mock',
         'flake8',
