@@ -43,9 +43,23 @@ bwdt configure
 ---
 
 
-# Download Everything
+# Download Container Images
+
+## Download every image
 
 The easiest way to go is to download all available packages. If you aren't sure
 which you'll need and have both the drive space and network capacity, this is
 the recommended option.
+
+```bash
+bwdt docker export-images-all
+```
+
+## Download individual images
+
+To pull a single image, such as the latest Apt to update your hosts's packages, you can specify it as follows.
+
+```bash
+bwdt docker export-image --directory /Volumes/usb128/BWOffline/ --pull --tag latest breqwatr/apt
+```
 
