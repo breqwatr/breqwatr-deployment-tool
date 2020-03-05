@@ -1,7 +1,7 @@
 # Breqwatr Deployment Tool
 
 A command-line driven deployment toolkit for containerized, open source cloud
-services such as OpenStack and Ceph. BWDT can also other useful containerized
+services such as OpenStack and Ceph. BWDT supports other useful containerized
 services which enable air-gap/dark-site installations such as private Apt and
 Pip repositories.
 
