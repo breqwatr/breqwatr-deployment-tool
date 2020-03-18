@@ -102,7 +102,7 @@ def get_image(repository, tag=None):
             pull_dhub(repository, tag)
 
 
-def run(image, **kwargs):
+def run(repository, tag, **kwargs):
     """ Run a docker image
 
         Wraps the docker run command.
@@ -117,6 +117,9 @@ def run(image, **kwargs):
 
     """
     assert_installed()
+    if tag is None:
+        tag = _default_tag(repository)
+    image = f'{repository}:{tag}'
     cmd = 'docker run'
     if 'daemon' in kwargs and kwargs['daemon']:
         cmd += ' -d'

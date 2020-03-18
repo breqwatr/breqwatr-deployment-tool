@@ -15,6 +15,6 @@ def start(tag, port):
     }
     ports = {'80': ('0.0.0.0', port)}
     docker.get_image(repository=repo, tag=tag)
-    success = docker.run(image, name=name, environment=env, daemon=True,
+    success = docker.run(repo, tag, name=name, environment=env, daemon=True,
                          restart_policy=restart_policy, ports=ports)
     return success
