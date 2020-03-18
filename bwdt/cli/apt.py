@@ -20,8 +20,4 @@ def get_apt_group():
 def start(version, port):
     """Launch the Apt service"""
     click.echo("Launching container: apt")
-    success = apt.start(tag=version, port=port)
-    if success:
-        click.echo('Done')
-    else:
-        click.echo('Failed to launch - Maybe its already running?')
+    apt.start(tag=version, port=port)
