@@ -1,13 +1,12 @@
 """ Controls for the apt service """
+import bwdt.lib.docker as docker
 from bwdt.constants import SERVICE_IMAGE_TAGS
-from bwdt.lib.container import Docker
 
 
-def start(tag=None, port=81):
+def start(tag, port):
     """ Start the APT container """
     name = 'apt'
-    repo = 'breqwatr/apt'
-    tag = SERVICE_IMAGE_TAGS[repo]
+    repo = 'apt'
     image = '{}:{}'.format(repo, tag)
     restart_policy = {'Name': 'always'}
     env = {
@@ -15,8 +14,7 @@ def start(tag=None, port=81):
         'GPG_PUBLIC_KEY_FILE': '/keys/breqwatr-private-key.asc',
     }
     ports = {'80': ('0.0.0.0', port)}
-    docker = Docker()
-    docker.pull(repository=repo, tag=tag)
-    success = docker.run(image, name=name, environment=env,
+    docker.get_image(repository=repo, tag=tag)
+    success = docker.run(image, name=name, environment=env, daemon=True,
                          restart_policy=restart_policy, ports=ports)
     return success

@@ -13,9 +13,11 @@ from bwdt.lib.envvar import env
 def get_ecr_client():
     """ Return an ECR boto3 client """
     licensed, keys = license.keys()
-    if licensed:
-        session = boto3.Session(aws_access_key_id=keys['id'],
-                                aws_secret_access_key=keys['secret'])
+    if not licensed:
+        sys.stderr.write('ERROR: Not licensed / invalid license.\n')
+        sys.exit(1)
+    session = boto3.Session(aws_access_key_id=keys['id'],
+                            aws_secret_access_key=keys['secret'])
     region = env()['BWDT_AWS_REGION']
     client = session.client('ecr', region_name=region)
     return client
@@ -48,8 +50,10 @@ def get_ecr_credentials(token):
     return credentials
 
 
-def get_registry_url(credentials):
+def get_ecr_url():
     """ Given credentials dict, return the registry URL """
+    token = get_ecr_token()
+    crednetials = get_ecr_credentials(token)
     registry = credentials['registry']
     url = registry.replace('https://', '')
     url = url.replace('http://', '')

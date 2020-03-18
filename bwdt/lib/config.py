@@ -1,4 +1,5 @@
 """ BWDT Config File functions """
+import sys
 import json
 from pathlib import Path
 
@@ -51,6 +52,23 @@ def is_config_found():
 
 
 def is_offline():
-    """ Return if ECR should be used, safely handing str values """
+    """ Return offline mode is enabled """
     data = get_config()
-    return str(data['offline']).lower() == 'false'
+    return str(data['offline']).lower() == 'true'
+
+
+def is_licensed():
+    """ Return if a license key is entered """
+    data = get_config()
+    return ('licence' in data and str(data['license']) != "")
+
+
+def get_offline_path():
+    """ Return offline path, exit gracefully if empty """
+    data = get_config()
+    if 'offline_path' not in data or data['offline_path'] == "":
+        msg = 'ERROR: Offline path is not configured\n'
+        sys.stderr.write(msg)
+        sys.exit(1)
+    return data['offline_path']
+

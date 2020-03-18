@@ -13,13 +13,14 @@ def get_apt_group():
     return apt_group
 
 
-@click.option('--tag', required=False, default=None, help='optional tag')
-@click.option('--port', required=False, default=81, help='listen port')
+@click.option('--version', required=False, default=None,
+              help='version override')
+@click.option('--port', required=True, help='TCP listen port for Apt')
 @click.command()
-def start(tag, port):
+def start(version, port):
     """Launch the Apt service"""
     click.echo("Launching container: apt")
-    success = apt.start(tag=tag, port=port)
+    success = apt.start(tag=version, port=port)
     if success:
         click.echo('Done')
     else:
