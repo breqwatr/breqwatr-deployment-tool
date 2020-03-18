@@ -8,6 +8,20 @@ from bwdt.lib.envvar import env
 from bwdt.constants import IMAGE_PREFIX, SERVICE_IMAGE_TAGS, KOLLA_IMAGE_TAGS
 
 
+def assert_installed():
+    """ Return if Docker appears to be installed or not """
+    out = subprocess.Popen(
+        ['which', 'docker'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    stdout = out.communicate()[0]
+    is_installed = stdout != b''
+    if not is_installed:
+        err = 'ERROR: Docker does not apppear to be installed\n'
+        sys.stderr.write(err)
+        sys.exit(1)
+
+
 def shell(cmd):
     """ Run the given command """
     if env()['BWDT_DEBUG'] != 'false':
@@ -30,23 +44,27 @@ def _default_tag(repository):
 
 def load(repository, tag):
     """ Import an image from the offline_path """
+    assert_installed()
     cmd = f'docker load --input {path}'
     shell(cmd)
 
 
 def tag(old_tag, new_tag):
     """ Apply a docker tag to an image """
+    assert_installed()
     cmd = f'docker tag {old_tag} {new_tag}'
 
 
 def delete_image(image):
     """ Delete the given image, or its tag if it has more than one tag """
+    assert_installed()
     cmd = f'docker image img {image}'
     shell(cmd)
 
 
 def pull_ecr(repository, tag):
     """ Pull an image from ECR. Retag to DHUB name and delete the old one."""
+    assert_installed()
     ecr_url = ecr.get_ecr_url()
     image = f'{ecr_url}/{IMAGE_PREFIX}/{repository}:{tag}'
     cmd = f'docker pull {image}'
@@ -58,6 +76,7 @@ def pull_ecr(repository, tag):
 
 def pull_dhub(repository, tag):
     """ Pull an image from Docker Hub """
+    assert_installed()
     cmd = f'docker pull {IMAGE_PREFIX}/{repository}:{tag}'
     shell(cmd)
 
@@ -97,6 +116,7 @@ def run(image, **kwargs):
             environment:    -e
 
     """
+    assert_installed()
     cmd = 'docker run'
     if 'daemon' in kwargs and kwargs['daemon']:
         cmd += ' -d'
