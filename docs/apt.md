@@ -1,4 +1,4 @@
-# Local Apt Mirror
+# Local Apt Service
 
 Breqwatr's local Apt mirror is required for offline installations.
 
@@ -20,25 +20,24 @@ The server where Apt is installed should be on different hardware than that
 which will be used for the private cloud or storage nodes.
 
 When Breqwatr deploys clouds, we designate one server as the
-"[Deployment Server](/deployment-server.md)".
-While you can run Apt anywhere, we suggest it be installed on a designated
-deployment server.
+"[Deployment Server](/deployment-server.md)" and install Apt there.
 
 
 ## Deploying Apt
 
-Run the following command to deploy the apt service on your deployment server.
-
-Examples:
+Run the following command to deploy the apt service on your deployment server:
 
 ```bash
-# Deploying Apt on the standard HTTP port (suggested)
-bwdt service apt start --port 80
+# Show the available options
+bwdt service apt start --help
 
-# Deploying Apt on port 81 (to not conflict with PXE)
+# (suggested) - Deploying Apt on port 81 (to not conflict with PXE)
 bwdt service apt start --port 81
 
-# Deploying Apt to host specific packages
+# Deploying Apt on the standard HTTP port (No PXE on the deployment server)
+bwdt service apt start --port 80
+
+# Deploying Apt to host specific packages from an older version
 bwdt service apt start --version stable-bionic --port 80
 ```
 
