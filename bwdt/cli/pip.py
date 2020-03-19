@@ -12,10 +12,11 @@ def get_pip_group():
     return pip_group
 
 
-@click.option('--tag', required=False, default=None, help='optional tag')
+@click.option('--version', required=False, default=None,
+              help='version override')
 @click.command()
-def start(tag):
+def start(version):
     """Launch the Pip service"""
     click.echo("Launching container: pip")
-    pip.start(tag)
+    pip.start(tag=version)
 
