@@ -45,14 +45,16 @@ def _default_tag(repository):
 def load(repository, tag):
     """ Import an image from the offline_path """
     assert_installed()
-    cmd = f'docker load --input {path}'
-    shell(cmd)
+    raise NotImplementedError
+    # cmd = f'docker load --input {path}'
+    # shell(cmd)
 
 
-def tag(old_tag, new_tag):
+def apply_tag(old_tag, new_tag):
     """ Apply a docker tag to an image """
     assert_installed()
     cmd = f'docker tag {old_tag} {new_tag}'
+    shell(cmd)
 
 
 def delete_image(image):
@@ -70,8 +72,8 @@ def pull_ecr(repository, tag):
     cmd = f'docker pull {image}'
     shell(cmd)
     new_tag = f'{IMAGE_PREFIX}/{repository}:{tag}'
-    tag(image, new_tag)
-    delete(image)
+    apply_tag(image, new_tag)
+    delete_image(image)
 
 
 def pull_dhub(repository, tag):
@@ -127,6 +129,9 @@ def run(repository, tag, **kwargs):
     if 'name' in kwargs:
         name = kwargs['name']
         cmd += f' --name {name}'
+        # Also remove any present containers with this name
+        rm_cmd = f'docker rm -f {name} 2> /dev/null || true'
+        shell(rm_cmd)
     if 'restart_policy' in kwargs:
         policy = kwargs['restart_policy']['Name']
         cmd += f' --restart {policy}'
@@ -148,4 +153,10 @@ def run(repository, tag, **kwargs):
         network_mode = kwargs['network_mode']
         cmd += f' --network {network_mode}'
     cmd += f' {IMAGE_PREFIX}/{image}'
+    shell(cmd)
+
+
+def push(image):
+    """ Push a docker image """
+    cmd = f'docker push {image}'
     shell(cmd)

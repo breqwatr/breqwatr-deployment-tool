@@ -1,37 +1,36 @@
 """ Controls for the registry service """
 from click import echo
 
-from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
-from bwdt.lib.container import Docker
+import bwdt.lib.docker as docker
+from bwdt.constants import IMAGE_PREFIX, KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
 
 
 def start(ip='0.0.0.0', port=5000):
     """ Start the registry container """
-    name = 'registry'
     repo = 'registry'
     tag = SERVICE_IMAGE_TAGS[repo]
     http_addr = "{}:{}".format(ip, port)
-    image = '{}:{}'.format(repo, tag)
     docker_kwargs = {
+        'name': 'registry',
         'environment': {'REGISTRY_HTTP_ADDR': http_addr},
-        'ports': {port: port}
+        'ports': {port: port},
+        'daemon': True
     }
-    docker = Docker()
-    docker.pull(repository=repo, tag=tag)
-    success = docker.run(image, name=name, **docker_kwargs)
-    return success
+    docker.get_image(repo, tag)
+    docker.run(repo, tag, **docker_kwargs)
 
 
 def sync_image(registry_url, image, tag=None):
     """ Pull images from upstream or import from media, push to registry """
     if tag is None:
         tag = KOLLA_IMAGE_TAGS[image]
-    docker = Docker()
-    docker.pull(image, tag)
+    docker.get_image(image, tag)
+    old_image = f'{IMAGE_PREFIX}/{image}:{tag}'
+    new_image = f'{registry_url}/{IMAGE_PREFIX}/{image}:{tag}'
     echo('> Applying new tag')
-    docker.retag(image, tag, registry_url)
-    echo('> Pushing {}:{} to {}'.format(image, tag, registry_url))
-    docker.push(image, tag, registry_url)
+    docker.apply_tag(old_image, new_image)
+    echo(f'> Pushing {new_image}')
+    docker.push(new_image)
 
 
 def sync_all_images(registry_url, tag=None):

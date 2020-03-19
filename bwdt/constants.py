@@ -7,7 +7,7 @@ BWDT_TARGZ_KEY = 'bwdt.tar.gz'
 CLOUDYML_KEY = 'cloud.yml'
 
 # Current latest tag
-TAG = 'train'
+TAG = 'stein'
 
 # The docker image prefix used across the board
 IMAGE_PREFIX = 'breqwatr'

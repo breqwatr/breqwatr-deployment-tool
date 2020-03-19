@@ -5,6 +5,7 @@ import click
 
 import bwdt.services.registry as registry
 
+
 def get_registry_group():
     """ return the registry group function """
     @click.group(name='registry')
@@ -23,17 +24,13 @@ def get_registry_group():
 def start(ip, port):
     """Launch the local registry"""
     click.echo("Launching container: registry")
-    success = registry.start(ip, port)
-    if success:
-        click.echo('Done')
-    else:
-        click.echo('Failed to launch - Maybe its already running?')
+    registry.start(ip, port)
 
 
 @click.argument('image_name')
 @click.argument('registry_url')
 @click.option('--tag', default=None, help='optional image tag')
-@click.command(name='sync-openstack-image')
+@click.command(name='sync-image')
 def sync_image(image_name, registry_url, tag):
     """ Load image_name and push it to the local registry """
     click.echo('Sync {} to {}...'.format(image_name, registry_url))
@@ -42,10 +39,10 @@ def sync_image(image_name, registry_url, tag):
 
 @click.argument('registry_url')
 @click.option('--tag', default=None, help='optional image tag')
-@click.command(name='sync-all-openstack-images')
+@click.command(name='sync-openstack-images')
 def sync_all_images(registry_url, tag):
-    """ Load all images and push them to the local registry """
-    click.echo('Pushing all images to {}'.format(registry_url))
+    """ Load all OpenStack images and push them to the local registry """
+    click.echo('Pushing all OpenStack images to {}'.format(registry_url))
     registry.sync_all_images(registry_url=registry_url, tag=tag)
 
 
