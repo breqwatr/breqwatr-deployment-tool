@@ -1,7 +1,7 @@
 # Deployment Server
 
-When installing clouds, we stand up a system outside the cloud and designate it
-as the deployment server.
+To deploy the cloud software, a stand-alone system outside the cloud is
+required. We refer to this server as the "deployment server".
 
 The deployment server is usually a VM on VMWare/HyperV or a very small physical
 server deployed on an Intel Nuc or 1U rack-mount server. It typically runs
