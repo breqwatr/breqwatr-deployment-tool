@@ -17,7 +17,10 @@ will come from Docker Hub instead of Breqwatr's registry and might be a bit
 older.
 
 
-## Table of Contents
+
+## Documentation
 
 - [BWDT Installation & Requirements](/installation.html)
 - [Creating Offline Installation Media](/offline-media.html)
+- [Deployment Server](/deployment-server.html)
+    - [Local Apt Mirror](/apt-mirror.html)
