@@ -35,3 +35,21 @@ bwdt service pip start
 # (alternatively) Start pip with a specific version
 bwdt service pip start --version stable
 ```
+
+
+## Configuring servers to use local pip
+
+By default, servers will try to use the public PyPi servers when the `pip`
+command is ran. To redirect them to use the local pip server, edit
+`/etc/pip.conf` and set it as follows:
+
+```ini
+# /etc/pip.conf
+
+[global]
+trusted-host = <Deployment server IP>
+index-url = http://<Deployment server IP>:3141/root/pypi/+simple/
+
+[search]
+index = http://<Deployment server IP>:3141/root/pypi/
+```
