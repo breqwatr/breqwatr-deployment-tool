@@ -5,16 +5,15 @@ from bwdt.constants import SERVICE_IMAGE_TAGS
 
 def start(tag, port):
     """ Start the APT container """
-    name = 'apt'
     repo = 'apt'
-    image = '{}:{}'.format(repo, tag)
-    restart_policy = {'Name': 'always'}
-    env = {
-        'GPG_PRIVATE_KEY_FILE': '/keys/breqwatr-private-key.asc',
-        'GPG_PUBLIC_KEY_FILE': '/keys/breqwatr-private-key.asc',
+    docker_kwargs = {
+        'name': 'apt',
+        'restart_policy': {'Name': 'always'},
+        'ports': {'80': ('0.0.0.0', port)},
+        'environment': {
+            'GPG_PRIVATE_KEY_FILE': '/keys/breqwatr-private-key.asc',
+            'GPG_PUBLIC_KEY_FILE': '/keys/breqwatr-private-key.asc'},
+        'daemon': True
     }
-    ports = {'80': ('0.0.0.0', port)}
     docker.get_image(repository=repo, tag=tag)
-    success = docker.run(repo, tag, name=name, environment=env, daemon=True,
-                         restart_policy=restart_policy, ports=ports)
-    return success
+    docker.run(repo, tag, **docker_kwargs)

@@ -5,13 +5,12 @@ import bwdt.lib.docker as docker
 
 def start(tag=None):
     """ Start the APT container """
-    name = 'pip'
     repo = 'pip'
-    tag = SERVICE_IMAGE_TAGS[repo]
     docker_kwargs = {
+        'name': 'pip',
         'network_mode': 'host',
-        'restart_policy': {'Name': 'always'}
+        'restart_policy': {'Name': 'always'},
+        'daemon': True
     }
     docker.get_image(repo, tag)
-    success = docker.run(repo, tag, name=name, **docker_kwargs)
-    return success
+    docker.run(repo, tag, name=name, **docker_kwargs)
