@@ -14,6 +14,40 @@ present on the system where BWDT will run.
 - Offline install requires a removable drive (such as a USB thumb-drive)
 - Licensed features require a Breqwatr Cloud License Key
 
+
+### Python Pip
+
+Pip is the primary package management utility for Python.
+
+Since BWDT requires Python 3, pip for Python 3 is required to install the
+Breqwatr Deployment tool. Be careful not to use pip for Python 2.
+
+```bash
+apt-get install python3-pip
+```
+
+### Virtualenv
+
+We suggest you use a `virtualenv` to install BWDT. If you're not familiar with
+the procedure, it can be set up as follows.
+
+Be sure to source into your virtualenv before attempting to run the `bwdt`
+command line. This will need to be re-done in each new terminal session.
+
+```bash
+# Install virtualenv for python 3 if it isn't installed yet
+apt-get install python3-virtualenv virtualenv
+
+# Create the virtual environment
+virtualenv --python=python3 env/
+
+# Use ("activate") the virtual environment
+source env/bin/activate
+
+# When you're done, "deactivate" to exit the virtualenv
+deactivate
+```
+
 ## Install from PyPi
 
 To install the current stable version of BWDT, install it uses `pip`. This is
