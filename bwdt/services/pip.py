@@ -12,6 +12,6 @@ def start(tag=None):
         'network_mode': 'host',
         'restart_policy': {'Name': 'always'}
     }
-    docker.pull(repository=repo, tag=tag)
+    docker.get_image(repo, tag)
     success = docker.run(repo, tag, name=name, **docker_kwargs)
     return success
