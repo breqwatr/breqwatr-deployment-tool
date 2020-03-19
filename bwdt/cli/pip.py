@@ -17,10 +17,5 @@ def get_pip_group():
 def start(tag):
     """Launch the Pip service"""
     click.echo("Launching container: pip")
-    success = pip.start(tag)
-    if success:
-        click.echo('Done')
-    else:
-        click.echo('Failed to launch - Maybe its already running?')
-
+    pip.start(tag)
 

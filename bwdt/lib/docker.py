@@ -114,6 +114,7 @@ def run(repository, tag, **kwargs):
             restart_policy: --restart
             ports:          -p
             environment:    -e
+            network_mode:   --network
 
     """
     assert_installed()
@@ -143,5 +144,8 @@ def run(repository, tag, **kwargs):
         for key in kwargs['environment']:
             value = kwargs['environment'][key]
             cmd += f' -e {key}="{value}"'
+    if 'network_mode' in kwargs:
+        network_mode = kwargs['network_mode']
+        cmd += f' --network {network_mode}'
     cmd += f' {IMAGE_PREFIX}/{image}'
     shell(cmd)
