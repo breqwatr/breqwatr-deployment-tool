@@ -13,4 +13,4 @@ def start(tag=None):
         'daemon': True
     }
     docker.get_image(repo, tag)
-    docker.run(repo, tag, name=name, **docker_kwargs)
+    docker.run(repo, tag, **docker_kwargs)
