@@ -25,3 +25,4 @@ older.
 - [Deployment Server](/deployment-server.html)
     - [Local Apt Service](/apt.html)
     - [Local Pip Service](/pip.html)
+    - [Local Docker Registry](/registry.html)

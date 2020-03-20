@@ -1,0 +1,95 @@
+# Local Docker Registry
+
+The local Docker registry is required for offline/air-gap installations.
+
+While optional for internet-enabled installations,  multi-node clusters benefit
+from using a local registry. The registry service acts as a local cache to
+prevent downloading tens of gigabytes of image data repeatedly on each cloud
+server.
+
+
+## Requirements
+
+The Registry service is a Docker image, so it can technically run anywhere
+Docker is installed. Since Registry is deployed using BWDT, Ubuntu 18.04 is
+suggested.
+
+When Breqwatr deploys clouds, we designate one server as the
+"[Deployment Server](/deployment-server.md)" and install Registry there.
+
+
+## Deploying Registry
+
+```bash
+# Show the available options for starting the registry service
+bwdt service registry start --help
+
+# Launch the registry on port 5000, listening on all IPs
+bwdt service registry start --ip 0.0.0.0 --port 5000
+```
+
+## Configure Docker to trust the local registry
+
+Before you can sync images to the registry service or pull images from it,
+you need to configure the Docker service to trust this registry.
+
+On the deployment server, edit `/etc/docker/daemon.json` with content similar
+to the following. Change the IP address and port as appropriate.
+
+```
+{
+   "insecure-registries" : ["10.10.10.9:5000"]
+}
+```
+
+Restart the docker service to apply the changes.
+
+```bash
+systemctl restart docker
+```
+
+If the registry was already deployed, it won't have come back up with the
+Docker service. Restart it.
+
+```bash
+docker start registry
+```
+
+
+## Sync upstream images to local registry
+
+The local registry needs to either download its images from an online upstream
+registry or load them from pre-made offline installation media.
+
+In a normal installation you'll want to sync all of the OpenStack images using
+the `sync-openstack-images` command. Individual images can be later
+synchronized for the purpose of updates.
+
+```bash
+# Load all OpenStack images to the local registry
+bwdt service registry sync-openstack-images <registry ip:port>
+
+# sync-openstack-images example
+bwdt service registry sync-openstack-images 10.10.10.9:5000
+
+# Load a specific image
+bwdt service registry sync-image <registry ip:port> <image name>
+
+# sync-image example
+bwdt service registry sync-image 10.10.10.9:5000 ubuntu-source-mariadb
+```
+
+
+---
+
+
+## List images in local registry
+
+To list the images currently stored in the local registry:
+
+```bash
+bwdt service registry list-images <registry ip:port>
+
+# example
+bwdt service registry list-images 10.10.10.9:5000
+```
