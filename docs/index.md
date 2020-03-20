@@ -22,7 +22,9 @@ older.
 
 - [BWDT Installation & Requirements](/installation.html)
 - [Creating Offline Installation Media](/offline-media.html)
+- [Prepare OpenStack Cloud Servers](/opnestack-server-setup.html)
 - [Deployment Server](/deployment-server.html)
     - [Local Apt Service](/apt.html)
     - [Local Pip Service](/pip.html)
     - [Local Docker Registry](/registry.html)
+

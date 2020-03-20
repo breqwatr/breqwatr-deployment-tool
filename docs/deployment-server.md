@@ -71,3 +71,26 @@ add-apt-repository \
 apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io
 ```
+
+
+## Generate SSH Keys
+
+The deployment server requires passwordless SSH access to each of the cloud
+servers. The OpenStack and Ceph deployment automation uses Ansible playbooks
+that depend upon the ability to SSH as root the nodes.
+
+Generate an SSH key:
+
+```
+# as not-root, create the keys. SSH key passphrases are not supported.
+ssh-keygen
+
+# Copy the key to the root user
+sudo mkdir -p /root/.ssh
+sudo cp ~/.ssh/id_rsa* /root/.ssh/
+```
+
+Distribute the public key to the `authorized_keys` file on each host. Ensure
+that the root user (`/root/.ssh/authorized_keys`) permits this key.
+
+
