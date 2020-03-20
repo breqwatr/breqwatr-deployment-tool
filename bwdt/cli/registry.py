@@ -1,7 +1,8 @@
 """Commands for operating the local registry"""
-import requests
+import sys
 
 import click
+import requests
 
 import bwdt.services.registry as registry
 
@@ -53,7 +54,13 @@ def list_images(registry_url):
     if 'http' not in registry_url:
         registry_url = 'http://{}'.format(registry_url)
     catalog_url = '{}/v2/_catalog'.format(registry_url)
-    response = requests.get(url=catalog_url)
+    try:
+        response = requests.get(url=catalog_url)
+    except requests.exceptions.ConnectionError:
+        err = f'ERROR: Failed to connect to {registry_url}\n'
+        err += '       Is the port correct? Usually it\'s :5000\n'
+        sys.stderr.write(err)
+        sys.exit(1)
     repositories = response.json()['repositories']
     for repo in repositories:
         click.echo('{}'.format(repo))
@@ -62,5 +69,3 @@ def list_images(registry_url):
         tags = tag_resp.json()['tags']
         for tag in tags:
             click.echo('  - {}'.format(tag))
-
-
