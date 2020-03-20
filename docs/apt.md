@@ -16,9 +16,6 @@ when possible.
 The Apt mirror is a Docker image, so it can technically run anywhere Docker is
 installed. Since Apt is deployed using BWDT, Ubuntu 18.04 is suggested.
 
-The server where Apt is installed should be on different hardware than that
-which will be used for the private cloud or storage nodes.
-
 When Breqwatr deploys clouds, we designate one server as the
 "[Deployment Server](/deployment-server.md)" and install Apt there.
 
