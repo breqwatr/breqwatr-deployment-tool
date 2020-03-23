@@ -22,6 +22,17 @@ def assert_installed():
         sys.exit(1)
 
 
+def is_image_pulled(repository, tag):
+    """ Return True if image is pulled, else False """
+    cmd = f'docker image inspect {repository}:{tag}'.split(' ')
+    try:
+        subprocess.check_call(cmd, stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
 def shell(cmd):
     """ Run the given command """
     if env()['BWDT_DEBUG'] != 'false':
@@ -65,7 +76,7 @@ def delete_image(image):
 
 
 def pull_ecr(repository, tag):
-    """ Pull an image from ECR. Retag to DHUB name and delete the old one."""
+    """ Pull an image from ECR. Retag to DHUB name and delete the old one.  """
     assert_installed()
     ecr_url = ecr.get_ecr_url()
     image = f'{ecr_url}/{IMAGE_PREFIX}/{repository}:{tag}'
@@ -83,15 +94,18 @@ def pull_dhub(repository, tag):
     shell(cmd)
 
 
-def get_image(repository, tag=None):
+def get_image(repository, tag=None, overwrite=True):
     """ Pull or load given docker image.
 
         If config is set to offline mode, import it from the offline_path
         If use_ecr is False or is_licensed is False, pull from Docker Hub
         If use_ecr is True and is_licensed is True, pull from ECR
+        If overwrite is False and the image exists, do nothing
     """
     if tag is None:
         tag = _default_tag(repository)
+    if is_image_pulled(repository, tag) and not overwrite:
+        return
     # Handle offline mode
     if config.is_offline():
         load(repository, tag)
