@@ -3,9 +3,9 @@ import subprocess
 import sys
 
 import bwdt.lib.config as config
+import bwdt.constants as constants
 import bwdt.lib.aws.ecr as ecr
 from bwdt.lib.envvar import env
-from bwdt.constants import IMAGE_PREFIX, SERVICE_IMAGE_TAGS, KOLLA_IMAGE_TAGS
 
 
 def assert_installed():
@@ -24,13 +24,31 @@ def assert_installed():
 
 def is_image_pulled(repository, tag):
     """ Return True if image is pulled, else False """
-    cmd = f'docker image inspect {repository}:{tag}'.split(' ')
+    prefix = constants.IMAGE_PREFIX
+    cmd = f'docker image inspect {prefix}/{repository}:{tag}'.split(' ')
     try:
         subprocess.check_call(cmd, stdout=subprocess.PIPE,
                               stderr=subprocess.PIPE)
         return True
     except subprocess.CalledProcessError:
         return False
+
+
+def assert_image_pulled(repository, tag):
+    """ Gracefully exit if a required docker image is not present """
+    if not is_image_pulled(repository, tag):
+        err = f'ERROR: The requested image {repository}:{tag} was not found!\n'
+        sys.stderr.write(err)
+        sys.exit(1)
+
+
+def assert_valid_release(release):
+    """ Gracefully exist it an invalid release is requested """
+    if release not in constants.RELEASES:
+        err = (f'ERROR: Release "{release}" is not supported.\n'
+               f'       Supported releases: {constants.RELEASES}\n')
+        sys.stderr.write(err)
+        sys.exit(1)
 
 
 def shell(cmd):
@@ -44,8 +62,8 @@ def shell(cmd):
 def _default_tag(repository):
     """ Return the default tag when not specified """
     tags = {}
-    tags.update(SERVICE_IMAGE_TAGS)
-    tags.update(KOLLA_IMAGE_TAGS)
+    tags.update(constants.SERVICE_IMAGE_TAGS)
+    tags.update(constants.KOLLA_IMAGE_TAGS)
     if repository not in tags:
         err = f'ERROR: Repository {repository} has no default tag defined.\n'
         sys.stderr.write(err)
@@ -79,10 +97,10 @@ def pull_ecr(repository, tag):
     """ Pull an image from ECR. Retag to DHUB name and delete the old one.  """
     assert_installed()
     ecr_url = ecr.get_ecr_url()
-    image = f'{ecr_url}/{IMAGE_PREFIX}/{repository}:{tag}'
+    image = f'{ecr_url}/{constants.IMAGE_PREFIX}/{repository}:{tag}'
     cmd = f'docker pull {image}'
     shell(cmd)
-    new_tag = f'{IMAGE_PREFIX}/{repository}:{tag}'
+    new_tag = f'{constants.IMAGE_PREFIX}/{repository}:{tag}'
     apply_tag(image, new_tag)
     delete_image(image)
 
@@ -90,7 +108,7 @@ def pull_ecr(repository, tag):
 def pull_dhub(repository, tag):
     """ Pull an image from Docker Hub """
     assert_installed()
-    cmd = f'docker pull {IMAGE_PREFIX}/{repository}:{tag}'
+    cmd = f'docker pull {constants.IMAGE_PREFIX}/{repository}:{tag}'
     shell(cmd)
 
 
@@ -166,7 +184,7 @@ def run(repository, tag, **kwargs):
     if 'network_mode' in kwargs:
         network_mode = kwargs['network_mode']
         cmd += f' --network {network_mode}'
-    cmd += f' {IMAGE_PREFIX}/{image}'
+    cmd += f' {constants.IMAGE_PREFIX}/{image}'
     shell(cmd)
 
 

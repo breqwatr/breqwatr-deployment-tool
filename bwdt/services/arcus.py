@@ -3,7 +3,7 @@ import mysql.connector
 
 from bwdt.constants import SERVICE_IMAGE_TAGS
 from bwdt.lib.container import Docker
-from bwdt.lib.openstack import Openstack
+from bwdt.lib.openstack import OpenstackClient
 
 
 def _create_arcus_database(cursor):
@@ -68,8 +68,8 @@ def _grant_arcusadmin_openstack_admin_roles(openstack):
 
 def create_openstack_sa(fqdn, admin_password, arcus_pass, https=True):
     """ Initialize the OpenStack overcloud for the Arcus service """
-    openstack = Openstack(fqdn=fqdn, user='admin', password=admin_password,
-                          project='admin', https=https)
+    openstack = OpenstackClient(fqdn=fqdn, user='admin', project='admin',
+                                password=admin_password, https=https)
     created = _create_arcusadmin_openstack_user(openstack, arcus_pass)
     if created:
         _grant_arcusadmin_openstack_admin_roles(openstack)

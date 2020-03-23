@@ -1,49 +1,29 @@
 """ Commands for operating the Ansible service """
 import click
 
-
-@click.group(name='openstack')
-def openstack_group():
-    """ Command group for bwdt ansible openstack """
+import bwdt.lib.openstack as openstack
 
 
-@click.command(name='gen-config')
-def gen_config():
-    """ Generate OpenStack config files in the ansible container """
-    cmd = ('docker exec -it ansible '
-           'ansible-playbook '
-           '-e @/etc/breqwatr/cloud.yml '
-           '-e ansible_connection=local '
-           '-i localhost, '
-           '/var/repos/bw-ansible/generate-kolla-config.yml')
-    click.echo(cmd)
+def get_openstack_group():
+    """ Return the OpenStack click group """
+    @click.group(name='openstack')
+    def openstack_group():
+        """ Deploy and manage OpenStack """
+    openstack_group.add_command(pull_kolla_ansible)
+    openstack_group.add_command(generate_passwords)
+    return openstack_group
 
 
-@click.command()
-def bootstrap():
-    """ Run kolla-ansible bootstrap """
-    cmd = ('docker exec -it ansible kolla-ansible '
-           '-i /etc/kolla/inventory bootstrap-servers')
-    click.echo(cmd)
+@click.argument('release')
+@click.command(name='pull-kolla-ansible')
+def pull_kolla_ansible(release):
+    """ Download the Kolla-Ansible image for the given release """
+    click.echo('Downloading the Kolla-Ansible image')
+    openstack.kolla_ansible_pull(release)
 
 
-@click.command()
-def deploy():
-    """ Run kolla-ansible deploy """
-    cmd = ('docker exec -it ansible kolla-ansible '
-           '-i /etc/kolla/inventory deploy')
-    click.echo(cmd)
-
-
-@click.command(name='post-deploy')
-def post_deploy():
-    """ Run kolla-ansible post-deploy """
-    cmd = ('docker exec -it ansible kolla-ansible '
-           '-i /etc/kolla/inventory post-deploy')
-    click.echo(cmd)
-
-
-openstack_group.add_command(gen_config)
-openstack_group.add_command(bootstrap)
-openstack_group.add_command(deploy)
-openstack_group.add_command(post_deploy)
+@click.argument('release')
+@click.command(name='generate-passwords')
+def generate_passwords(release):
+    """ Generate passwords.yml and print to stdout """
+    openstack.kolla_ansible_genpwd(release)
