@@ -94,3 +94,14 @@ Distribute the public key to the `authorized_keys` file on each host. Ensure
 that the root user (`/root/.ssh/authorized_keys`) permits this key.
 
 
+## DNS or Hosts File
+
+The deployment server must be able to resolve the host names of each node by
+IP address for Ansible to operate correctly. In multi-network OpenStack
+deployments it is important that the **internal network**'s IP address be the
+one that resolves by hostname.
+
+If each hostname will be listed in internal DNS, nothing else needs to be done.
+
+When the hostnames will not be listed using internal DNS, the `/etc/hosts` file
+on the deployment server must be updated to list each node.
