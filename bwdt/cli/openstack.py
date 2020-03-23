@@ -11,6 +11,7 @@ def get_openstack_group():
         """ Deploy and manage OpenStack """
     openstack_group.add_command(pull_kolla_ansible)
     openstack_group.add_command(generate_passwords)
+    openstack_group.add_command(get_inventory_template)
     return openstack_group
 
 
@@ -27,3 +28,10 @@ def pull_kolla_ansible(release):
 def generate_passwords(release):
     """ Generate passwords.yml and print to stdout """
     openstack.kolla_ansible_genpwd(release)
+
+
+@click.argument('release')
+@click.command(name='get-inventory-template')
+def get_inventory_template(release):
+    """ Print a template inventory file for a given release """
+    openstack.kolla_ansible_inventory(release)

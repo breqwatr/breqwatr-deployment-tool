@@ -30,6 +30,15 @@ def kolla_ansible_genpwd(release):
     docker.shell(cmd)
 
 
+def kolla_ansible_inventory(release):
+    """ Print the inventory template for the given release """
+    docker.assert_valid_release(release)
+    docker.assert_image_pulled('kolla-ansible', release)
+    cmd = (f'docker run --rm {constants.IMAGE_PREFIX}/kolla-ansible:{release} '
+           f'cat /var/repos/kolla-ansible/ansible/inventory/all-in-one')
+    docker.shell(cmd)
+
+
 class OpenstackClient(object):
     """ Auth'd Openstack Client class with services as properties """
     def __init__(self, fqdn, user, password, project, https=True):
