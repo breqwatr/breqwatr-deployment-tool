@@ -14,6 +14,7 @@ def get_openstack_group():
     openstack_group.add_command(get_inventory_template)
     openstack_group.add_command(bootstrap)
     openstack_group.add_command(pull_images)
+    openstack_group.add_command(deploy)
     return openstack_group
 
 
@@ -74,6 +75,27 @@ def pull_images(release, ssh_private_key_file, inventory_file, globals_file,
                 passwords_file):
     """ Pull the Kolla OpenStack images to each node """
     openstack.kolla_ansible_pull_images(
+        release=release,
+        ssh_key_path=ssh_private_key_file,
+        inventory_path=inventory_file,
+        globals_path=globals_file,
+        passwords_path=passwords_file)
+
+
+@click.option('--release', help='OpenStack release name', required=True)
+@click.option('--ssh-private-key-file', 'ssh_private_key_file', required=True,
+              help='Path the the SSH private key file')
+@click.option('--inventory-file', 'inventory_file', required=True,
+              help='Path the the Ansible inventory file')
+@click.option('--passwords-file', 'passwords_file', required=True,
+              help='Path the the passwords.yml file')
+@click.option('--globals-file', 'globals_file', required=True,
+              help='Path to the globals.yml file')
+@click.command(name='deploy')
+def deploy(release, ssh_private_key_file, inventory_file, globals_file,
+           passwords_file):
+    """ Deploy OpenStack  """
+    openstack.kolla_ansible_deploy(
         release=release,
         ssh_key_path=ssh_private_key_file,
         inventory_path=inventory_file,
