@@ -85,7 +85,7 @@ def kolla_ansible_pull_images(release, inventory_path, globals_path,
     """ Run kolla-ansible pull """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
-    cmd = (f'docker run --rm --network host'
+    cmd = (f'docker run --rm --network host '
            + _volume_opt(inventory_path, '/etc/kolla/inventory')
            + _volume_opt(globals_path, '/etc/kolla/globals.yml')
            + _volume_opt(passwords_path, '/etc/kolla/passwords.yml')
