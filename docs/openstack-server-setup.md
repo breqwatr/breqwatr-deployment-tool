@@ -8,6 +8,7 @@ following configurations are required.
 1. Install Ubuntu 18.04
 1. Configure Networking
 1. Disable the `iscisd.socket` service
+1. Install Python
 
 ## Recommended Hardware Requirements
 
@@ -150,3 +151,13 @@ the default value so often no change is required.
 # /etc/ssh/sshd_config
 PermitRootLogin prohibit-password
 ```
+
+
+## Installing Python
+
+Ansible will expect Python to be installed on each OpenStack node.
+
+```bash
+apt-get install python
+```
+

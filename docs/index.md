@@ -27,4 +27,5 @@ older.
     - [Local Apt Service](/apt.html)
     - [Local Pip Service](/pip.html)
     - [Local Docker Registry](/registry.html)
-
+- [OpenStack Installation](/openstack-install.html)
+    - [Storage - LVM Setup](openstack-lvm.html)
