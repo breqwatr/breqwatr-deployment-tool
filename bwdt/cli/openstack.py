@@ -112,13 +112,16 @@ def pull_images(release, ssh_private_key_file, inventory_file, globals_file,
               help='Path the the passwords.yml file')
 @click.option('--globals-file', 'globals_file', required=True,
               help='Path to the globals.yml file')
+@click.option('--config-dir', 'config_dir', required=True,
+              help='Path to the config/ dir')
 @click.command(name='deploy')
 def deploy(release, ssh_private_key_file, inventory_file, globals_file,
-           passwords_file):
+           passwords_file, config_dir):
     """ Deploy OpenStack  """
     openstack.kolla_ansible_deploy(
         release=release,
         ssh_key_path=ssh_private_key_file,
         inventory_path=inventory_file,
         globals_path=globals_file,
-        passwords_path=passwords_file)
+        passwords_path=passwords_file,
+        config_dir=config_dir)
