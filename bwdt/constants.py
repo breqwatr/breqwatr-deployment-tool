@@ -66,5 +66,6 @@ KOLLA_IMAGE_TAGS = {
     'ubuntu-source-iscsid': TAG,
     'ubuntu-source-rabbitmq': TAG,
     'ubuntu-source-cron': TAG,
-    'ubuntu-source-tgtd': TAG
+    'ubuntu-source-tgtd': TAG,
+    'ubuntu-source-placement-api': TAG
 }
