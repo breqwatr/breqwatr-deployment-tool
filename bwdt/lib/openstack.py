@@ -117,17 +117,21 @@ def kolla_ansible_pull_images(release, inventory_path, globals_path,
     docker.shell(cmd)
 
 
-def kolla_ansible_deploy(release, inventory_path, globals_path,
-                         passwords_path, ssh_key_path, config_dir):
+def kolla_ansible_deploy(release, inventory_path, globals_path, passwords_path,
+                         ssh_key_path, certificates_dir, config_dir):
     """ Run kolla-ansible pull """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
+    config_vol = ' '
+    if config_dir is not None:
+        config_vol = _volume_opt(config_dir, '/etc/kolla/config')
     cmd = (f'docker run --rm --network host '
            + _volume_opt(inventory_path, '/etc/kolla/inventory')
            + _volume_opt(globals_path, '/etc/kolla/globals.yml')
            + _volume_opt(passwords_path, '/etc/kolla/passwords.yml')
            + _volume_opt(ssh_key_path, '/root/.ssh/id_rsa')
-           + _volume_opt(config_dir, '/etc/kolla/config')
+           + _volume_opt(certificates_dir, '/etc/kolla/certificates')
+           + config_vol
            + f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible deploy -i /etc/kolla/inventory')
     docker.shell(cmd)
