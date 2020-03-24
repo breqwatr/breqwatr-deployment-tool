@@ -67,5 +67,6 @@ KOLLA_IMAGE_TAGS = {
     'ubuntu-source-rabbitmq': TAG,
     'ubuntu-source-cron': TAG,
     'ubuntu-source-tgtd': TAG,
-    'ubuntu-source-placement-api': TAG
+    'ubuntu-source-placement-api': TAG,
+    'ubuntu-source-horizon': TAG
 }
