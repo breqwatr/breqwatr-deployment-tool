@@ -59,7 +59,7 @@ def shell(cmd):
         try:
             subprocess.check_call(cmd, shell=True)
         except subprocess.CalledProcessError as error:
-            sys.stderr.write(f'{error}\n')
+            sys.stderr.write(f'\n\n{error}\n')
             sys.exit(1)
 
 

@@ -68,7 +68,7 @@ def kolla_ansible_bootstrap(release, inventory_path, globals_path,
     abs_inventory_path = get_absolute_path(inventory_path)
     abs_globals_path = get_absolute_path(globals_path)
     abs_passwords_path = get_absolute_path(passwords_path)
-    cmd = (f'docker run --rm '
+    cmd = (f'docker run --rm --network host '
            f'-v {abs_inventory_path}:/etc/kolla/inventory '
            f'-v {abs_globals_path}:/etc/kolla/globals.yml '
            f'-v {abs_passwords_path}:/etc/kolla/passwords.yml '
@@ -85,7 +85,7 @@ def kolla_ansible_pull_images(release, inventory_path, globals_path):
     abs_inventory_path = get_absolute_path(inventory_path)
     assert_file_exists(globals_path)
     abs_globals_path = get_absolute_path(globals_path)
-    cmd = (f'docker run --rm '
+    cmd = (f'docker run --rm --network host'
            f'-v {abs_inventory_path}:/etc/kolla/inventory '
            f'-v {abs_globals_path}:/etc/kolla/globals.yml '
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
