@@ -1,4 +1,4 @@
-""" Openstack client and deployment logic"""
+""" Openstack client and deployment logic """
 import requests
 import pathlib
 import sys
@@ -57,44 +57,44 @@ def kolla_ansible_inventory(release):
     docker.shell(cmd)
 
 
+def _volume_opt(src, dest):
+    """ Return a volume optional argument for docker run commands """
+    assert_file_exists(src)
+    absolute_path = get_absolute_path(src)
+    return f'-v {absolute_path}:{dest} '
+
+
 def kolla_ansible_bootstrap(release, inventory_path, globals_path,
-                            passwords_path):
+                            passwords_path, ssh_key_path):
     """ Run kolla-ansible bootstrap """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
-    assert_file_exists(inventory_path)
-    assert_file_exists(globals_path)
-    assert_file_exists(passwords_path)
-    abs_inventory_path = get_absolute_path(inventory_path)
-    abs_globals_path = get_absolute_path(globals_path)
-    abs_passwords_path = get_absolute_path(passwords_path)
     cmd = (f'docker run --rm --network host '
-           f'-v {abs_inventory_path}:/etc/kolla/inventory '
-           f'-v {abs_globals_path}:/etc/kolla/globals.yml '
-           f'-v {abs_passwords_path}:/etc/kolla/passwords.yml '
+           + _volume_opt(inventory_path, '/etc/kolla/inventory') +
+           + _volume_opt(globals_path, '/etc/kolla/globals.yml') +
+           + _volume_opt(passwords_path, '/etc/kolla/passwords.yml') +
+           + _volume_opt(ssh_key_path, '/root/.ssh/id_rsa') +
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible bootstrap-servers -i /etc/kolla/inventory')
     docker.shell(cmd)
 
 
-def kolla_ansible_pull_images(release, inventory_path, globals_path):
+def kolla_ansible_pull_images(release, inventory_path, globals_path,
+                              passwords_path, ssh_key_path):
     """ Run kolla-ansible pull """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
-    assert_file_exists(inventory_path)
-    abs_inventory_path = get_absolute_path(inventory_path)
-    assert_file_exists(globals_path)
-    abs_globals_path = get_absolute_path(globals_path)
     cmd = (f'docker run --rm --network host'
-           f'-v {abs_inventory_path}:/etc/kolla/inventory '
-           f'-v {abs_globals_path}:/etc/kolla/globals.yml '
+           + _volume_opt(inventory_path, '/etc/kolla/inventory') +
+           + _volume_opt(globals_path, '/etc/kolla/globals.yml') +
+           + _volume_opt(passwords_path, '/etc/kolla/passwords.yml') +
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible pull -i /etc/kolla/inventory')
     docker.shell(cmd)
 
 
-def kolla_ansible_deploy(release, globals_path, inventory_path,
-                         config_dir=None):
+def kolla_ansible_deploy(release, globals_path, inventory_path, passwords_path,
+                         ssh_key_path, config_dir=None):
     """ Run kolla-ansible deploy """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
