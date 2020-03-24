@@ -15,20 +15,21 @@ import bwdt.lib.docker as docker
 requests.packages.urllib3.disable_warnings()
 
 
+def get_absolute_path(file_path):
+    """ Return the absolute path of a potentially relative file path"""
+    path = pathlib.Path(file_path)
+    path = path.expanduser()
+    path = path.absolute()
+    return str(path)
+
+
 def assert_file_exists(file_path):
     """ Gracefully exist if a file does not exist """
-    path = pathlib.Path(file_path)
+    path = pathlib.Path(get_absolute_path(file_path))
     if not path.exists():
         err = f'ERROR: Expected file {file_path} not found\n'
         sys.stderr.write(err)
         sys.exit(1)
-
-
-def get_absolute_path(file_path):
-    """ Return the absolute path of a potentially relative file path"""
-    path = pathlib.Path(file_path)
-    absolute_path = '{}/{}'.format(path.parent.absolute(), path)
-    return str(absolute_path)
 
 
 def kolla_ansible_pull(release):
