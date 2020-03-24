@@ -16,6 +16,7 @@ def get_openstack_group():
     openstack_group.add_command(pull_images)
     openstack_group.add_command(deploy)
     openstack_group.add_command(generate_certificates)
+    openstack_group.add_command(get_admin_openrc)
     return openstack_group
 
 
@@ -125,3 +126,20 @@ def deploy(release, ssh_private_key_file, inventory_file, globals_file,
         passwords_path=passwords_file,
         certificates_dir=certificates_dir,
         config_dir=config_dir)
+
+
+@click.option('--release', help='OpenStack release name', required=True)
+@click.option('--inventory-file', 'inventory_file', required=True,
+              help='Path the the Ansible inventory file')
+@click.option('--passwords-file', 'passwords_file', required=True,
+              help='Path the the passwords.yml file')
+@click.option('--globals-file', 'globals_file', required=True,
+              help='Path to the globals.yml file')
+@click.command(name='get-admin-openrc')
+def get_admin_openrc(release, inventory_file, globals_file, passwords_file):
+    """ Genereate the admin-openrc file"""
+    openstack.kolla_ansible_get_admin_openrc(
+        release=release,
+        inventory_path=inventory_file,
+        globals_path=globals_file,
+        passwords_path=passwords_file)
