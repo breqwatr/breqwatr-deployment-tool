@@ -40,6 +40,8 @@ def get_inventory_template(release):
 
 
 @click.option('--release', help='OpenStack release name', required=True)
+@click.option('--ssh-private-key-file', 'ssh_private_key_file', required=True,
+              help='Path the the SSH private key file')
 @click.option('--inventory-file', 'inventory_file', required=True,
               help='Path the the Ansible inventory file')
 @click.option('--passwords-file', 'passwords_file', required=True,
@@ -47,24 +49,33 @@ def get_inventory_template(release):
 @click.option('--globals-file', 'globals_file', required=True,
               help='Path to the globals.yml file')
 @click.command(name='bootstrap')
-def bootstrap(release, inventory_file, globals_file, passwords_file):
+def bootstrap(release, ssh_private_key_file, inventory_file, globals_file,
+              passwords_file):
     """ Bootstrap the OpenStack nodes """
     openstack.kolla_ansible_bootstrap(
         release=release,
+        ssh_key_path=ssh_private_key_file,
         inventory_path=inventory_file,
         globals_path=globals_file,
         passwords_path=passwords_file)
 
 
 @click.option('--release', help='OpenStack release name', required=True)
+@click.option('--ssh-private-key-file', 'ssh_private_key_file', required=True,
+              help='Path the the SSH private key file')
 @click.option('--inventory-file', 'inventory_file', required=True,
               help='Path the the Ansible inventory file')
+@click.option('--passwords-file', 'passwords_file', required=True,
+              help='Path the the passwords.yml file')
 @click.option('--globals-file', 'globals_file', required=True,
               help='Path to the globals.yml file')
 @click.command(name='pull-images')
-def pull_images(release, inventory_file, globals_file):
+def pull_images(release, ssh_private_key_file, inventory_file, globals_file,
+                passwords_file):
     """ Pull the Kolla OpenStack images to each node """
     openstack.kolla_ansible_pull_images(
         release=release,
+        ssh_key_path=ssh_private_key_file,
         inventory_path=inventory_file,
-        globals_path=globals_file)
+        globals_path=globals_file,
+        passwords_path=passwords_file)

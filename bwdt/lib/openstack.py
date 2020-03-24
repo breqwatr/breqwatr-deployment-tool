@@ -88,6 +88,7 @@ def kolla_ansible_pull_images(release, inventory_path, globals_path,
            + _volume_opt(inventory_path, '/etc/kolla/inventory') +
            + _volume_opt(globals_path, '/etc/kolla/globals.yml') +
            + _volume_opt(passwords_path, '/etc/kolla/passwords.yml') +
+           + _volume_opt(ssh_key_path, '/root/.ssh/id_rsa') +
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible pull -i /etc/kolla/inventory')
     docker.shell(cmd)
