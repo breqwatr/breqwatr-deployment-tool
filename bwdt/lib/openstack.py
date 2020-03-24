@@ -27,7 +27,7 @@ def assert_file_exists(file_path):
 def get_absolute_path(file_path):
     """ Return the absolute path of a potentially relative file path"""
     path = pathlib.Path(file_path)
-    absolute_path = path.parent.absolute()
+    absolute_path = '{}/{}'.format(path.parent.absolute(), path)
     return str(absolute_path)
 
 
