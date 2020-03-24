@@ -48,17 +48,14 @@ def get_inventory_template(release):
               help='Path the the passwords.yml file')
 @click.option('--globals-file', 'globals_file', required=True,
               help='Path to the globals.yml file')
-@click.option('--config-dir', 'config_dir', required=True,
-              help='Path to the config/ dir')
 @click.command(name='generate-certificates')
-def generate_certificates(release, passwords_file, globals_file, config_dir):
+def generate_certificates(release, passwords_file, globals_file):
     """ Generate self signed certificates, write to certificates/ """
-    click.echo(f'Generating {config_dir}/certificates')
+    click.echo(f'Generating ./certificates/')
     openstack.kolla_ansible_generate_certificates(
         release=release,
         passwords_path=passwords_file,
-        globals_path=globals_file,
-        config_dir=config_dir)
+        globals_path=globals_file)
 
 
 @click.option('--release', help='OpenStack release name', required=True)
@@ -112,7 +109,7 @@ def pull_images(release, ssh_private_key_file, inventory_file, globals_file,
               help='Path the the passwords.yml file')
 @click.option('--globals-file', 'globals_file', required=True,
               help='Path to the globals.yml file')
-@click.option('--config-dir', 'config_dir', required=True,
+@click.option('--config-dir', 'config_dir', required=False, default=None,
               help='Path to the config/ dir')
 @click.command(name='deploy')
 def deploy(release, ssh_private_key_file, inventory_file, globals_file,

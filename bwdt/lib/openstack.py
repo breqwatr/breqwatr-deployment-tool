@@ -73,17 +73,15 @@ def _volume_opt(src, dest):
     return f'-v {absolute_path}:{dest} '
 
 
-def kolla_ansible_generate_certificates(release, passwords_path, globals_path,
-                                        config_dir):
+def kolla_ansible_generate_certificates(release, passwords_path, globals_path):
     """ Genereate certificates directory """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
-    assert_file_exists(config_dir)
-    cert_dir = get_absolute_path(f'{config_dir}/certificates/')
+    cwd = os.getcwd()
     cmd = (f'docker run --rm '
            + _volume_opt(globals_path, '/etc/kolla/globals.yml')
            + _volume_opt(passwords_path, '/etc/kolla/passwords.yml') +
-           f'-v {cert_dir}:/etc/kolla/certificates '
+           f'-v {cwd}/certificates:/etc/kolla/certificates '
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible certificates')
     docker.shell(cmd)
