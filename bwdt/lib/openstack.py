@@ -150,7 +150,7 @@ def kolla_ansible_get_admin_openrc(release, inventory_path, globals_path,
            + f'-v {cwd}:/target '
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'bash -c "kolla-ansible post-deploy -i /etc/kolla/inventory && '
-           f'cp /etc/kolla/etc/kolla/admin-openrc.sh /target/"')
+           f'cp /etc/kolla/admin-openrc.sh /target/"')
     docker.shell(cmd)
 
 
