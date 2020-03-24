@@ -57,17 +57,21 @@ def kolla_ansible_inventory(release):
     docker.shell(cmd)
 
 
-def kolla_ansible_bootstrap(release, inventory_path, globals_path):
+def kolla_ansible_bootstrap(release, inventory_path, globals_path,
+                            passwords_path):
     """ Run kolla-ansible bootstrap """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
     assert_file_exists(inventory_path)
-    abs_inventory_path = get_absolute_path(inventory_path)
     assert_file_exists(globals_path)
+    assert_file_exists(passwords_path)
+    abs_inventory_path = get_absolute_path(inventory_path)
     abs_globals_path = get_absolute_path(globals_path)
+    abs_passwords_path = get_absolute_path(passwords_path)
     cmd = (f'docker run --rm '
            f'-v {abs_inventory_path}:/etc/kolla/inventory '
            f'-v {abs_globals_path}:/etc/kolla/globals.yml '
+           f'-v {abs_passwords_path}:/etc/kolla/passwords.yml '
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible bootstrap-servers -i /etc/kolla/inventory')
     docker.shell(cmd)
