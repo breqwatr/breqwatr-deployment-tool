@@ -15,6 +15,7 @@ def get_openstack_group():
     openstack_group.add_command(bootstrap)
     openstack_group.add_command(pull_images)
     openstack_group.add_command(deploy)
+    openstack_group.add_command(generate_certificates)
     return openstack_group
 
 
@@ -30,6 +31,7 @@ def pull_kolla_ansible(release):
 @click.command(name='generate-passwords')
 def generate_passwords(release):
     """ Generate passwords.yml and print to stdout """
+    click.echo('Creating password file: ./passwords.yml')
     openstack.kolla_ansible_genpwd(release)
 
 
@@ -37,7 +39,26 @@ def generate_passwords(release):
 @click.command(name='get-inventory-template')
 def get_inventory_template(release):
     """ Print a template inventory to stdout """
+    click.echo('Creating inventory template: ./inventory')
     openstack.kolla_ansible_inventory(release)
+
+
+@click.option('--release', help='OpenStack release name', required=True)
+@click.option('--passwords-file', 'passwords_file', required=True,
+              help='Path the the passwords.yml file')
+@click.option('--globals-file', 'globals_file', required=True,
+              help='Path to the globals.yml file')
+@click.option('--config-dir', 'config_dir', required=True,
+              help='Path to the config/ dir')
+@click.command(name='generate-certificates')
+def generate_certificates(release, passwords_file, globals_file, config_dir):
+    """ Generate self signed certificates, write to certificates/ """
+    click.echo(f'Generating {config_dir}/certificates')
+    openstack.kolla_ansible_generate_certificates(
+        release=release,
+        passwords_path=passwords_file,
+        globals_path=globals_file,
+        config_dir=config_dir)
 
 
 @click.option('--release', help='OpenStack release name', required=True)

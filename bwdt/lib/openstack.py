@@ -1,6 +1,7 @@
 """ Openstack client and deployment logic """
-import requests
+import os
 import pathlib
+import requests
 import sys
 
 from keystoneauth1 import session
@@ -42,10 +43,13 @@ def kolla_ansible_genpwd(release):
     """ Genereate passwords.yml and print to stdout """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
+    cwd = os.getcwd()
     path = '/var/repos/kolla-ansible/etc/kolla/passwords.yml'
-    cmd = (f'docker run --rm {constants.IMAGE_PREFIX}/kolla-ansible:{release} '
+    cmd = (f'docker run --rm '
+           f'-v {cwd}:/etc/kolla '
+           f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'bash -c "kolla-genpwd --passwords {path} '
-           f'&& cat {path}"')
+           f'&& cp {path} /etc/kolla/passwords.yml"')
     docker.shell(cmd)
 
 
@@ -53,8 +57,12 @@ def kolla_ansible_inventory(release):
     """ Print the inventory template for the given release """
     docker.assert_valid_release(release)
     docker.assert_image_pulled('kolla-ansible', release)
-    cmd = (f'docker run --rm {constants.IMAGE_PREFIX}/kolla-ansible:{release} '
-           f'cat /var/repos/kolla-ansible/ansible/inventory/all-in-one')
+    cwd = os.getcwd()
+    inventory_file = '/var/repos/kolla-ansible/ansible/inventory/all-in-one'
+    cmd = (f'docker run --rm '
+           f'-v {cwd}:/etc/kolla '
+           f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
+           f'cp {inventory_file} /etc/kolla/inventory')
     docker.shell(cmd)
 
 
@@ -63,6 +71,22 @@ def _volume_opt(src, dest):
     assert_file_exists(src)
     absolute_path = get_absolute_path(src)
     return f'-v {absolute_path}:{dest} '
+
+
+def kolla_ansible_generate_certificates(release, passwords_path, globals_path,
+                                        config_dir):
+    """ Genereate certificates directory """
+    docker.assert_valid_release(release)
+    docker.assert_image_pulled('kolla-ansible', release)
+    assert_file_exists(config_dir)
+    cert_dir = get_absolute_path(f'{config_dir}/certificates/')
+    cmd = (f'docker run --rm '
+           + _volume_opt(globals_path, '/etc/kolla/globals.yml')
+           + _volume_opt(passwords_path, '/etc/kolla/passwords.yml') +
+           f'-v {cert_dir}:/etc/kolla/certificates '
+           f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
+           f'kolla-ansible certificates')
+    docker.shell(cmd)
 
 
 def kolla_ansible_bootstrap(release, inventory_path, globals_path,
