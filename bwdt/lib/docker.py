@@ -56,7 +56,11 @@ def shell(cmd):
     if env()['BWDT_DEBUG'] != 'false':
         print(cmd)
     if env()['BWDT_DISABLE_SHELL'] == 'false':
-        subprocess.check_call(cmd, shell=True)
+        try:
+            subprocess.check_call(cmd, shell=True)
+        except subprocess.CalledProcessError as error:
+            sys.stderr.write(f'{error}\n')
+            sys.exit(1)
 
 
 def _default_tag(repository):
