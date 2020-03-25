@@ -9,18 +9,34 @@ reliable.
 
 ## Procedure
 
-1. Load the Ansible image used to deploy OpenStack
-1. Generate a passwords file `passwords.yml`
 1. Configure storage providers
-1. Write your `globals.yml` configuration file
-1. Write the inventory file
-1. Deploy/generate HTTP certificate
-1. (optional) Write service configuration files
+1. Load the Ansible image used to deploy OpenStack
+1. Generate a passwords file - `passwords.yml`
+1. Write your "globals" configuration file - `globals.yml`
+1. Write the inventory file - `inventory`
+1. Deploy/generate HTTP certificate files - `certificates/`
+1. (optional) Write service configuration files - `config/`
 1. Bootstrap OpenStack nodes
 1. Pull Docker images to each node
 1. Deploy OpenStack
 1. Get admin-openrc file
 
+
+---
+
+
+## Configuring storage providers
+
+OpenStack Cinder supports a long list of storage backends.
+
+[See the Cinder support matrix](https://docs.openstack.org/cinder/rocky/reference/support-matrix.html).
+
+Breqwatr primarily deploys using Ceph, LVM, and Pure Storage as our back-end
+plugins of choice. The Cinder-volume container we publish to Docker Hub hosts
+all of these. Customer images from our private repository may have other
+plugins supported as well.
+
+Choose your storage provider and configure it.
 ## Loading the Kolla-Ansible image
 
 Breqwatr currently uses Kolla-Ansible for its OpenStack deployments. We've
@@ -30,6 +46,9 @@ present on the deployment server before OpenStack can be deployed.
 ```bash
 bwdt openstack pull-kolla-ansible --release <release name>
 ```
+
+- [LVM Setup Guide](openstack-lvm.html)
+
 
 ## Generating passwords.yml
 
@@ -45,22 +64,6 @@ To generate `passwords.yml`:
 # This will create ./passwords.yml
 bwdt openstack generate-passwords --release <release name>
 ```
-
-
-## Configuring storage providers
-
-OpenStack Cinder supports a long list of storage backends.
-
-[See the Cinder support matrix](https://docs.openstack.org/cinder/rocky/reference/support-matrix.html).
-
-Breqwatr primarily deploys using Ceph, LVM, and Pure Storage as our back-end
-plugins of choice. The Cinder-volume container we publish to Docker Hub hosts
-all of these. Customer images from our private repository may have other
-plugins supported as well.
-
-Choose your storage provider and configure it.
-
-- [LVM Setup Guide](openstack-lvm.html)
 
 
 ## Writing globals.yml
