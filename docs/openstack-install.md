@@ -10,7 +10,6 @@ reliable.
 ## Procedure
 
 1. Configure storage providers
-1. Load the Ansible image used to deploy OpenStack
 1. Generate a passwords file - `passwords.yml`
 1. Write your "globals" configuration file - `globals.yml`
 1. Write the inventory file - `inventory`
@@ -37,15 +36,6 @@ all of these. Customer images from our private repository may have other
 plugins supported as well.
 
 Choose your storage provider and configure it.
-## Loading the Kolla-Ansible image
-
-Breqwatr currently uses Kolla-Ansible for its OpenStack deployments. We've
-containerized it for portability and ease of use. This image needs to be
-present on the deployment server before OpenStack can be deployed.
-
-```bash
-bwdt openstack pull-kolla-ansible --release <release name>
-```
 
 - [LVM Setup Guide](openstack-lvm.html)
 
@@ -62,7 +52,7 @@ To generate `passwords.yml`:
 
 ```bash
 # This will create ./passwords.yml
-bwdt openstack generate-passwords --release <release name>
+bwdt openstack get-passwords --release <release name>
 ```
 
 
@@ -178,7 +168,7 @@ directory specified by `--config-dir`.
 
 ```bash
 # creates ./certificates/
-bwdt openstack generate-certificates \
+bwdt openstack get-certificates \
   --release stein \
   --globals-file globals.yml \
   --passwords-file passwords.yml
@@ -221,12 +211,13 @@ When setting up the deployment server, an SSH key-pair was created. By default
 this will be placed in `~/.ssh/id_rsa` but its location can vary.
 
 ```bash
-bwdt openstack bootstrap \
+bwdt openstack kolla-ansible bootstrap \
   --release stein \
   --ssh-private-key-file ~/.ssh/id_rsa \
   --globals-file globals.yml \
   --passwords-file passwords.yml \
-  --inventory-file inventory
+  --inventory-file inventory \
+  --certificates-dir certificates
 ```
 
 ## Pull OpenStack images to nodes
@@ -241,12 +232,13 @@ the `pull-images` command to let Ansible know which nodes need which service
 images.
 
 ```bash
-bwdt openstack pull-images \
+bwdt openstack kolla-ansible pull \
   --release stein \
   --ssh-private-key-file ~/.ssh/id_rsa \
   --globals-file globals.yml \
   --passwords-file passwords.yml \
-  --inventory-file inventory
+  --inventory-file inventory \
+  --certificates-dir certificates
 ```
 
 
@@ -256,7 +248,7 @@ Everything is ready, now create the OpenStack containers and initialize each
 service using the `deploy` command.
 
 ```bash
-bwdt openstack deploy \
+bwdt openstack kolla-ansible deploy \
   --release stein \
   --ssh-private-key-file ~/.ssh/id_rsa \
   --globals-file globals.yml \
