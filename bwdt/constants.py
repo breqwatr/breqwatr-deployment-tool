@@ -19,6 +19,7 @@ IMAGE_PREFIX = 'breqwatr'
 SERVICE_IMAGE_TAGS = {
     'registry': '2',
     'kolla-ansible': TAG,
+    'openstack-client': TAG,
     'arcus-api': f'stable-{TAG}',
     'arcus-client': f'stable-{TAG}',
     'arcus-mgr': f'stable-{TAG}',
