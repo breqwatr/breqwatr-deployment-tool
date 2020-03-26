@@ -51,7 +51,7 @@ def assert_valid_release(release):
         sys.exit(1)
 
 
-def shell(cmd):
+def shell(cmd, print_error=True):
     """ Run the given command """
     if env()['BWDT_DEBUG'] != 'false':
         print(cmd)
@@ -59,7 +59,8 @@ def shell(cmd):
         try:
             subprocess.check_call(cmd, shell=True)
         except subprocess.CalledProcessError as error:
-            sys.stderr.write(f'\n\n{error}\n')
+            if print_error:
+                sys.stderr.write(f'\n\n{error}\n')
             sys.exit(1)
 
 

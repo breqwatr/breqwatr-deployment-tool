@@ -1,4 +1,7 @@
 """ Commands for operating the Ansible service """
+import os
+import sys
+
 import click
 
 import bwdt.lib.openstack as openstack
@@ -17,6 +20,7 @@ def get_openstack_group():
     openstack_group.add_command(deploy)
     openstack_group.add_command(generate_certificates)
     openstack_group.add_command(get_admin_openrc)
+    openstack_group.add_command(cli)
     return openstack_group
 
 
@@ -143,3 +147,32 @@ def get_admin_openrc(release, inventory_file, globals_file, passwords_file):
         inventory_path=inventory_file,
         globals_path=globals_file,
         passwords_path=passwords_file)
+
+
+@click.option('--release', required=False, default=None,
+              help='OpenStack release name (OS_RELEASE)')
+@click.option('--openrc-path', 'openrc_path', required=False, default=None,
+              help='Openrc file path (OS_OPENRC_PATH)')
+@click.option('--command', '-c', required=False, default=None,
+              help='Execute this command (non-interactive mode)')
+@click.command(name='cli')
+def cli(release, openrc_path, command):
+    """ Execute openstack command line commands """
+    if release is None:
+        if 'OS_RELEASE' not in os.environ:
+            err = ('ERROR: either --release option must be used or the '
+                   'OS_RELEASE environment variable msut be set\n')
+            sys.stderr.write(err)
+            sys.exit(1)
+        release = os.environ['OS_RELEASE']
+    if openrc_path is None:
+        if 'OS_OPENRC_PATH' not in os.environ:
+            err = ('ERROR: either --openrc-path option must be used or the '
+                   'OS_OPENRC_PATH environment variable msut be set\n')
+            sys.stderr.write(err)
+            sys.exit(1)
+        openrc_path = os.environ['OS_OPENRC_PATH']
+    openstack.cli_exec(
+        release=release,
+        openrc_path=openrc_path,
+        command=command)

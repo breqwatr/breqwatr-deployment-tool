@@ -154,6 +154,19 @@ def kolla_ansible_get_admin_openrc(release, inventory_path, globals_path,
     docker.shell(cmd)
 
 
+def cli_exec(release, openrc_path, command):
+    """ Execute <command> using breqwatr/openstack-client:<release> """
+    docker.assert_valid_release(release)
+    print_error = (command is None)
+    command = 'openstack' if command is None else command
+    cmd = (f'docker run -it --rm --network host '
+           + _volume_opt(openrc_path, '/admin-openrc.sh') +
+           f'{constants.IMAGE_PREFIX}/openstack-client:{release} '
+           f'bash -c "source /admin-openrc.sh && '
+           f'. /var/repos/env/bin/activate && {command}"')
+    docker.shell(cmd, print_error=print_error)
+
+
 class OpenstackClient(object):
     """ Auth'd Openstack Client class with services as properties """
     def __init__(self, fqdn, user, password, project, https=True):
