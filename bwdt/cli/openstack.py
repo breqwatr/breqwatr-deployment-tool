@@ -161,14 +161,14 @@ def cli(release, openrc_path, command):
     if release is None:
         if 'OS_RELEASE' not in os.environ:
             err = ('ERROR: either --release option must be used or the '
-                   'OS_RELEASE environment variable msut be set\n')
+                   'OS_RELEASE environment variable must be set\n')
             sys.stderr.write(err)
             sys.exit(1)
         release = os.environ['OS_RELEASE']
     if openrc_path is None:
         if 'OS_OPENRC_PATH' not in os.environ:
             err = ('ERROR: either --openrc-path option must be used or the '
-                   'OS_OPENRC_PATH environment variable msut be set\n')
+                   'OS_OPENRC_PATH environment variable must be set\n')
             sys.stderr.write(err)
             sys.exit(1)
         openrc_path = os.environ['OS_OPENRC_PATH']
