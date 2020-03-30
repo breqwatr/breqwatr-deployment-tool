@@ -140,7 +140,7 @@ def cli_exec(release, openrc_path, command, volume=None):
     """
     docker.assert_valid_release(release)
     command = 'openstack' if command is None else command
-    mount = '-v {volume} ' if volume is not None else ' '
+    mount = f'-v {volume} ' if volume is not None else ' '
     cmd = (f'docker run -it --rm --network host '
            + _volume_opt(openrc_path, '/admin-openrc.sh')
            + mount +
