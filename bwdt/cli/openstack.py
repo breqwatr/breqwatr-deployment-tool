@@ -112,8 +112,10 @@ def kolla_ansible(release, ssh_private_key_file, inventory_file, globals_file,
               help='Openrc file path (OS_OPENRC_PATH)')
 @click.option('--command', '-c', required=False, default=None,
               help='Execute this command (non-interactive mode)')
+@click.option('--volume', '-v', required=False, default=None,
+              help='Mount a file to the client container [optional]')
 @click.command(name='cli')
-def cli(release, openrc_path, command):
+def cli(release, openrc_path, command, volume):
     """ Launch then OpenStack client CLI """
     if release is None:
         if 'OS_RELEASE' not in os.environ:
@@ -132,4 +134,5 @@ def cli(release, openrc_path, command):
     openstack.cli_exec(
         release=release,
         openrc_path=openrc_path,
-        command=command)
+        command=command,
+        volume=volume)

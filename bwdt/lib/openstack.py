@@ -133,12 +133,17 @@ def kolla_ansible_exec(release, inventory_path, globals_path, passwords_path,
     docker.shell(cmd)
 
 
-def cli_exec(release, openrc_path, command):
-    """ Execute <command> using breqwatr/openstack-client:<release> """
+def cli_exec(release, openrc_path, command, volume=None):
+    """ Execute <command> using breqwatr/openstack-client:<release>
+
+        Optionally, mount file(s) into the client with the volume arg
+    """
     docker.assert_valid_release(release)
     command = 'openstack' if command is None else command
+    mount = '-v {volume} ' if volume is not None else ' '
     cmd = (f'docker run -it --rm --network host '
            + _volume_opt(openrc_path, '/admin-openrc.sh') +
+           + mount +
            f'{constants.IMAGE_PREFIX}/openstack-client:{release} '
            f'bash -c "source /admin-openrc.sh && '
            f'. /var/repos/env/bin/activate && {command}"')
