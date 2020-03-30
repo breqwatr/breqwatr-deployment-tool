@@ -106,10 +106,10 @@ def kolla_ansible(release, ssh_private_key_file, inventory_file, globals_file,
         command=command)
 
 
-@click.option('--release', required=False, default=None,
+@click.option('--release', '-r', required=False, default=None,
               help='OpenStack release name (OS_RELEASE)')
-@click.option('--openrc-path', 'openrc_path', required=False, default=None,
-              help='Openrc file path (OS_OPENRC_PATH)')
+@click.option('--openrc-path', '-o', 'openrc_path', required=False,
+              default=None, help='Openrc file path (OS_OPENRC_PATH)')
 @click.option('--command', '-c', required=False, default=None,
               help='Execute this command (non-interactive mode)')
 @click.option('--volume', '-v', required=False, default=None,
