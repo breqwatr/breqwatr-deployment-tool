@@ -111,7 +111,7 @@ def kolla_ansible(release, ssh_private_key_file, inventory_file, globals_file,
 @click.option('--openrc-path', '-o', 'openrc_path', required=False,
               default=None, help='Openrc file path (OS_OPENRC_PATH)')
 @click.option('--command', '-c', required=False, default=None,
-              help='Execute this command (non-interactive mode)')
+              help='Execute this command (non-interactive mode) [optional]')
 @click.option('--volume', '-v', required=False, default=None,
               help='Mount a file to the client container [optional]')
 @click.command(name='cli')

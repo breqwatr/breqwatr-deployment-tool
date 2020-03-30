@@ -142,7 +142,7 @@ def cli_exec(release, openrc_path, command, volume=None):
     command = 'openstack' if command is None else command
     mount = '-v {volume} ' if volume is not None else ' '
     cmd = (f'docker run -it --rm --network host '
-           + _volume_opt(openrc_path, '/admin-openrc.sh') +
+           + _volume_opt(openrc_path, '/admin-openrc.sh')
            + mount +
            f'{constants.IMAGE_PREFIX}/openstack-client:{release} '
            f'bash -c "source /admin-openrc.sh && '
