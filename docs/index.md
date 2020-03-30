@@ -28,4 +28,6 @@ older.
     - [Local Pip Service](/pip.html)
     - [Local Docker Registry](/registry.html)
 - [OpenStack Installation](/openstack-install.html)
-    - [Storage - LVM Setup](openstack-lvm.html)
+    - [Storage - LVM Setup](/openstack-lvm.html)
+- [BWDT's OpenStack Command-Line](/openstack-cli.html)
+    - [OpenStack CLI Examples](/openstack-cli-examples.html)
