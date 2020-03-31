@@ -22,14 +22,6 @@ def get_openstack_group():
 
 
 @click.option('--release', help='OpenStack release name', required=True)
-@click.command(name='pull-kolla-ansible')
-def pull_kolla_ansible(release):
-    """ Download the Kolla-Ansible Docker image """
-    click.echo('Downloading the Kolla-Ansible image')
-    openstack.kolla_ansible_pull(release)
-
-
-@click.option('--release', help='OpenStack release name', required=True)
 @click.command(name='get-passwords')
 def get_passwords(release):
     """ Generate passwords, save to ./passwords.yml """
