@@ -69,18 +69,18 @@ def get_admin_openrc(release, inventory_file, globals_file, passwords_file):
         passwords_path=passwords_file)
 
 
-@click.option('--release', help='OpenStack release name', required=True)
-@click.option('--ssh-private-key-file', 'ssh_private_key_file', required=True,
-              help='Path the the SSH private key file')
-@click.option('--inventory-file', 'inventory_file', required=True,
+@click.option('--release', '-r',  help='OpenStack release name', required=True)
+@click.option('--ssh-private-key-file', '-s', 'ssh_private_key_file',
+              required=True, help='Path the the SSH private key file')
+@click.option('--inventory-file', '-i', 'inventory_file', required=True,
               help='Path the the Ansible inventory file')
-@click.option('--passwords-file', 'passwords_file', required=True,
+@click.option('--passwords-file', '-p', 'passwords_file', required=True,
               help='Path the the passwords.yml file')
-@click.option('--globals-file', 'globals_file', required=True,
+@click.option('--globals-file', '-g', 'globals_file', required=True,
               help='Path to globals.yml file')
-@click.option('--certificates-dir', 'certificates_dir', required=True,
+@click.option('--certificates-dir', '-d', 'certificates_dir', required=True,
               help='Path to certificates/ directory')
-@click.option('--config-dir', 'config_dir', required=False, default=None,
+@click.option('--config-dir', '-c', 'config_dir', required=False, default=None,
               help='Path to config/ directory  [optional]')
 @click.argument('command')
 @click.command(name='kolla-ansible')
