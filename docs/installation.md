@@ -14,6 +14,14 @@ present on the system where BWDT will run.
 - Offline install requires a removable drive (such as a USB thumb-drive)
 - Licensed features require a Breqwatr Cloud License Key
 
+### Installing Docker
+
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+apt-get update
+apt-get install -y docker-ce
+```
 
 ### Python Pip
 
