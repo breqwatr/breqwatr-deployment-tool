@@ -22,6 +22,7 @@ setup(
     install_requires=[
         'boto3',
         'click',
+        'docker',
         'mysql-connector',
         'python-keystoneclient',
         'wrapt==1.11.*',
