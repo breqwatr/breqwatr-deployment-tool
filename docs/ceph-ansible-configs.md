@@ -116,6 +116,11 @@ covers these files in some detail.
 General speaking we only set a few values in two of these files and leave the
 rest as their defaults.
 
+Create the following files:
+
+- `group_vars/all.yml`
+- `group_vars/osds.yml`
+
 
 ### all.yml
 
