@@ -44,8 +44,8 @@ software stability.
 For open-source cloud storage, Breqwatr recommends & supports [Ceph](https://ceph.io/).
 
 - [Prepare Ceph Storage Servers](#TODO)
-- [Create Ceph-Ansible Configuration Files](/ceph-ansible-configs.md)
-- [Deploy Ceph](#TODO)
+- [Create Ceph-Ansible Configuration Files](/ceph-ansible-configs.html)
+- [Deploy Ceph](ceph-deploy.html)
 
 
 ### OpenStack
