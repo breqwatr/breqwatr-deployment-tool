@@ -3,7 +3,7 @@
 Ceph is deployed using the [Ceph-Ansible project](https://github.com/ceph/ceph-ansible)
 The Ansible playbooks and their dependencies have been bundled into Breqwatr's
 [ceph-ansible image](https://hub.docker.com/r/breqwatr/ceph-ansible) and are
-orchestrated by [bwdt]((/installation.html)
+orchestrated by [bwdt](/installation.html)
 
 Before you can deploy Ceph, ensure you have generated the required
 [configuration files](/ceph-ansible-configs.html)
