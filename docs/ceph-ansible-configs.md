@@ -20,6 +20,7 @@ For a summary of what each service does, check [Ceph's documentation](https://do
 By convention, we name this file `ceph-inventory.yml`.
 
 ```yaml
+---
 # ceph-inventory.yml
 
 all:
@@ -125,8 +126,10 @@ Create the following files:
 ### all.yml
 
 ```yaml
---
+---
 # all.yml
+
+# Reference:
 # https://github.com/ceph/ceph-ansible/blob/master/group_vars/all.yml.sample
 
 # Choose your release [luminous, mimic, nautilus, octopus]
@@ -197,6 +200,8 @@ ceph_conf_overrides:
 
 ```yaml
 ---
+# osds.yml
+
 # Reference:
 # https://github.com/ceph/ceph-ansible/blob/master/group_vars/osds.yml.sample
 
