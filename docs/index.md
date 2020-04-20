@@ -20,14 +20,42 @@ older.
 
 ## Documentation
 
-- [BWDT Installation & Requirements](/installation.html)
+The Breqwatr Deployment Tool is used to deploy and manage all of the software
+we support. It's freely available and simple to install.
+
+[BWDT Installation & Requirements](/installation.html)
+
+
+### Deployment Server
+
+We suggest you dedicate a server to deploying the Breqwatr-supported services.
+This server can also run the local mirrors to improve deployment speed and
+software stability.
+
 - [Creating Offline Installation Media](/offline-media.html)
-- [Prepare OpenStack Cloud Servers](/openstack-server-setup.html)
 - [Deployment Server](/deployment-server.html)
     - [Local Apt Service](/apt.html)
     - [Local Pip Service](/pip.html)
     - [Local Docker Registry](/registry.html)
+
+
+### Ceph
+
+For open-source cloud storage, Breqwatr recommends & supports [Ceph](https://ceph.io/).
+
+- [Prepare Ceph Storage Servers](#TODO)
+- [Create Ceph-Ansible Configuration Files](/ceph-ansible-configs.md)
+- [Deploy Ceph](#TODO)
+
+
+### OpenStack
+
+All of Breqwatr's private clouds run [OpenStack](https://www.openstack.org/software/).
+
+- [Prepare OpenStack Cloud Servers](/openstack-server-setup.html)
 - [OpenStack Installation](/openstack-install.html)
     - [Storage - LVM Setup](/openstack-lvm.html)
 - [BWDT's OpenStack Command-Line](/openstack-cli.html)
     - [OpenStack CLI Examples](/openstack-cli-examples.html)
+
+
