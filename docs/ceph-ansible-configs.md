@@ -30,28 +30,28 @@ all:
           # List the hostnames and their IP addresses as follows
           # You can define multiple hosts this way.
           controlServerHostname1:
-            ansible_host: {{ server1_ssh_mgmt_ip }}
-            monitor_address: {{ server1_monitor_ip }}
+            ansible_host: < server1_ssh_mgmt_ip >
+            monitor_address: < server1_monitor_ip >
           controlServerHostname2:
-            ansible_host: {{ server2_ssh_mgmt_ip }}
-            monitor_address: {{ server2_monitor_ip }}
+            ansible_host: < server2_ssh_mgmt_ip >
+            monitor_address: < server2_monitor_ip >
           controlServerHostname3:
-            ansible_host: {{ server3_ssh_mgmt_ip }}
-            monitor_address: {{ server3_monitor_ip }}
+            ansible_host: < server3_ssh_mgmt_ip >
+            monitor_address: < server3_monitor_ip>
     mgrs:
         hosts:
           controlServerHostname1:
-            ansible_host: {{ server1_ssh_mgmt_ip }}
+            ansible_host: < server1_ssh_mgmt_ip >
           controlServerHostname2:
-            ansible_host: {{ server2_ssh_mgmt_ip }}
+            ansible_host: < server2_ssh_mgmt_ip >
           controlServerHostname3:
-            ansible_host: {{ server3_ssh_mgmt_ip }}
+            ansible_host: < server3_ssh_mgmt_ip >
 
     # These servers host the Object Storage Daemon service
     osds:
         hosts:
           osdServerHostname4:
-            ansible_host: {{ server4_ssh_mgmt_ip }}
+            ansible_host: < server4_ssh_mgmt_ip >
             # OSD drives - cluster data is stored on these
             # sda, sdb, and sdc are just examples. Use fdisk -l to find yours.
             devices:
@@ -66,7 +66,7 @@ all:
               - /dev/sdd
               - /dev/sdd
           osdServerHostname5:
-            ansible_host: {{ server5_ssh_mgmt_ip }}
+            ansible_host: < server5_ssh_mgmt_ip >
             # OSD drives - cluster data is stored on these
             devices:
               - /dev/sda
@@ -84,21 +84,21 @@ all:
     rgw:
         hosts:
           controlServerHostname1:
-            ansible_host: {{ server1_ssh_mgmt_ip }}
+            ansible_host: < server1_ssh_mgmt_ip >
           controlServerHostname2:
-            ansible_host: {{ server2_ssh_mgmt_ip }}
+            ansible_host: < server2_ssh_mgmt_ip >
           controlServerHostname3:
-            ansible_host: {{ server3_ssh_mgmt_ip }}
+            ansible_host: < server3_ssh_mgmt_ip >
 
     # These service host the MetaData service
     mdss:
         hosts:
           controlServerHostname1:
-            ansible_host: {{ server1_ssh_mgmt_ip }}
+            ansible_host: < server1_ssh_mgmt_ip >
           controlServerHostname2:
-            ansible_host: {{ server2_ssh_mgmt_ip }}
+            ansible_host: < server2_ssh_mgmt_ip >
           controlServerHostname3:
-            ansible_host: {{ server3_ssh_mgmt_ip }}
+            ansible_host: < server3_ssh_mgmt_ip >
 ```
 
 
