@@ -142,7 +142,7 @@ cephx: true
 # in the given subnet. Use CIDR notation (ex. 192.168.1.0/24)
 monitor_address_block: {{ minitor_cidr }}
 
-q# radosgw_address_block works the same as monitor_address_block, but it is used
+# radosgw_address_block works the same as monitor_address_block, but it is used
 # for the Rados Gateway service configuration.
 radosgw_address_block: {{ ceph_cidr }}
 
@@ -187,7 +187,6 @@ ceph_conf_overrides:
 # ceph_repository: custom
 # ceph_custom_repo: "[trusted=yes arch=amd64] http://{{ apt_repo_url }}:{{ apt_repo_port }}"
 
-
 # If you're deploying a small cluster with a lot of PGs that you intend to grow
 #   soon, you might want to disable the max PG per OSD warning.
 #   Warning: This is usually a bad idea.
@@ -213,7 +212,6 @@ copy_admin_key: true
 # cache, then set this to "non-collocated". "collocated" puts the ROCKSDB/WAL
 # on the same drive as the data.
 osd_scenario: "collocated"
-
 
 # Set devices but leave it empty. The auto-discovery is dangerous so we define
 # the disks in the inventory, per-host
