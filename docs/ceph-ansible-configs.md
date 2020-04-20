@@ -24,42 +24,42 @@ By convention, we name this file `ceph-inventory.yml`.
 
 all:
   children:
-		# These servers host the monitor service
+    # These servers host the monitor service
     mons:
         hosts:
-					# List the hostnames and their IP addresses as follows
+          # List the hostnames and their IP addresses as follows
           # You can define multiple hosts this way.
-					controlServerHostname1:
+          controlServerHostname1:
             ansible_host: {{ server1_ssh_mgmt_ip }}
             monitor_address: {{ server1_monitor_ip }}
-					controlServerHostname2:
+          controlServerHostname2:
             ansible_host: {{ server2_ssh_mgmt_ip }}
             monitor_address: {{ server2_monitor_ip }}
-					controlServerHostname3:
+          controlServerHostname3:
             ansible_host: {{ server3_ssh_mgmt_ip }}
             monitor_address: {{ server3_monitor_ip }}
     mgrs:
         hosts:
-					controlServerHostname1:
+          controlServerHostname1:
             ansible_host: {{ server1_ssh_mgmt_ip }}
-					controlServerHostname2:
+          controlServerHostname2:
             ansible_host: {{ server2_ssh_mgmt_ip }}
-					controlServerHostname3:
+          controlServerHostname3:
             ansible_host: {{ server3_ssh_mgmt_ip }}
 
-		# These servers host the Object Storage Daemon service
+    # These servers host the Object Storage Daemon service
     osds:
         hosts:
           osdServerHostname4:
             ansible_host: {{ server4_ssh_mgmt_ip }}
-						# OSD drives - cluster data is stored on these
+            # OSD drives - cluster data is stored on these
             # sda, sdb, and sdc are just examples. Use fdisk -l to find yours.
             devices:
               - /dev/sda
-						  - /dev/sdb
+              - /dev/sdb
               - /dev/sdc
             # (optional) Dedicated ROCKSDB & WAL drives. If used, this must
-						# have the same # of entries as {{devices}}. Each index matches
+            # have the same # of entries as {{devices}}. Each index matches
             # up. Devices can and usually are reused.
             dedicated_devices:
               - /dev/sdd
@@ -67,13 +67,13 @@ all:
               - /dev/sdd
           osdServerHostname5:
             ansible_host: {{ server5_ssh_mgmt_ip }}
-						# OSD drives - cluster data is stored on these
+            # OSD drives - cluster data is stored on these
             devices:
               - /dev/sda
-						  - /dev/sdb
+              - /dev/sdb
               - /dev/sdc
             # (optional) Dedicated ROCKSDB & WAL drives. If used, this must
-						# have the same # of entries as {{devices}}. Each index matches
+            # have the same # of entries as {{devices}}. Each index matches
             # up. Devices can and usually are reused.
             dedicated_devices:
               - /dev/sdd
@@ -83,21 +83,21 @@ all:
     # These servers host the Rados Gateway service
     rgw:
         hosts:
-					controlServerHostname1:
+          controlServerHostname1:
             ansible_host: {{ server1_ssh_mgmt_ip }}
-					controlServerHostname2:
+          controlServerHostname2:
             ansible_host: {{ server2_ssh_mgmt_ip }}
-					controlServerHostname3:
+          controlServerHostname3:
             ansible_host: {{ server3_ssh_mgmt_ip }}
 
-		# These service host the MetaData service
+    # These service host the MetaData service
     mdss:
         hosts:
-					controlServerHostname1:
+          controlServerHostname1:
             ansible_host: {{ server1_ssh_mgmt_ip }}
-					controlServerHostname2:
+          controlServerHostname2:
             ansible_host: {{ server2_ssh_mgmt_ip }}
-					controlServerHostname3:
+          controlServerHostname3:
             ansible_host: {{ server3_ssh_mgmt_ip }}
 ```
 
@@ -153,36 +153,36 @@ osd_objectstore: bluestore
 ceph_conf_overrides:
   global:
 
-		# Set the default PG count nice and low.
+    # Set the default PG count nice and low.
     osd_pool_default_pg_num: 32
     osd_pool_default_pgp_num: 32
 
-		# How many data replicas (osd_pool_default_size)?
-		# 	1: for single-node POC cluster or clusters where data redundancy isn't
-	  #      required. Note that any disk failure will probably wreck the whole
+    # How many data replicas (osd_pool_default_size)?
+    #   1: for single-node POC cluster or clusters where data redundancy isn't
+    #      required. Note that any disk failure will probably wreck the whole
     #      cluster.
     #   2: For All-SSD pools
     #   3: For pools with HDDs
     osd_pool_default_size: 2
 
-		# Allowing pool deletion is helpful but might not be wanted in production
+    # Allowing pool deletion is helpful but might not be wanted in production
     mon_allow_pool_delete: true
 
-		# Default is 200, 300 helps in smaller clusters
+    # Default is 200, 300 helps in smaller clusters
     mon_max_pg_per_osd: 300
 
 
 # If using private apt, ceph_ansible needs to redefine the apt source to point
-# 	to the local mirror. ceph_origin, ceph_repository, and ceph_custom_repo
-# 	should be set as follows:
+#   to the local mirror. ceph_origin, ceph_repository, and ceph_custom_repo
+#   should be set as follows:
 # ceph_origin: repository
 # ceph_repository: custom
 # ceph_custom_repo: "[trusted=yes arch=amd64] http://{{ apt_repo_url }}:{{ apt_repo_port }}"
 
 
 # If you're deploying a small cluster with a lot of PGs that you intend to grow
-# 	soon, you might want to disable the max PG per OSD warning.
-# 	Warning: This is usually a bad idea.
+#   soon, you might want to disable the max PG per OSD warning.
+#   Warning: This is usually a bad idea.
 # mon_pg_warn_max_per_osd:0
 
 ```
