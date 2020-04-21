@@ -48,6 +48,7 @@ For open-source cloud storage, Breqwatr recommends & supports [Ceph](https://cep
 - [Deploy Ceph](ceph-deploy.html)
 - Preparing Ceph for OpenStack
     - [Create Ceph's OSD Pools for OpenStack](/ceph-pools.html)
+    - [Create CephX Authentication Keys](/ceph-cephx-keys.html)
 
 
 ### OpenStack
