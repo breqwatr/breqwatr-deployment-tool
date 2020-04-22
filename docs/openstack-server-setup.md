@@ -141,7 +141,21 @@ systemctl disable iscsid.socket
 ```
 
 
-## Allow private-key SSH to root user
+## SSH Settings
+
+### Authorize deployment server's key
+
+Create an SSH directory for the root user
+
+```bash
+mkdir -p /root/.ssh
+```
+
+Then add the deployment server's public SSH key to
+`/root/.ssh/authorized_keys`.
+
+
+### Allow private-key SSH to root user
 
 Ansible will be connecting to the root user via SSH using a private key
 generated on the deployment server. The deployment server's public key will
@@ -163,4 +177,6 @@ Ansible will expect Python to be installed on each OpenStack node.
 ```bash
 apt-get install python
 ```
+
+
 
