@@ -58,6 +58,7 @@ All of Breqwatr's private clouds run [OpenStack](https://www.openstack.org/softw
 - [Prepare OpenStack Cloud Servers](/openstack-server-setup.html)
 - [OpenStack Installation](/openstack-install.html)
     - [Storage - LVM Setup](/openstack-lvm.html)
+    - [Storage - Ceph Setup](/openstack-ceph.html)
 - [BWDT's OpenStack Command-Line](/openstack-cli.html)
     - [OpenStack CLI Examples](/openstack-cli-examples.html)
 

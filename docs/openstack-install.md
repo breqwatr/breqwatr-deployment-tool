@@ -41,7 +41,10 @@ plugins supported as well.
 Choose your storage provider and configure it.
 
 - [LVM Setup Guide](openstack-lvm.html)
+- [Storage - Ceph Setup\*](/openstack-ceph.html)
 
+\* Note: The Ceph steps require that `passwords.yml` already be generated (see
+below).
 
 ## Generating passwords.yml
 
@@ -201,6 +204,9 @@ directory structure in [Kolla-Ansible's advanced configuration guide](https://do
 This configuration directory will be mounted to Kolla-Ansible's
 `/etc/kolla/config` directory when executing the `deploy` and `reconfigure`
 tasks.
+
+
+
 
 
 ## Bootstrap OpenStack nodes
