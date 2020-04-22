@@ -179,4 +179,15 @@ apt-get install python
 ```
 
 
+## Configure /etc/hosts
 
+On each OpenStack server, add hosts entries for each other OpenStack server.
+If you're using an isolated private network, that's the one that should have
+the host entries else RabbitMQ will fail on first reboot in the control nodes.
+
+Similarly if Ceph is used, add entries for each Ceph node as well. Use the
+client network IP if Ceph has its network segregated too.
+
+DNS can be a solution to avoiding this, but generally the OpenStack internal
+network is not the network with the default gateway, so `/etc/hosts` tends to
+be a better option.
