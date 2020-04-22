@@ -44,9 +44,9 @@ def assert_image_pulled(repository, tag):
 
 def assert_valid_release(release):
     """ Gracefully exist it an invalid release is requested """
-    if release not in constants.RELEASES:
+    if release not in constants.OS_RELEASES:
         err = (f'ERROR: Release "{release}" is not supported.\n'
-               f'       Supported releases: {constants.RELEASES}\n')
+               f'       Supported releases: {constants.OS_RELEASES}\n')
         sys.stderr.write(err)
         sys.exit(1)
 

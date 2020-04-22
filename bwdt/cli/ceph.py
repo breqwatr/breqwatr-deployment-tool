@@ -2,12 +2,42 @@
 
 import click
 
-
-@click.group(name='ceph')
-def ceph_group():
-    """ Command group for ceph """
+import bwdt.constants as constants
+import bwdt.lib.ceph as ceph
 
 
+def get_ceph_group():
+    """ Return the Ceph click group """
+    @click.group(name='ceph')
+    def ceph_group():
+        """ Deploy and manage Ceph """
+    ceph_group.add_command(ceph_ansible)
+    return ceph_group
+
+
+@click.command(name='ceph-ansible')
+@click.option('--release', '-r', required=False, default=None,
+              help='Ceph-Ansible stable release branch [optional]')
+@click.option('--inventory', '-i', required=True,
+              help='Ceph-Ansible inventory file path')
+@click.option('--group-vars', '-g', 'group_vars', required=True,
+              help='Ceph-Ansible grou_vars directory path')
+@click.option('--ssh-key', '-s', 'ssh_key', required=True,
+              help='Ceph-Ansible grou_vars directory path')
+def ceph_ansible(release, inventory, group_vars, ssh_key):
+    """ Run the Ceph-Ansible ansible-playbook command """
+    if release is None:
+        # Use the latest release when none are specified
+        release = constants.CEPH_RELEASES[-1]
+    ceph.ceph_ansible_exec(
+        release=release,
+        inventory_path=inventory,
+        group_vars_path=group_vars,
+        ssh_key_path=ssh_key)
+
+
+
+# Deprecated
 @click.command(name='gen-config')
 def gen_config():
     """ Generates ceph configs in ansible container """
@@ -18,6 +48,7 @@ def gen_config():
     click.echo(docker_cmd)
 
 
+# Deprecated
 @click.command(name='deploy')
 def deploy():
     """ Deploy ceph on hosts """
@@ -27,6 +58,7 @@ def deploy():
     click.echo(docker_cmd)
 
 
+# Deprecated
 @click.command(name='post-deploy')
 def post_deploy():
     """ Creates ceph related file and pools """
@@ -37,6 +69,3 @@ def post_deploy():
     click.echo(docker_cmd)
 
 
-ceph_group.add_command(deploy)
-ceph_group.add_command(gen_config)
-ceph_group.add_command(post_deploy)

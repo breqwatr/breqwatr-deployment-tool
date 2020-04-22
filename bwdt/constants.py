@@ -10,7 +10,10 @@ CLOUDYML_KEY = 'cloud.yml'
 TAG = 'stein'
 
 # supported releases - only these releases have backing images available
-RELEASES = ['rocky', 'stein', 'train']
+# Releases are ordered from oldest to newest
+OS_RELEASES = ['rocky', 'stein', 'train']
+CEPH_RELEASES = ['3.2', '4.0', '5.0']
+
 
 # The docker image prefix used across the board
 IMAGE_PREFIX = 'breqwatr'

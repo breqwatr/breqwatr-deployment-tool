@@ -10,27 +10,11 @@ from keystoneclient.v3 import client as keystone
 
 import bwdt.constants as constants
 import bwdt.lib.docker as docker
+from bwdt.lib.common import volume_opt
 
 
 # pylint: disable-all
 requests.packages.urllib3.disable_warnings()
-
-
-def get_absolute_path(file_path):
-    """ Return the absolute path of a potentially relative file path"""
-    path = pathlib.Path(file_path)
-    path = path.expanduser()
-    path = path.absolute()
-    return str(path)
-
-
-def assert_file_exists(file_path):
-    """ Gracefully exist if a file does not exist """
-    path = pathlib.Path(get_absolute_path(file_path))
-    if not path.exists():
-        err = f'ERROR: Expected file/directory {file_path} not found\n'
-        sys.stderr.write(err)
-        sys.exit(1)
 
 
 def kolla_ansible_pull(release, force=True):
@@ -38,7 +22,6 @@ def kolla_ansible_pull(release, force=True):
     docker.assert_valid_release(release)
     if force is False and docker.is_image_pulled('kolla-ansible', release):
         return
-    docker.assert_valid_release(release)
     docker.get_image('kolla-ansible', release)
 
 
@@ -67,20 +50,13 @@ def kolla_ansible_inventory(release):
     docker.shell(cmd)
 
 
-def _volume_opt(src, dest):
-    """ Return a volume optional argument for docker run commands """
-    assert_file_exists(src)
-    absolute_path = get_absolute_path(src)
-    return f'-v {absolute_path}:{dest} '
-
-
 def kolla_ansible_generate_certificates(release, passwords_path, globals_path):
     """ Genereate certificates directory """
     kolla_ansible_pull(release, force=False)
     cwd = os.getcwd()
     cmd = (f'docker run --rm '
-           + _volume_opt(globals_path, '/etc/kolla/globals.yml')
-           + _volume_opt(passwords_path, '/etc/kolla/passwords.yml') +
+           + volume_opt(globals_path, '/etc/kolla/globals.yml')
+           + volume_opt(passwords_path, '/etc/kolla/passwords.yml') +
            f'-v {cwd}/certificates:/etc/kolla/certificates '
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible certificates')
@@ -94,9 +70,9 @@ def kolla_ansible_get_admin_openrc(release, inventory_path, globals_path,
     docker.assert_image_pulled('kolla-ansible', release)
     cwd = os.getcwd()
     cmd = (f'docker run --rm --network host '
-           + _volume_opt(inventory_path, '/etc/kolla/inventory')
-           + _volume_opt(globals_path, '/etc/kolla/globals.yml')
-           + _volume_opt(passwords_path, '/etc/kolla/passwords.yml')
+           + volume_opt(inventory_path, '/etc/kolla/inventory')
+           + volume_opt(globals_path, '/etc/kolla/globals.yml')
+           + volume_opt(passwords_path, '/etc/kolla/passwords.yml')
            + f'-v {cwd}:/target '
            f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'bash -c "kolla-ansible post-deploy -i /etc/kolla/inventory && '
@@ -107,7 +83,7 @@ def kolla_ansible_get_admin_openrc(release, inventory_path, globals_path,
 def kolla_ansible_exec(release, inventory_path, globals_path, passwords_path,
                        ssh_key_path, certificates_dir, config_dir,
                        command):
-    """ Run kolla-ansible pull """
+    """ Execute kolla-ansible commands """
     valid_cmds = ['deploy', 'mariadb_recovery', 'prechecks', 'post-deploy',
                   'pull', 'reconfigure', 'upgrade', 'check', 'stop',
                   'deploy-containers', 'prune-images']
@@ -120,13 +96,13 @@ def kolla_ansible_exec(release, inventory_path, globals_path, passwords_path,
     kolla_ansible_pull(release, force=False)
     config_vol = ' '
     if config_dir is not None:
-        config_vol = _volume_opt(config_dir, '/etc/kolla/config')
+        config_vol = volume_opt(config_dir, '/etc/kolla/config')
     cmd = (f'docker run --rm --network host '
-           + _volume_opt(inventory_path, '/etc/kolla/inventory')
-           + _volume_opt(globals_path, '/etc/kolla/globals.yml')
-           + _volume_opt(passwords_path, '/etc/kolla/passwords.yml')
-           + _volume_opt(ssh_key_path, '/root/.ssh/id_rsa')
-           + _volume_opt(certificates_dir, '/etc/kolla/certificates')
+           + volume_opt(inventory_path, '/etc/kolla/inventory')
+           + volume_opt(globals_path, '/etc/kolla/globals.yml')
+           + volume_opt(passwords_path, '/etc/kolla/passwords.yml')
+           + volume_opt(ssh_key_path, '/root/.ssh/id_rsa')
+           + volume_opt(certificates_dir, '/etc/kolla/certificates')
            + config_vol
            + f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
            f'kolla-ansible {command} -i /etc/kolla/inventory')
@@ -142,7 +118,7 @@ def cli_exec(release, openrc_path, command, volume=None):
     command = 'openstack' if command is None else command
     mount = f'-v {volume} ' if volume is not None else ' '
     cmd = (f'docker run -it --rm --network host '
-           + _volume_opt(openrc_path, '/admin-openrc.sh')
+           + volume_opt(openrc_path, '/admin-openrc.sh')
            + mount +
            f'{constants.IMAGE_PREFIX}/openstack-client:{release} '
            f'bash -c "source /admin-openrc.sh && '

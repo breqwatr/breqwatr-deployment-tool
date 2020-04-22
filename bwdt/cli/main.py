@@ -10,6 +10,7 @@ if sys.version_info[0] != 3:
 
 # flake8: noqa=402
 # pylint: disable=wrong-import-position
+import bwdt.cli.ceph
 import bwdt.cli.configure
 import bwdt.cli.download
 import bwdt.cli.docker
@@ -26,6 +27,7 @@ def get_entrypoint():
     @click.group()
     def entrypoint():
         """ Entrypoint for Click """
+    entrypoint.add_command(bwdt.cli.ceph.get_ceph_group())
     entrypoint.add_command(bwdt.cli.configure.get_configure_group())
     entrypoint.add_command(bwdt.cli.download.get_download_group())
     entrypoint.add_command(bwdt.cli.docker.get_docker_group())
