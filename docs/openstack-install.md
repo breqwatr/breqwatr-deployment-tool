@@ -1,3 +1,6 @@
+[Index](/)
+\> OpenStack Installation
+
 # OpenStack Installation
 
 There are many varying ways to configure OpenStack, each depending on the

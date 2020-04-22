@@ -1,3 +1,6 @@
+[Index](/)
+\> Deploying Ceph
+
 # Deploying Ceph
 
 Ceph is deployed using the [Ceph-Ansible project](https://github.com/ceph/ceph-ansible)

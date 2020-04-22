@@ -1,4 +1,8 @@
-# Creating Ceph's OSD Pools for OpenStack
+[Index](/)
+\> Preparing Ceph for OpenStack
+\> Creating Ceph’s OSD Pools
+
+# Creating Ceph's OSD Pools
 
 Ceph creates block devices in pools. For OpenStack, at least two pools will be
 created:

@@ -1,3 +1,6 @@
+[Index](/)
+\> BWDT's OpenStack Command Line
+
 # BWDT's OpenStack Command Line
 
 Breqwatr distributes a pre-packaged command-line container that can be easily

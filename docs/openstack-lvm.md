@@ -1,3 +1,7 @@
+[Index](/)
+\> [OpenStack Installation](/openstack-install.html)
+\> OpenStack LVM Setup
+
 # OpenStack LVM Storage Setup
 
 OpenStack nodes can use their local disks for cloud storage. An LVM

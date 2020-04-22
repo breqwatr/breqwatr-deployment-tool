@@ -1,8 +1,12 @@
-# Creating CephX Keys for OpenStack
+[Index](/)
+\> Preparing Ceph for OpenStack
+\> Creating CepX Keys
 
-In order for OpenStack's Cinder, Nova, and Glance services to interact with
-a secure Ceph cluster, they need to have keys created that grant access to
-their respective pools.
+# Creating CephX Keys
+
+CephX keys are required  or OpenStack's Cinder, Nova, and Glance services to
+interact with a secure Ceph cluster. These keys are creating using the `ceph`
+command-line. They can later be piped to files for use with Kolla-Ansible.
 
 If the pools aren't created yet, do that first:
 [Creating Ceph's OSD Pools for OpenStack](/ceph-pools.html)

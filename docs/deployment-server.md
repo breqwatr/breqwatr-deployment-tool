@@ -1,3 +1,6 @@
+[Index](/)
+\> Deployment Server
+
 # Deployment Server
 
 To deploy the cloud software, a stand-alone system outside the cloud is
@@ -7,7 +10,7 @@ The deployment server is usually a VM on VMWare/HyperV or a very small physical
 server deployed on an Intel Nuc or 1U rack-mount server. It typically runs
 Ubuntu Server.
 
-All of the usual auxiliary infrastructure expected to be ran "beside" the
+All of the usual auxiliary infrastructure expected to run "beside" the
 private cloud clusters can be launched on this deployment server.
 
 
@@ -42,7 +45,7 @@ When installing Ceph, the deployment server must have layer 3 connectivity with
 the Ceph monitors nodes.
 
 
-## Installing Required Software (Online)
+## Installing Required Software
 
 When the deployment server has an outbound internet connection (it can ping
 Google, for instance) it's trivial to install the required dependency software.

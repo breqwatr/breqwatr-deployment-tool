@@ -1,3 +1,7 @@
+[Index](/)
+[\> Deployment Server](deployment-server.html)
+\> Local Pip Service
+
 # Local Pip Service
 
 Pip is the package management service for Python. Breqwatr uses several Python

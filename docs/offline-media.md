@@ -1,3 +1,6 @@
+[Index](/)
+\> Creating Offline Installation Media
+
 # Creating Offline Installation Media
 
 While online installation is supported and technically faster, there are a

@@ -1,4 +1,4 @@
-[\> index](/)
+[Index](/)
 [\> Deployment Server](deployment-server.html)
 \> Local Apt Service
 

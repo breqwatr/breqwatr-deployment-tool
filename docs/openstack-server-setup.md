@@ -1,3 +1,6 @@
+[Index](/)
+\> OpenStack Server Setup
+
 # OpenStack Server Setup
 
 Before a node can be used as an OpenStack control or compute node, the

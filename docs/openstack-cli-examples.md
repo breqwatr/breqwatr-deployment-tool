@@ -1,3 +1,7 @@
+[Index](/)
+[\> BWDT's OpenStack Command Line](/openstack-cli.html)
+\> OpenStack CLI Examples
+
 # OpenStack CLI Examples
 
 For each of these examples, the `openstack` commands are shown "raw" and not

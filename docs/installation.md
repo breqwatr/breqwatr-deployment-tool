@@ -1,5 +1,5 @@
-[\<\< index](/)
-
+[Index](/)
+\> Installing BWDT
 
 # Installing BWDT
 
