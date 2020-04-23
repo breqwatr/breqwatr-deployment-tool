@@ -55,7 +55,7 @@ bwdt openstack cli --release stein --openrc-path admin-openrc.sh
 bwdt openstack cli -r stein -o admin-openrc.sh
 
 # Execute a command inside the container
-bwdt openstack cli -r stein -o admin-openrc.sh -c "openstack network list"
+bwdt openstack cli -r stein -o admin-openrc.sh -c "openstack endpoint list"
 ```
 
 The `cli` command also supports its own environment variables, so the release
@@ -77,6 +77,7 @@ bwdt openstack cli -c "openstack flavor list"
 ```bash
 # Don't forget the quotes
 bwdt openstack cli -v "<full path of file/directory>:<mount path>"
+```
 
 **Treating the Openstack CLI like a VM**
 

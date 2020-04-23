@@ -102,11 +102,39 @@ openstack image list
 
 ## Upload an image
 
+### Downloading a test Cirros image
+
+Cirros is a super-small Linux image that's little more than a network stack.
+It's great for testing out OpenStack itself.
 
 ```bash
+wget wget http://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
+```
+
+### Uploading the image
+
+```bash
+# Usage
+img_path=$(readlink -f <image file>)
+
+bwdt openstack cli \
+  -r <release> \
+  -o <openrc file> \
+  -v "$img_path:/<mounted full path>" \
+  -c "openstack image create --container-format bare --disk-format qcow2 --file <mounted full path> --public '<image name>'"
+```
+
+Here's an example:
+
+```bash
+# The volume mount needs the full path of the file
+img_path=$(readlink -f cirros-0.5.1-x86_64-disk.img)
+
 # Mount the cirros image into the cli container using -v
 bwdt openstack cli \
-  -v "/home/myuser/cirros.img:/cirros.img" \
+  -r stein \
+  -o admin-openrc.sh \
+  -v "$img_path:/cirros.img" \
   -c "openstack image create --container-format bare --disk-format qcow2 --file /cirros.img --public 'Cirros'"
 ```
 

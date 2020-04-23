@@ -74,6 +74,11 @@ Write your `globals.yml` file to define the cloud as you want it, then place it
 alongside your passwords.yml file. Be sure to keep a copy of this file
 somewhere safe.
 
+Example globals.yml files:
+
+- [Single-node LVM-Backed POC cluster](https://gist.github.com/breqwatr/056bc1d53370a2775d547cac10effa61)
+- [Single-node Ceph-backed POC cluster](https://gist.github.com/breqwatr/31fba9b5995e3b9dd1c3673b370aee08)
+
 
 ## Writing the inventory file
 
@@ -220,7 +225,7 @@ When setting up the deployment server, an SSH key-pair was created. By default
 this will be placed in `~/.ssh/id_rsa` but its location can vary.
 
 ```bash
-bwdt openstack kolla-ansible bootstrap \
+bwdt openstack kolla-ansible bootstrap-servers \
   --release stein \
   --ssh-private-key-file ~/.ssh/id_rsa \
   --globals-file globals.yml \
@@ -263,9 +268,10 @@ bwdt openstack kolla-ansible deploy \
   --globals-file globals.yml \
   --passwords-file passwords.yml \
   --inventory-file inventory \
-  --certificates-dir certificates
+  --certificates-dir certificates \
+  --config-dir config
 
-# Optionally:  --config-dir config
+# Note: --config-dir is optional and can be ommitted
 ```
 
 

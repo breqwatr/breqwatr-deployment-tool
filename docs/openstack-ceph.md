@@ -52,17 +52,15 @@ Each file will be similar, except that the `keyring =` line differs. For the
 keyring line, replace `<service>` with either cinder, nova, or glance in
 accordance with which file you're editing.
 
-```ini
+```
 [global]
 fsid = <fsid from monitor's ceph.conf>
-mon initial_members = <mon_initial_members from monitor's ceph.conf>
-mon_ ost = <mon_host from monitor's ceph.conf>
-
+mon initial members = <mon_initial_members from monitor's ceph.conf>
+mon host = <mon_host from monitor's ceph.conf>
 auth cluster required = cephx
 auth service required = cephx
 auth client required = cephx
 keyring = /etc/ceph/ceph.<service>.keyring
-
 rbd default features = 3
 ```
 
@@ -130,7 +128,7 @@ cat passwords.yml | grep cinder_rbd_secret_uuid | awk '{print $2}'
 
 OpenStack Cinder allows the configuration of backends - the mechanisms by which
 logical block devices are carved out. We typically name our Ceph backend
-Breqwatr`. Insert your chosen backend name for `enabled_backends`,
+Breqwatr. Insert your chosen backend name for `enabled_backends`,
 `default_volume_type`, the section header in square brackets, and
 `volume_backend_name`.
 
@@ -138,7 +136,7 @@ Note that "volume type" and "backend" are not exactly the same thing, but a
 Cinder volume type with the same name will be created later.
 
 
-```ini
+```
 [DEFAULT]
 enabled_backends=<backend name>
 default_volume_type=<backend name>
@@ -154,11 +152,11 @@ rbd_secret_uuid = <uuid from passwords.yml>
 ```
 
 
-## config/glance/glance-api.conf
+### config/glance/glance-api.conf
 
 The glance config file always has the same content:
 
-```ini
+```
 [DEFAULT]
 show_image_direct_url = True
 
@@ -173,3 +171,26 @@ rbd_store_ceph_conf = /etc/ceph/ceph.conf
 ---
 
 No other Ceph-related configuration is required.
+
+Before you continue, double-check that (at minimum) the following files exist:
+
+`find .`
+
+```text
+./passwords.yml
+./config
+./config/glance
+./config/glance/ceph.conf
+./config/glance/ceph.client.glance.keyring
+./config/glance/glance-api.conf
+./config/cinder
+./config/cinder/ceph.conf
+./config/cinder/cinder-volume
+./config/cinder/cinder-volume/ceph.client.cinder.keyring
+./config/cinder/ceph.client.cinder.keyring
+./config/cinder/cinder-volume.conf
+./config/nova
+./config/nova/ceph.conf
+./config/nova/ceph.client.cinder.keyring
+./config/nova/ceph.client.nova.keyring
+```
