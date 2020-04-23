@@ -52,6 +52,12 @@ Each file will be similar, except that the `keyring =` line differs. For the
 keyring line, replace `<service>` with either cinder, nova, or glance in
 accordance with which file you're editing.
 
+**Note**: If the value of `mon initial members` in ceph.conf on the monitor
+nodes looks like this `mon host = [v2:192.168.0.13:3300,v1:192.168.0.13:6789]`,
+it's using a newer format that isn't backwards compatible. Cinder's ceph
+client most likely will fail to parse it. Instead, just use aspace delimited
+list of each monitor node's IP address with no ports.
+
 ```
 [global]
 fsid = <fsid from monitor's ceph.conf>
@@ -60,7 +66,7 @@ mon host = <mon_host from monitor's ceph.conf>
 auth cluster required = cephx
 auth service required = cephx
 auth client required = cephx
-keyring = /etc/ceph/ceph.<service>.keyring
+keyring = /etc/ceph/ceph.client.<service>.keyring
 rbd default features = 3
 ```
 
