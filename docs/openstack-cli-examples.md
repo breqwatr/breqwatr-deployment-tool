@@ -4,9 +4,10 @@
 
 # OpenStack CLI Examples
 
-For each of these examples, the `openstack` commands are shown "raw" and not
-wrapped in the `bwdt openstack cli` syntax. For more information about
-Breqwatr's OpenStack CLI tool, see [BWDT's OpenStack Command-Line](/openstack-cli.html).
+With the exception of image creation, the following `openstack` commands are
+shown "raw" and not wrapped in the `bwdt openstack cli` syntax.
+For more information about Breqwatr's OpenStack CLI tool, see
+[BWDT's OpenStack Command-Line](/openstack-cli.html).
 
 This set of examples isn't nearly exhaustive. Instead, it's meant to illustrate
 the basic usage of the OpenStack CLI.
@@ -102,6 +103,19 @@ openstack image list
 
 ## Upload an image
 
+The basic syntax:
+
+```bash
+# disk format is usually qcow2 or raw
+
+openstack image create \
+  --container-format bare \
+  --disk-format <disk format> \
+  --file <mounted full path> \
+  --public \
+  '<image name>'
+```
+
 ### Downloading a test Cirros image
 
 Cirros is a super-small Linux image that's little more than a network stack.
@@ -111,7 +125,12 @@ It's great for testing out OpenStack itself.
 wget wget http://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
 ```
 
-### Uploading the image
+### Uploading an image to Glance with BWDT
+
+The `bwdt` command supports volume mounts using the `-v` option. It's a direct
+pass-through to Docker's `-v` option and uses the same syntax. Launching the
+`bwdt openstack cli` with the image mounted inside allows uploading of images
+without installing the various OpenStack CLI versions on your workstation.
 
 ```bash
 # Usage
@@ -156,7 +175,7 @@ openstack floating ip list
 ```
 
 
-## Create an external VLAN network
+## Creating an external VLAN network
 
 External VLAN networks require that the switches upstream of the OpenStack
 nodes are configured to trunk the assigned VLAN ID.
@@ -178,7 +197,7 @@ openstack network create \
 ```
 
 
-## Create an external flat network
+## Creating an external flat network
 
 External flat networks will place VM traffic directly on the host's physical
 Neutron-dedicated interface without any encapsulation. In this scenario, the
@@ -202,17 +221,35 @@ openstack network create \
 ```
 
 
+## Creating an internal VXLAN overlay network
+
+These networks don't exist outside the OpenStack cluster. They span across
+all hosts in the cluster and can be defined on-demand without any changes to
+the upstream networks. VMs using these networks generally are accessed using
+floating IP addresses from an external network.
+
+```bash
+openstack network create \
+  --provider-network-type vxlan \
+  <vxlan network name>
+
+```
+
+
 ## Assign a subnet to a network
 
 Subnets are IP address ranges that can be used inside a network. They can also
 support DHCP clients that will be automatically provisioned inside the given
-network.
+network. Internal VXLAN and external flat / VLAN networks all use the same
+subnet syntax.
+
 
 ```bash
 openstack subnet create \
   --network <network> \
   --subnet-range <cidr> \
   --allocation-pool start=<ip-address>,end=<ip-address> \
+  --gateway <gateway IP \>
   --dhcp \
   <subnet name>
 
@@ -224,6 +261,52 @@ openstack subnet create \
   --dhcp \
   infra-subnet
 ```
+
+
+## Creating a virtual router
+
+Internal VXLAN overlay networks can't access the LAN outside the OpenStack
+cloud on their own, and therefore don't allow their owners to access them. Also
+the VMs created on these networks don't have internet access or access to any
+other LAN resources. To resolve this limitation, a virtual router should be
+created on the VXLAN network to act as the gateway, and that router should be
+connected to an upstream external network.
+
+Routers are the logical devices where floating IP addresses will be deployed.
+
+When more than one OpenStack server exists with the network services running on
+it, the `--ha` flag can also be used to create a highly available router that
+will automatically set up VRRP to ensure availability.
+
+```bash
+# create the router
+openstack router create <--ha> <name>
+
+# attach the router to a subnet
+openstack router add subnet <router name/ID> <subnet name/ID>
+
+# set the upstream network for the router
+openstack router set <router> --external-gateway <network>
+```
+
+## Creating a floating IP address
+
+Once a server is deployed on an internal VXLAN network, and that network has a
+router connected to an external network, a floating IP address can be assigned
+to provide inbound access from outside the cloud.
+
+```bash
+# create the floating IP
+openstack floating ip create <external network name>
+
+# list the floating IP addresses and server ID
+openstack floating ip list
+openstack server list
+
+# Assign the floating IP to the server
+openstack server add floating ip <server name/id> <floating IP address>
+```
+
 
 ---
 
@@ -308,7 +391,7 @@ openstack volume create --type lvm --image Cirros --bootable --size 2 cirros-1-b
 
 # Servers
 
-# Create a server
+## Create a server
 
 There are many ways to create a server. We suggest you first create a bootable
 volume from an image, then boot from it.
@@ -340,4 +423,10 @@ openstack server create \
 # openstack server create --help
 ```
 
+## Console into a server
 
+Get the console URL, then open it in your browser:
+
+```bash
+openstack console url show --novnc <server>
+```
