@@ -29,7 +29,7 @@ def get_passwords(release):
     openstack.kolla_ansible_genpwd(release)
 
 
-@click.option('--release', help='OpenStack release name', required=True)
+@click.option('--release', '-r',  help='OpenStack release name', required=True)
 @click.command(name='get-inventory-template')
 def get_inventory_template(release):
     """ Generate inventory template, save to ./inventory """
@@ -37,10 +37,10 @@ def get_inventory_template(release):
     openstack.kolla_ansible_inventory(release)
 
 
-@click.option('--release', help='OpenStack release name', required=True)
-@click.option('--passwords-file', 'passwords_file', required=True,
+@click.option('--release', '-r', help='OpenStack release name', required=True)
+@click.option('--passwords-file', '-p', 'passwords_file', required=True,
               help='Path of passwords.yml file')
-@click.option('--globals-file', 'globals_file', required=True,
+@click.option('--globals-file', '-g', 'globals_file', required=True,
               help='Path of globals.yml file')
 @click.command(name='get-certificates')
 def get_certificates(release, passwords_file, globals_file):
@@ -52,16 +52,17 @@ def get_certificates(release, passwords_file, globals_file):
         globals_path=globals_file)
 
 
-@click.option('--release', help='OpenStack release name', required=True)
-@click.option('--inventory-file', 'inventory_file', required=True,
+@click.option('--release', '-r', help='OpenStack release name', required=True)
+@click.option('--inventory-file', '-i', 'inventory_file', required=True,
               help='Path of Ansible inventory file')
-@click.option('--passwords-file', 'passwords_file', required=True,
+@click.option('--passwords-file', '-p', 'passwords_file', required=True,
               help='Path of passwords.yml file')
-@click.option('--globals-file', 'globals_file', required=True,
+@click.option('--globals-file', '-g', 'globals_file', required=True,
               help='Path of globals.yml file')
 @click.command(name='get-admin-openrc')
 def get_admin_openrc(release, inventory_file, globals_file, passwords_file):
     """ Generate & save ./admin-openrc.sh"""
+    click.echo('Generating ./admin-openrc.sh')
     openstack.kolla_ansible_get_admin_openrc(
         release=release,
         inventory_path=inventory_file,
@@ -118,7 +119,7 @@ def cli(release, openrc_path, command, volume):
         release = os.environ['OS_RELEASE']
     if openrc_path is None:
         if 'OS_OPENRC_PATH' not in os.environ:
-            err = ('ERROR: either --openrc-path option must be used or the '
+            err = ('ERROR: the --openrc-path / -o option must be used or the '
                    'OS_OPENRC_PATH environment variable must be set\n')
             sys.stderr.write(err)
             sys.exit(1)

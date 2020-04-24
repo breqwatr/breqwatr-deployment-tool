@@ -86,7 +86,8 @@ def kolla_ansible_exec(release, inventory_path, globals_path, passwords_path,
     """ Execute kolla-ansible commands """
     valid_cmds = ['deploy', 'mariadb_recovery', 'prechecks', 'post-deploy',
                   'pull', 'reconfigure', 'upgrade', 'check', 'stop',
-                  'deploy-containers', 'prune-images']
+                  'deploy-containers', 'prune-images', 'bootstrap-servers',
+                  'destroy', 'destroy --yes-i-really-really-mean-it', 'DEBUG']
     if command not in valid_cmds:
         err = (f'ERROR: Invalid command "{command}" - '
                f'Valid commands: {valid_cmds}\n')
@@ -97,15 +98,24 @@ def kolla_ansible_exec(release, inventory_path, globals_path, passwords_path,
     config_vol = ' '
     if config_dir is not None:
         config_vol = volume_opt(config_dir, '/etc/kolla/config')
-    cmd = (f'docker run --rm --network host '
+    if command == "DEBUG":
+        name = f'kolla-ansible-{release}'
+        rm_arg = f'-d --name {name}'
+        run_cmd = 'tail -f /dev/null'
+        print(f'Running: docker rm -f {name}')
+        docker.shell(f'docker rm -f {name} 2>/dev/null || true')
+        print(f'Starting persistent container named {name} for debugging')
+    else:
+        run_cmd = f'kolla-ansible {command} -i /etc/kolla/inventory'
+        rm_arg = '--rm'
+    cmd = (f'docker run {rm_arg} --network host '
            + volume_opt(inventory_path, '/etc/kolla/inventory')
            + volume_opt(globals_path, '/etc/kolla/globals.yml')
            + volume_opt(passwords_path, '/etc/kolla/passwords.yml')
            + volume_opt(ssh_key_path, '/root/.ssh/id_rsa')
            + volume_opt(certificates_dir, '/etc/kolla/certificates')
            + config_vol
-           + f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} '
-           f'kolla-ansible {command} -i /etc/kolla/inventory')
+           + f'{constants.IMAGE_PREFIX}/kolla-ansible:{release} {run_cmd}')
     docker.shell(cmd)
 
 
