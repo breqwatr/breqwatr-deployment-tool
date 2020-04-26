@@ -12,6 +12,7 @@ def start(ip='0.0.0.0', port=5000):
     http_addr = "{}:{}".format(ip, port)
     docker_kwargs = {
         'name': 'registry',
+        'restart_policy': {'Name': 'always'},
         'environment': {'REGISTRY_HTTP_ADDR': http_addr},
         'ports': {port: port},
         'daemon': True
