@@ -20,10 +20,17 @@ older.
 
 ## Documentation
 
+## Guides
+
+
+
+### BWDT Command-Line Utility
+
 The Breqwatr Deployment Tool is used to deploy and manage all of the software
 we support. It's freely available and simple to install.
 
-[BWDT Installation & Requirements](/installation.html)
+- [BWDT Installation & Requirements](/installing-bwdt.html)
+- [BWDT Services](/bwdt-services.html)
 
 
 ### Deployment Server
@@ -56,6 +63,7 @@ For open-source cloud storage, Breqwatr recommends & supports [Ceph](https://cep
 All of Breqwatr's private clouds run [OpenStack](https://www.openstack.org/software/).
 
 - [Prepare OpenStack Cloud Servers](/openstack-server-setup.html)
+- [Mirroring OpenStack release's images on local registry from Docker Hub](/openstack-registry-mirror.html)
 - [OpenStack Installation](/openstack-install.html)
     - [Storage - LVM Setup](/openstack-lvm.html)
     - [Storage - Ceph Setup](/openstack-ceph.html)

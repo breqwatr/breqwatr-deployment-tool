@@ -1,5 +1,5 @@
 [Index](/)
-[\> Deployment Server](deployment-server.html)
+[\> BWDT Services](/bwdt-services.html)
 \> Local Docker Registry
 
 # Local Docker Registry
@@ -52,36 +52,8 @@ Restart the docker service to apply the changes.
 systemctl restart docker
 ```
 
-If the registry was already deployed, it won't have come back up with the
-Docker service. Restart it.
-
-```bash
-docker start registry
-```
-
-
-## Sync upstream images to local registry
-
-The local registry needs to either download its images from an online upstream
-registry or load them from pre-made offline installation media.
-
-In a normal installation you'll want to sync all of the OpenStack images using
-the `sync-openstack-images` command. Individual images can be later
-synchronized for the purpose of updates.
-
-```bash
-# Load all OpenStack images to the local registry
-bwdt service registry sync-openstack-images <registry ip:port>
-
-# sync-openstack-images example
-bwdt service registry sync-openstack-images 10.10.10.9:5000
-
-# Load a specific image
-bwdt service registry sync-image <registry ip:port> <image name>
-
-# sync-image example
-bwdt service registry sync-image 10.10.10.9:5000 ubuntu-source-mariadb
-```
+At this point you may want to
+[mirror the upstream OpenStack images](openstack-registry-mirror.html).
 
 
 ---
