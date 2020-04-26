@@ -25,3 +25,10 @@ bwdt ceph ceph-ansible \
   --ssh-key <path to ssh private key file (usually id_rsa)>
 ```
 
+
+## Double-check osd memory target
+
+In the deployed servers hosting the OSD roles, check ceph.conf's
+`osd memory target` value. Sometimes ceph-ansible picks a value that is WAY
+too high. This is the ammount of ram **each** OSD service will use under high
+load.
