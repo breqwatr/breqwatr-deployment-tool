@@ -14,7 +14,7 @@ def get_registry_group():
         """ Local Docker image registry """
     registry_group.add_command(start)
     registry_group.add_command(sync_image)
-    registry_group.add_command(sync_all_images)
+    registry_group.add_command(sync_openstack_images)
     registry_group.add_command(list_images)
     return registry_group
 
@@ -30,7 +30,7 @@ def start(ip, port):
 
 @click.argument('image_name')
 @click.argument('registry_url')
-@click.option('--tag', default=None, help='optional image tag')
+@click.option('--tag', '-t', required=True, help='Docker image tag')
 @click.command(name='sync-image')
 def sync_image(image_name, registry_url, tag):
     """ Load image_name and push it to the local registry """
@@ -39,12 +39,12 @@ def sync_image(image_name, registry_url, tag):
 
 
 @click.argument('registry_url')
-@click.option('--tag', default=None, help='optional image tag')
+@click.option('--release', '-r', required=True, help='OpenStack releas namee')
 @click.command(name='sync-openstack-images')
-def sync_all_images(registry_url, tag):
+def sync_openstack_images(registry_url, release):
     """ Load all OpenStack images and push them to the local registry """
     click.echo('Pushing all OpenStack images to {}'.format(registry_url))
-    registry.sync_all_images(registry_url=registry_url, tag=tag)
+    registry.sync_openstack_images(registry_url=registry_url, release=release)
 
 
 @click.argument('registry_url')

@@ -8,15 +8,15 @@ import docker
 from click import echo
 
 import bwdt.lib.config
-from bwdt.constants import KOLLA_IMAGE_TAGS, SERVICE_IMAGE_TAGS
+from bwdt.constants import KOLLA_IMAGE_REPOS, SERVICE_IMAGE_TAGS
 import bwdt.lib.aws.ecr as ecr
 
 
-def _all_images():
+def _all_images(release):
     """ Return dict of all images """
     images = {}
     images.update(SERVICE_IMAGE_TAGS)
-    images.update(KOLLA_IMAGE_TAGS)
+    images.update(KOLLA_IMAGE_REPOS[release])
     return images
 
 
@@ -74,30 +74,27 @@ class Docker:
             if remove_long_tag:
                 self.remove(repo=full_repo_name, tag=tag)
 
-    def pull(self, repository, tag=None, retag=True, remove_long_tag=True):
+    def pull(self, repository, tag):
         """ Pull or import an image """
-        if tag is None:
-            tag = _all_images()[repository]
         config = bwdt.lib.config.get_config()
-        if str(config['update_images'].lower()) != 'true':
-            if self.get_image(repository, tag) is not None:
-                echo('Skipping pull, update_images is false and image exists')
-                return
         if bwdt.lib.config.is_offline():
-            self._pull_ecr(repository, tag, retag, remove_long_tag)
+            self._pull_ecr(repository, tag, retag=True, remove_long_tag=True)
         else:
             self.import_image(repository, tag)
 
-    def pull_all(self, tag=None, retag=True, remove_long_tag=True):
+    def pull_all(self, release):
         """ Pull or import all images """
-        all_images = _all_images()
+        all_images = _all_images(release=release)
         i = 1
         count = len(all_images)
         for repository in all_images:
             echo('Pulling image {} of {}'.format(i, count))
             i += 1
-            self.pull(repository=repository, tag=tag, retag=retag,
-                      remove_long_tag=remove_long_tag)
+            self.pull(
+                repository=repository,
+                tag=tag,
+                retag=retag,
+                remove_long_tag=remove_long_tag)
 
     def tag(self, old_repo, old_tag, new_repo, new_tag):
         """ docker tag """

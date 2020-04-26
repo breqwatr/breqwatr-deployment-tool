@@ -64,18 +64,6 @@ def shell(cmd, print_error=True):
             sys.exit(1)
 
 
-def _default_tag(repository):
-    """ Return the default tag when not specified """
-    tags = {}
-    tags.update(constants.SERVICE_IMAGE_TAGS)
-    tags.update(constants.KOLLA_IMAGE_TAGS)
-    if repository not in tags:
-        err = f'ERROR: Repository {repository} has no default tag defined.\n'
-        sys.stderr.write(err)
-        sys.exit(1)
-    return tags[repository]
-
-
 def load(repository, tag):
     """ Import an image from the offline_path """
     assert_installed()
@@ -117,7 +105,7 @@ def pull_dhub(repository, tag):
     shell(cmd)
 
 
-def get_image(repository, tag=None, overwrite=True):
+def get_image(repository, tag, overwrite=True):
     """ Pull or load given docker image.
 
         If config is set to offline mode, import it from the offline_path
@@ -125,8 +113,6 @@ def get_image(repository, tag=None, overwrite=True):
         If use_ecr is True and is_licensed is True, pull from ECR
         If overwrite is False and the image exists, do nothing
     """
-    if tag is None:
-        tag = _default_tag(repository)
     if is_image_pulled(repository, tag) and not overwrite:
         return
     # Handle offline mode
@@ -157,8 +143,6 @@ def run(repository, tag, **kwargs):
 
     """
     assert_installed()
-    if tag is None:
-        tag = _default_tag(repository)
     image = f'{repository}:{tag}'
     cmd = 'docker run'
     if 'daemon' in kwargs and kwargs['daemon']:

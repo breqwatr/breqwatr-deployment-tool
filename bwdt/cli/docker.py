@@ -27,13 +27,12 @@ def pull_one(repository, tag):
     docker.pull(repository=repository, tag=tag)
 
 
-@click.option('--tag', default=None, required=False,
-              help='optional tag to pull. Default=(current stable)')
+@click.option('--release', '-r', required=True, help='OpenStack release')
 @click.command(name='pull-all')
-def pull_all(tag):
+def pull_all(release):
     """ Pull all images """
     docker = bwdt.lib.container.Docker()
-    docker.pull_all(tag=tag)
+    docker.pull_all(release=release)
 
 
 @click.argument('repository')
