@@ -31,7 +31,7 @@ to learn more.
 ---
 
 
-# Installtion Procedure
+# Installation Procedure
 
 ## Online Install with Ceph Storage
 
@@ -44,11 +44,11 @@ Ceph already be installed. If you haven't installed Ceph yet, follow the
    deploying and managing the cluster. This is typically the same server that
    was used to deploy Ceph.
 1. [**Prepare the metal cloud servers**](/openstack-server-setup.html):
-   Metal servers need their OS deployed and some intial setup
+   Metal servers need their OS deployed and some initial setup
 1. [**Launch a local Docker Registry**](/registry.html): Without a local cache of
    the docker images, each server will have to download the images from the
    internet. The Train release can have upwards of 90 images when everything is
-   enabled, so it's much better to download the the images once to a local
+   enabled, so it's much better to download the images once to a local
    registry.
 1. [**Copy images from Docker Hub to the local registry**]((/openstack-registry-mirror.html):
    BWDT will orchestrate the synchronization of a given OpenStack releases
@@ -76,7 +76,7 @@ Ceph already be installed. If you haven't installed Ceph yet, follow the
    make on its own.
 1. [**Bootstrap the metal servers for OpenStack**](/openstack-kolla-bootstrap.html):
    Install Docker and other packages on the servers that will host OpenStack
-   using Kolla-Ansibles bootstrap playlist.
+   using Kolla-Ansible's bootstrap playlist.
 1. [**Pull Docker images to each node**](/openstack-kolla-pull.html):
    Download the Docker images to each OpenStack server.
 1. [**Initialize OpenStack's service containers**](/openstack-kolla-deploy.html):

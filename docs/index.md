@@ -23,7 +23,7 @@ older.
 - [**Installing Ceph**](/ceph-install.html):
   An open-source cloud storage solution
 - [**Installing OpenStack**](/openstack-install.html):
-  Private clouds providing virtualization, SDN, and more
+  Private clouds providing virtualisation, SDN, and more
 
 
 ---

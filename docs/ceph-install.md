@@ -16,7 +16,7 @@
 
 ## About Ceph
 
-[Ceph](https://ceph.io/) is Breqwatr's open-source storage solution of choise.
+[Ceph](https://ceph.io/) is Breqwatr's open-source storage solution of choice.
 
 Ceph is an extremely scalable, cost effective, and feature-rich. Originally
 created by Inktank which was later acquired and is now developed by Red Hat.
