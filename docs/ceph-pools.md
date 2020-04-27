@@ -41,11 +41,11 @@ of OSDs which will use that pool and the replica count (size) of the pool.
 ### Sample PG counts
 
 - For a very small 1-node 1-disk POC cluster
-    - **images**: 32
     - **volumes**: 128
+    - **images**: 32
 - For a generic POC cluster of 4 nodes with size=3 and 24 drives total
-    - **images**: 256
     - **volumes**: 1024
+    - **images**: 256
 
 
 ## Create Pools
