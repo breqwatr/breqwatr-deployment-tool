@@ -20,7 +20,7 @@ older.
 
 ## Install Guides
 
-- [***Installing Ceph**](/ceph-install.html):
+- [**Installing Ceph**](/ceph-install.html):
   An open-source cloud storage solution
 - [**Installing OpenStack**](/openstack-install.html):
   Private clouds providing virtualization, SDN, and more
