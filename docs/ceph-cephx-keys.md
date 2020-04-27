@@ -1,5 +1,5 @@
 [Index](/)
-\> Preparing Ceph for OpenStack
+\> [OpenStack Installtion](/openstack-install.html)
 \> Creating CepX Keys
 
 # Creating CephX Keys

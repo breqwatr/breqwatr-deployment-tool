@@ -1,5 +1,5 @@
 [Index](/)
-\> Preparing Ceph for OpenStack
+\> [OpenStack Installation](/openstack-install.html)
 \> Creating Ceph’s OSD Pools
 
 # Creating Ceph's OSD Pools
