@@ -50,7 +50,7 @@ Ceph already be installed. If you haven't installed Ceph yet, follow the
    internet. The Train release can have upwards of 90 images when everything is
    enabled, so it's much better to download the images once to a local
    registry.
-1. [**Copy images from Docker Hub to the local registry**]((/openstack-registry-mirror.html):
+1. [**Copy images from Docker Hub to the local registry**](/openstack-registry-mirror.html):
    BWDT will orchestrate the synchronization of a given OpenStack releases
    images to the locally deployed registry.
 1. [**Create Ceph OSD pools for OpenStack**](/ceph-pools.html): Two Ceph pools,
