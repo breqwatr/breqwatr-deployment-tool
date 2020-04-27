@@ -1,4 +1,5 @@
 [Index](/)
+\> [Installing Ceph](/ceph-install.html)
 \> Deploying Ceph
 
 # Deploying Ceph

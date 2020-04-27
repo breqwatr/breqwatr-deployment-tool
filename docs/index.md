@@ -18,55 +18,62 @@ older.
 
 
 
-## Documentation
+## Install Guides
 
-## Guides
+- [***Installing Ceph**](/ceph-install.html):
+  An open-source cloud storage solution
+- [**Installing OpenStack**](/openstack-install.html):
+  Private clouds providing virtualization, SDN, and more
 
 
+---
 
-### BWDT Command-Line Utility
+
+# Documentation Index
+
+## BWDT Command-Line Utility
 
 The Breqwatr Deployment Tool is used to deploy and manage all of the software
 we support. It's freely available and simple to install.
 
 - [BWDT Installation & Requirements](/installing-bwdt.html)
 - [BWDT Services](/bwdt-services.html)
-
-
-### Deployment Server
-
-We suggest you dedicate a server to deploying the Breqwatr-supported services.
-This server can also run the local mirrors to improve deployment speed and
-software stability.
-
-- [Creating Offline Installation Media](/offline-media.html)
-- [Deployment Server](/deployment-server.html)
     - [Local Apt Service](/apt.html)
     - [Local Pip Service](/pip.html)
     - [Local Docker Registry](/registry.html)
 
+## Deployment Server
 
-### Ceph
+- [Deployment Server](/deployment-server.html)
+- [Creating Offline Installation Media](/offline-media.html)
 
-For open-source cloud storage, Breqwatr recommends & supports [Ceph](https://ceph.io/).
+## Ceph
 
-- [Prepare Ceph Storage Servers](/ceph-server-setup.html)
-- [Create Ceph-Ansible Configuration Files](/ceph-ansible-configs.html)
-- [Deploy Ceph](ceph-deploy.html)
+- [Installing Ceph](ceph-install.html)
+  - [Prepare Ceph Storage Servers](/ceph-server-setup.html)
+  - [Create Ceph-Ansible Configuration Files](/ceph-ansible-configs.html)
+  - [Deploy Ceph](ceph-deploy.html)
 - Preparing Ceph for OpenStack
     - [Create Ceph's OSD Pools for OpenStack](/ceph-pools.html)
     - [Create CephX Authentication Keys](/ceph-cephx-keys.html)
 
+## OpenStack
 
-### OpenStack
-
-All of Breqwatr's private clouds run [OpenStack](https://www.openstack.org/software/).
-
-- [Prepare OpenStack Cloud Servers](/openstack-server-setup.html)
-- [Mirroring OpenStack release's images on local registry from Docker Hub](/openstack-registry-mirror.html)
 - [OpenStack Installation](/openstack-install.html)
-    - [Storage - LVM Setup](/openstack-lvm.html)
-    - [Storage - Ceph Setup](/openstack-ceph.html)
+    - [Prepare OpenStack Cloud Servers](/openstack-server-setup.html)
+    - [OpenStack Storage Providers](/openstack-storage-providers.html)
+        - [OpenStack LVM Storage Setup](/openstack-lvm.html)
+        - [OpenStack Ceph Setup](/openstack-ceph.html)
+    - [Mirroring OpenStack release's images on local registry from Docker Hub](/openstack-registry-mirror.html)
+    - [Generate Unique OpenStack Service Passwords](/openstack-kolla-passwords.html)
+    - [Writing globals.yml for Kolla-Ansible](/openstack-kolla-globals.html)
+    - [Creating Kolla-Ansible's Inventory File](/openstack-kolla-inventory.html)
+    - [Configure HTTPS for OpenStack APIs](/openstack-kolla-certificates.html)
+    - [OpenStack Service Configuration](/openstack-kolla-config.html)
+    - [Kolla-Ansible's Bootstrap Playbook](/openstack-kolla-bootstrap.html)
+    - [Pulling Kolla Docker Images to All Servers](/openstack-kolla-pull.html)
+    - [Initialize OpenStack Containers with Kolla-Ansible Deploy](openstack-kolla-deploy.html)
+    - [Generate admin-openrc.sh](/openstack-kolla-admin-openrc.html)
 - [BWDT's OpenStack Command-Line](/openstack-cli.html)
     - [OpenStack CLI Examples](/openstack-cli-examples.html)
 

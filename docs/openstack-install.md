@@ -3,288 +3,90 @@
 
 # OpenStack Installation
 
-There are many varying ways to configure OpenStack, each depending on the
-physical equipment available and desired features to be deployed. Breqwatr
-takes an opinionated approach, only offering the services we're comfortable
-supporting but also ensuring that each of those features is stable and
-reliable.
+All of Breqwatr's private clouds run [OpenStack](https://www.openstack.org/software/).
+
+There's no one "right" way to install OpenStack. Breqwatr's procedure has
+been repeatedly tested, used in production, and enterprise support is
+available.
+
+Breqwatr has selected a subset of the OpenStack ecosystem to support
+and distribute to ensure that while not every possible service is available,
+the supported ones are production-ready at all times.
+
+Currently Breqwatr has standardized on the
+[Kolla-Ansible](https://github.com/openstack/kolla-ansible) project and its
+[Kolla](https://github.com/openstack/kolla)-based images to deploy and manage
+OpenStack. The Breqwatr Deployment Tool has integrated these libraries to
+improve ease-of-use. Breqwatr distributes known-stable builds Kolla images,
+with only minor customization such as the introduction of various Cinder-volume
+plugins.
 
 
-## Procedure
-
-1. Configure storage providers
-1. Generate a passwords file - `passwords.yml`
-1. Write your "globals" configuration file - `globals.yml`
-1. Write the inventory file - `inventory`
-1. Deploy/generate HTTP certificate files - `certificates/`
-1. (optional) Write service configuration files - `config/`
-1. Bootstrap OpenStack nodes
-1. Pull Docker images to each node
-1. Deploy OpenStack
-1. Get admin-openrc file
+Deployment scenarios vary widely. These guides hope to cover the most common
+scenarios. For more complicated scenarios Breqwatr offers training,
+professional services, support, and managed services - [contact us](mailto:sales@breqwatr.com)
+to learn more.
 
 
 ---
 
 
-## Configuring storage providers
-
-OpenStack Cinder supports a long list of storage backends.
-
-[See the Cinder support matrix](https://docs.openstack.org/cinder/rocky/reference/support-matrix.html).
-
-Breqwatr primarily deploys using Ceph, LVM, and Pure Storage as our back-end
-plugins of choice. The Cinder-volume container we publish to Docker Hub hosts
-all of these. Customer images from our private repository may have other
-plugins supported as well.
-
-Choose your storage provider and configure it.
-
-- [LVM Setup Guide](openstack-lvm.html)
-- [Storage - Ceph Setup\*](/openstack-ceph.html)
-
-\* Note: The Ceph steps require that `passwords.yml` already be generated (see
-below).
-
-## Generating passwords.yml
-
-Each OpenStack service and underlying infrastructure component requires
-authentication. To prevent password re-use, the passwords need to be generated
-separately for each cluster. The passwords will be stored in a file called
-`passwords.yml`, which should be kept backed up in a safe location after the
-deployment.
-
-To generate `passwords.yml`:
-
-```bash
-# This will create ./passwords.yml
-bwdt openstack get-passwords --release <release name>
-```
-
-
-## Writing globals.yml
-
-This is arguably the hardest step when deploying OpenStack. Breqwatr will be
-releasing tools to help write this file in the future, but currently the best
-approach is to read the [GitHub template](https://github.com/openstack/kolla-ansible/blob/stable/stein/etc/kolla/globals.yml)
-showing the available options. Change the branch to match your release, as some
-of the options have changed over time.
-
-Write your `globals.yml` file to define the cloud as you want it, then place it
-alongside your passwords.yml file. Be sure to keep a copy of this file
-somewhere safe.
-
-Example globals.yml files:
-
-- [Single-node LVM-Backed POC cluster](https://gist.github.com/breqwatr/056bc1d53370a2775d547cac10effa61)
-- [Single-node Ceph-backed POC cluster](https://gist.github.com/breqwatr/31fba9b5995e3b9dd1c3673b370aee08)
-
-
-## Writing the inventory file
-
-The inventory file defines which nodes will run what OpenStack roles.
-
-Generate a template of the file. The following command will create the file
-`./inventory`.
-
-```bash
-bwdt openstack get-inventory-template --release stein
-```
-
-This is a standard Ansible inventory file. It is not necessary to be familiar
-with Ansible to work with this file.
-
-The general format is:
-
-```ini
-[<role>]
-<hostname>      <additional properties>
-
-# example
-[control]
-localhost       ansible_connection=local
-```
-
-Edit the template to list each hostname under each role it will operate.
-In small clusters, you can list the same few nodes for each role and it will
-work just fine. Larger clusters benefit from increased segregation of
-responsibilities.
-
-No additional properties (such as `ansible_connection=local`) are required.
-
-```ini
-[control]
-controlNode1
-controlNode2
-controlNode3
-
-[network]
-controlNode1
-controlNode2
-controlNode3
-
-[compute]
-computeNode1
-computeNode2
-computeNode3
-computeNode4
-computeNode5
-
-[storage]
-storageNode1
-storageNode2
-storageNode3
-
-[monitoring]
-controlNode1
-controlNode2
-controlNode3
-```
-
-In the deployment server, now's a good time to double-check that you can
-ping each of those hostnames. The deployment will fail if your DNS or
-`/etc/hosts` file aren't set up correctly.
-
-Similarly, SSH to each server using your designated SSH key as root to
-confirm that the `authorized_keys` files are deployed correctly.
-
-
-## Deploy/generate HTTPS certificate
-
-While technically optional, OpenStack should always be deployed to use HTTPS
-on its API endpoints. Breqwatr does not support non-HTTPS deployment models.
-
-HTTPS is enabled by setting the following in `globals.yml`:
-
-```yml
-kolla_enable_tls_external: yes
-```
-
-Certificates are deployed in a `certificates` directory.
-
-By default Kolla-Ansible will look for the following two files:
-
-- **certificates/haproxy.pem**: This is the public and private certificate
-  combined.
-- **certificates/ca/haproxy.crt**: When applicable, this is the certificate
-  authority certificate.
-
-The filenames can be modified in `globals.yml`.
-
-### Generate self-signed certificates
-
-Use the `generate-certificates` command to generate new self-signed
-certificates. A new directory named `certificates/` will be created in the
-directory specified by `--config-dir`.
-
-```bash
-# creates ./certificates/
-bwdt openstack get-certificates \
-  --release stein \
-  --globals-file globals.yml \
-  --passwords-file passwords.yml
-```
-
-### Using your own certificates
-
-Instead of generating the self-signed certificates, copy your valid ones into
-the `config/certificates/` directory with the correct filenames.
-
-```bash
-mkdir certificates/
-cp <valid certificate file path> haproxy.pem
-```
-
-
-### Writing the optional service configuration files
-
-The default configurations will be sufficient for most use cases but in some
-situations a specific OpenStack service configuration change is needed. To
-facilitate those changes, a configuration directory can be created.
-
-
-You can read more about how to write these files and their expected
-directory structure in [Kolla-Ansible's advanced configuration guide](https://docs.openstack.org/kolla-ansible/latest/admin/advanced-configuration.html).
-
-This configuration directory will be mounted to Kolla-Ansible's
-`/etc/kolla/config` directory when executing the `deploy` and `reconfigure`
-tasks.
-
-
-
-
-
-## Bootstrap OpenStack nodes
-
-The servers that will host OpenStack services should now be online and have
-their networks and SSH `authorized_keys` files configured, but they need
-Docker and some other packages to be fully ready to launch the OpenStack
-containers. The bootstrap step will finalize their preparation.
-
-When setting up the deployment server, an SSH key-pair was created. By default
-this will be placed in `~/.ssh/id_rsa` but its location can vary.
-
-```bash
-bwdt openstack kolla-ansible bootstrap-servers \
-  --release stein \
-  --ssh-private-key-file ~/.ssh/id_rsa \
-  --globals-file globals.yml \
-  --passwords-file passwords.yml \
-  --inventory-file inventory \
-  --certificates-dir certificates
-```
-
-## Pull OpenStack images to nodes
-
-Each process or service that makes up OpenStack is packaged into its own Docker
-image. These images will be deployed and configured by the Kolla-Ansible
-project's automation.
-
-To prevent the installation from failing mid-automation due to a missing image,
-you should pull the images to each node first. Pass the inventory file path to
-the `pull-images` command to let Ansible know which nodes need which service
-images.
-
-```bash
-bwdt openstack kolla-ansible pull \
-  --release stein \
-  --ssh-private-key-file ~/.ssh/id_rsa \
-  --globals-file globals.yml \
-  --passwords-file passwords.yml \
-  --inventory-file inventory \
-  --certificates-dir certificates
-```
-
-
-## Deploy OpenStack
-
-Everything is ready, now create the OpenStack containers and initialize each
-service using the `deploy` command.
-
-```bash
-bwdt openstack kolla-ansible deploy \
-  --release stein \
-  --ssh-private-key-file ~/.ssh/id_rsa \
-  --globals-file globals.yml \
-  --passwords-file passwords.yml \
-  --inventory-file inventory \
-  --certificates-dir certificates \
-  --config-dir config
-
-# Note: --config-dir is optional and can be ommitted
-```
-
-
-## Get admin-openrc file
-
-The admin-openrc file is used to authenticate as the default administrative
-service account in OpenStack. This account is used to bootstrap other services
-and create the initial regular users.
-
-```bash
-bwdt openstack get-admin-openrc \
-  --release stein \
-  --globals-file globals.yml \
-  --passwords-file passwords.yml \
-  --inventory-file inventory
-```
+# Installtion Procedure
+
+## Online Install with Ceph Storage
+
+This installation procedure is our most common use-case. It requires that
+Ceph already be installed. If you haven't installed Ceph yet, follow the
+[Ceph install guide](/ceph-install.html) first.
+
+1. [Create a Deployment Server](/deployment-server.html): A stand-alone Ubuntu
+   server with network access to each OpenStack node should be dedicated to
+   deploying and managing the cluster. This is typically the same server that
+   was used to deploy Ceph.
+1. [Prepare the metal cloud servers](/openstack-server-setup.html):
+   Metal servers need their OS deployed and some intial setup
+1. [Launch a local Docker Registry](/registry.html): Without a local cache of
+   the docker images, each server will have to download the images from the
+   internet. The Train release can have upwards of 90 images when everything is
+   enabled, so it's much better to download the the images once to a local
+   registry.
+1. [Copy images from Docker Hub to the local registry]((/openstack-registry-mirror.html):
+   BWDT will orchestrate the synchronization of a given OpenStack releases
+   images to the locally deployed registry.
+1. [Create Ceph OSD pools for OpenStack](/ceph-pools.html): Two Ceph pools,
+   usually `volumes` and `images` will be created for OpenStack.
+1. [Create cephx authentication keys](/ceph-cephx-keys.html): Keys for the
+   Cinder, Nova, and Glance services will be created and granted access to the
+   above pools.
+1. [Generate unique passwords for OpenStack service](/openstack-kolla-passwords.html):
+   Create a passwords file named `passwords.yml` to provide each OpenStack
+   service with unique passwords.
+1. [Create globals.yml for Kolla-Ansible](/openstack-kolla-globals.html):
+   Define which OpenStack services will be deployed and how they will be
+   configured using the `globals.yml` file.
+1. [Write the inventory file for Kolla-Ansible](/openstack-kolla-inventory.html):
+   Define which physical servers will host what OpenStack roles using by
+   generating an `inventory` file from a template then populating it.
+1. [Configure HTTPS for Kolla-Ansible](/openstack-kolla-certificates.md):
+   If needed, self-signed certificates are generated. Certificate files are
+   prepared for Kolla-Ansible to use with each OpenStack API, enabling HTTPS.
+1. [Fine-tune the OpenStack configuration](/openstack-kolla-config.html):
+   Write service configuration override files into a configuration directory
+   `config/`. These are configurations that Kolla-Ansible's globals file cannot
+   make on its own.
+1. [Bootstrap the metal servers for OpenStack](/openstack-kolla-bootstrap.html):
+   Install Docker and other packages on the servers that will host OpenStack
+   using Kolla-Ansibles bootstrap playlist.
+1. [Pull Docker images to each node](/openstack-kolla-pull.html):
+   Download the Docker images to each OpenStack server.
+1. [Initialize OpenStack's service containers](/openstack-kolla-deploy.html):
+   Launch Kolla-Ansible's deploy playbooks to write the OpenStack configuration
+   files on each server and initialize the OpenStack service containers.
+
+---
+
+# Post-Installation Procedure
+
+1. [Generate the admin user's admin-openrc file](): OpenStack deploys with a
+   single user named "admin". Create an openrc file to use the CLI as this
+   user.

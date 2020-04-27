@@ -1,4 +1,5 @@
 [Index](/)
+\> [Installing Ceph](/ceph-install.html)
 \> Ceph-Ansible Configuration Files
 
 # Ceph-Ansible Configuration Files

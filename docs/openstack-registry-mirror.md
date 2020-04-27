@@ -1,4 +1,5 @@
 [Index](/)
+\> [OpenStack Installation](/openstack-install.html)
 \> Mirroring OpenStack Release's Images on Local Registry
 
 # Mirroring OpenStack Release's Images on Local Registry

@@ -1,11 +1,8 @@
 [Index](/)
+\> [OpensStack Installation](/openstack-install.html)
 \> OpenStack Server Setup
 
 # OpenStack Server Setup
-
-Before a node can be used as an OpenStack control or compute node, the
-following configurations are required.
-
 
 1. Verify hardware requirements
 1. Install Ubuntu 18.04

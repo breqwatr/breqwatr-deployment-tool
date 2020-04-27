@@ -57,3 +57,10 @@ ceph auth get client.glance
 ceph auth get client.cinder
 ceph auth get client.nova
 ```
+
+If Ceph will be [used with OpenStack]((/openstack-ceph.html)), the above
+command's output is used to create keyring files.
+
+```bash
+ceph auth get client.cinder > ceph.client.cinder.keyring
+```

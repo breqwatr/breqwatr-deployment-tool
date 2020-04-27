@@ -1,5 +1,6 @@
 [Index](/)
 \> [OpenStack Installation](/openstack-install.html)
+\> [OpenStack Storage Providers](/openstack-storage-providers.html)
 \> OpenStack Ceph Setup
 
 # OpenStack Ceph Setup

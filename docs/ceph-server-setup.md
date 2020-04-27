@@ -1,4 +1,5 @@
 [Index](/)
+\> [Installing Ceph](/ceph-install.html)
 \> Ceph Server Requirements
 
 # Ceph Server Requirements
