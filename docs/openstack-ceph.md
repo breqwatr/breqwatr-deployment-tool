@@ -65,12 +65,12 @@ keyring = /etc/ceph/ceph.client.<service>.keyring
 rbd default features = 3
 ```
 
-**Note**: If the value of `mon initial members` in ceph.conf on the monitor
+**Note**: If the value of `mon host` in ceph.conf on the monitor
 nodes looks like this `mon host = [v2:192.168.0.13:3300,v1:192.168.0.13:6789]`,
 it's using a newer syntax that isn't backwards compatible. Cinder's ceph
 client cannot parse the new format. Instead, use the old format - a space
 delimited list of each monitor node's IP address with no ports. Example:
-`mon initial members = 192.168.0.13 192.168.0.14 192.168.0.15`
+`mon host = 192.168.0.13 192.168.0.14 192.168.0.15`
 
 ## Creating ceph.client.\<service\>.keyring files
 
