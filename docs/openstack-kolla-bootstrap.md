@@ -22,7 +22,7 @@ Kolla-Ansible Docker image, orchestrated by BWDT:
 
 ```bash
 bwdt openstack kolla-ansible bootstrap-servers \
-  --release stein \
+  --release train \
   --ssh-private-key-file ~/.ssh/id_rsa \
   --globals-file globals.yml \
   --passwords-file passwords.yml \
