@@ -19,7 +19,7 @@ bwdt openstack get-inventory-template --release stein
 
 This is a standard [INI-format](https://en.wikipedia.org/wiki/INI_file) Ansible
 [inventory file](https://docs.ansible.com/ansible/2.3/intro_inventory.html).
-While helpful, it isn't necessary to befamiliar with Ansible to edit the
+While helpful, it isn't necessary to be familiar with Ansible to edit the
  inventory file.
 
 OpenStack roles are represented as follows:
