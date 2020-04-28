@@ -53,11 +53,6 @@ Ceph already be installed. If you haven't installed Ceph yet, follow the
 1. [**Copy images from Docker Hub to the local registry**](/openstack-registry-mirror.html):
    BWDT will orchestrate the synchronization of a given OpenStack releases
    images to the locally deployed registry.
-1. [**Create Ceph OSD pools for OpenStack**](/ceph-pools.html): Two Ceph pools,
-   usually `volumes` and `images` will be created for OpenStack.
-1. [**Create cephx authentication keys**](/ceph-cephx-keys.html): Keys for the
-   Cinder, Nova, and Glance services will be created and granted access to the
-   above pools.
 1. [**Generate unique passwords for OpenStack service**](/openstack-kolla-passwords.html):
    Create a passwords file named `passwords.yml` to provide each OpenStack
    service with unique passwords.
@@ -74,6 +69,11 @@ Ceph already be installed. If you haven't installed Ceph yet, follow the
    Write service configuration override files into a configuration directory
    `config/`. These are configurations that Kolla-Ansible's globals file cannot
    make on its own.
+1. [**Create Ceph OSD pools for OpenStack**](/ceph-pools.html): Two Ceph pools,
+   usually `volumes` and `images` will be created for OpenStack.
+1. [**Create cephx authentication keys**](/ceph-cephx-keys.html): Keys for the
+   Cinder, Nova, and Glance services will be created and granted access to the
+   above pools.
 1. [**Collect Ceph config files**](/openstack-ceph.html): Cinder, Nova, and
    Glance need Ceph keyrings and ceph.conf files. Glance and Cinder also need
    to have their configuration modified.
