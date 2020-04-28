@@ -74,6 +74,9 @@ Ceph already be installed. If you haven't installed Ceph yet, follow the
    Write service configuration override files into a configuration directory
    `config/`. These are configurations that Kolla-Ansible's globals file cannot
    make on its own.
+1. [**Collect Ceph config files**](/openstack-ceph.html): Cinder, Nova, and
+   Glance need Ceph keyrings and ceph.conf files. Glance and Cinder also need
+   to have their configuration modified.
 1. [**Bootstrap the metal servers for OpenStack**](/openstack-kolla-bootstrap.html):
    Install Docker and other packages on the servers that will host OpenStack
    using Kolla-Ansible's bootstrap playlist.
