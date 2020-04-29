@@ -10,7 +10,7 @@ and create the initial regular users.
 ```bash
 # creates ./admin-openrc.sh
 bwdt openstack get-admin-openrc \
-  --release stein \
+  --release train \
   --globals-file globals.yml \
   --passwords-file passwords.yml \
   --inventory-file inventory
