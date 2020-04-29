@@ -90,6 +90,6 @@ Ceph already be installed. If you haven't installed Ceph yet, follow the
 
 # Post-Installation Procedure
 
-1. [**Generate the admin user's admin-openrc file**](./openstack-kolla-admin-openrc.html):
+1. [**Generate the admin user's admin-openrc file**](/openstack-kolla-admin-openrc.html):
    OpenStack deploys with a single preconfigured user named "admin". Create an
    openrc file to use the CLI as this user.
