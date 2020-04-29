@@ -43,9 +43,8 @@ def get_entrypoint():
 def main():
     """ Entrypoint defined int setup.py for bwdt command"""
     try:
-        if not config.is_config_found():
-            bwdt.cli.configure.config_wizard()
         entrypoint = get_entrypoint()
         entrypoint()
     except KeyboardInterrupt:
+        # Handle ctrl+C without dumping a stack-trace
         sys.exit(100)

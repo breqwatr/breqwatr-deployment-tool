@@ -11,8 +11,12 @@ def get_keys_from_license(license):
     return True, {'id': key_id, 'secret': key_secret}
 
 
+def is_valid_license(license):
+    """ Check if a license looks valid """
+    return get_keys_from_license(license)[0]
+
 def keys():
-    """ Return the AWS Keys and true/false found tupple """
+    """ Return the AWS Key ID and secret from license """
     license = config.get_config()['license']
     return get_keys_from_license(license)
 
