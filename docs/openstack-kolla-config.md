@@ -26,3 +26,48 @@ No specific general customizations are currently recommended, but Ceph-backed
 clusters should have already created the files here specified in the
 [OpenStack Ceph setup guide](/openstack-ceph.html).
 
+--
+
+
+## Enable VLAN Support in Neutron
+
+Create `config/neutron/ml2_conf.in` and enable all VLANS from 1:4096 as follows:
+
+```ini
+#  config/neutron/ml2_conf.in
+[ml2_type_vlan]
+network_vlan_ranges = physnet1:1:4094
+```
+
+
+## Extend token timeout
+
+When uploading HUGE Windows images from Arcus, the token can expire before the upload is finished.
+
+Edit `config/keystone/keystone.conf`
+
+```ini
+# config/keystone/keystone.conf
+[token]
+expiration = 7200
+```
+
+## Set nova allocation ratios and resource reservations
+
+Edit `config/nova/nova-compute.conf`
+
+```ini
+# config/nova/nova-compute.conf
+[DEFAULT]
+# Set the CPU overcommit and RAM overcommit ratios
+cpu_allocation_ratio = 5
+ram_allocation_ratio = 1
+# Reserve RAM for the sytem - especially if it's running Ceph or all-in-one
+# reservation is in megabytes
+reserved_host_memory_mb = 16384
+# number of cores to set aside for the host
+reserved_host_cpus = 4
+# qty of disk to set aside for the host when making ephemeral drives
+# If you're using Ceph, count all of the OSD capacity into this
+reserved_host_disk_mb = 5242880
+```
