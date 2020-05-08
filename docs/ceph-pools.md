@@ -64,3 +64,33 @@ ceph osd pool create images <volumes pg count>
 ceph osd pool set images size <replica count>
 ceph osd pool application enable images rbd
 ```
+
+---
+
+# Single-Node Ceph Clusters: Fix the replication
+
+By default, Ceph will try and ensure its replicas are on different hosts. 
+To keep two copies of each object but have them on different disks:
+
+Export the crushmap:
+
+```bash
+ceph osd getcrushmap -o crushmap.bin
+crushtool --decompile crushmap.bin  -o crushmap.txt
+```
+
+Edit the text file and replace `step chooseleaf firstn 0 type host` with `step chooseleaf firstn 0 type osd`
+
+```
+# from
+step chooseleaf firstn 0 type host
+# to
+step chooseleaf firstn 0 type osd
+```
+
+Apply the changes
+
+```bash
+crushtool --compile crushmap.txt  -o new.crushmap.bin
+ceph osd setcrushmap -i new.crushmap.bin
+```
